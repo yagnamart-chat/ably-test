@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>MindSpace — Social UX</title>
+    <script src="https://cdn.ably.com/lib/ably.min-1.js">
+    </script>
+    <style>
+        /* ─── RESET & BASE ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        body {
+            background: #e6f0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            height: 94vh;
+            max-height: 860px;
+            background: #ffffff;
+            border-radius: 36px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(30, 144, 255, 0.15);
+            border: 1px solid rgba(30, 144, 255, 0.08);
+        }
+
+        /* ─── LOGIN ─── */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 2.4rem 2rem;
+            background: #ffffff;
+        }
+        .login-screen h1 {
+            font-size: 3.2rem;
+            color: #0a2540;
+            margin-bottom: 6px;
+        }
+        .login-screen h1 span {
+            color: #1e90ff;
+        }
+        .login-screen .sub {
+            color: #6a8aaa;
+            font-size: 1.1rem;
+            margin-bottom: 2.4rem;
+        }
+        .login-inputs {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .login-inputs input {
+            padding: 18px 22px;
+            border-radius: 60px;
+            border: 1.5px solid #dbeafe;
+            background: #f8fcff;
+            color: #0a2540;
+            font-size: 1.05rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .login-inputs input:focus {
+            border-color: #1e90ff;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(30, 144, 255, 0.08);
+        }
+        .login-inputs input::placeholder {
+            color: #a0bcd6;
+        }
+        .login-options {
+            display: flex;
+            gap: 14px;
+            width: 100%;
+        }
+        .login-options button {
+            flex: 1;
+            padding: 16px 0;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .login-options button:active {
+            transform: scale(0.97);
+        }
+        .login-options button:first-child {
+            background: #1e90ff;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(30, 144, 255, 0.35);
+        }
+        .login-options button:last-child {
+            background: #eef6ff;
+            color: #1e90ff;
+            border: 1.5px solid #dbeafe;
+        }
+
+        /* ─── APP SHELL ─── */
+        .app-main {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background: #ffffff;
+            position: relative;
+        }
+        .app-header {
+            background: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eef6ff;
+            flex-shrink: 0;
+            z-index: 5;
+        }
+        .app-header .brand {
+            font-weight: 800;
+            color: #0a2540;
+            font-size: 1.3rem;
+        }
+        .app-header .brand span {
+            color: #1e90ff;
+        }
+        .right-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .points-badge {
+            background: #1e90ff;
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f8ff;
+            padding: 6px 14px 6px 8px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #0a2540;
+            border: 1px solid #dbeafe;
+        }
+        .user-badge .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #1e90ff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .user-badge .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+        .logout-btn:hover {
+            color: #1e90ff;
+        }
+
+        /* SCREENS */
+        .screen {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            flex-direction: column;
+            background: #ffffff;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        /* NAV */
+        .nav-bar {
+            display: flex;
+            background: #ffffff;
+            border-top: 1px solid #eef6ff;
+            padding: 10px 6px;
+            justify-content: space-around;
+            flex-shrink: 0;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #8aabca;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+            gap: 3px;
+            padding: 6px 14px;
+            border-radius: 14px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .nav-btn.active-nav {
+            color: #1e90ff;
+        }
+        .nav-icon {
+            font-size: 1.6rem;
+        }
+
+        /* ─── FEED ─── */
+        .feed-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            color: #8aabca;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .feed-empty-state .big-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+        .feed-empty-state h3 {
+            font-size: 1.4rem;
+            color: #0a2540;
+            margin-bottom: 8px;
+        }
+        .feed-empty-state p {
+            font-size: 1rem;
+            max-width: 280px;
+            line-height: 1.5;
+            color: #6a8aaa;
+        }
+
+        /* POST CARDS */
+        .post-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 18px;
+            border: 1px solid #eef6ff;
+            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.04);
+            transition: box-shadow 0.2s;
+        }
+        .post-card:hover {
+            box-shadow: 0 6px 24px rgba(30, 144, 255, 0.08);
+        }
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #1e90ff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            overflow: hidden;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .post-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: #0a2540;
+            cursor: pointer;
+        }
+        .post-name:hover {
+            text-decoration: underline;
+        }
+        .post-time {
+            font-size: 0.8rem;
+            color: #8aabca;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .post-text {
+            font-size: 1.05rem;
+            color: #1a304a;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        .post-image {
+            width: 100%;
+            border-radius: 16px;
+            margin-top: 6px;
+            max-height: 300px;
+            object-fit: cover;
+            border: 1px solid #eef6ff;
+        }
+        .post-actions {
+            display: flex;
+            gap: 24px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #eef6ff;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            color: #6a8aaa;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .action-btn:hover {
+            background: #f0f8ff;
+        }
+        .action-btn.liked {
+            color: #1e90ff;
+        }
+        .follow-btn-small {
+            background: #1e90ff;
+            border: none;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .follow-btn-small.following {
+            background: #0a2540;
+        }
+        .mod-status {
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 40px;
+            display: inline-block;
+            background: #eef6ff;
+            color: #1e90ff;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .mod-status.accepted {
+            background: #22c55e;
+            color: #fff;
+        }
+        .mod-status.rejected {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        /* ─── COMMUNITY ─── */
+        .section-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #0a2540;
+            margin-bottom: 18px;
+        }
+        .community-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .group-card {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 20px;
+            cursor: pointer;
+            border: 1px solid #eef6ff;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.03);
+        }
+        .group-card:active {
+            transform: scale(0.98);
+        }
+        .group-card:hover {
+            box-shadow: 0 6px 20px rgba(30, 144, 255, 0.08);
+        }
+        .group-icon {
+            font-size: 2.2rem;
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: #f0f8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .group-info {
+            flex: 1;
+        }
+        .group-name {
+            font-weight: 700;
+            color: #0a2540;
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+        }
+        .group-desc {
+            font-size: 0.9rem;
+            color: #6a8aaa;
+        }
+
+        /* ─── CHAT ─── */
+        .chat-area {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background: #ffffff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            border-radius: 36px;
+            overflow: hidden;
+            border: 1px solid #eef6ff;
+        }
+        .chat-area.active {
+            display: flex;
+        }
+        .chat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: #ffffff;
+            border-bottom: 1px solid #eef6ff;
+            flex-shrink: 0;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            color: #1e90ff;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+        }
+        .back-btn:hover {
+            color: #0a70d0;
+        }
+        .chat-title {
+            font-weight: 700;
+            color: #0a2540;
+            font-size: 1.15rem;
+        }
+        .chat-upload-btn,
+        .chat-checkin-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            color: #1e90ff;
+            transition: color 0.2s;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fafcff;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 22px;
+            font-size: 1.02rem;
+            line-height: 1.45;
+            display: flex;
+            flex-direction: column;
+            word-break: break-word;
+        }
+        .my-message {
+            align-self: flex-end;
+            background: #1e90ff;
+            color: #fff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.2);
+        }
+        .other-message {
+            align-self: flex-start;
+            background: #f0f8ff;
+            color: #0a2540;
+            border: 1px solid #dbeafe;
+            border-bottom-left-radius: 4px;
+        }
+        .msg-meta {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .my-message .msg-meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .other-message .msg-meta {
+            color: #6a8aaa;
+        }
+        .chat-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 6px;
+            max-height: 200px;
+            object-fit: cover;
+            border: 1px solid #eef6ff;
+        }
+        .pending-badge {
+            font-size: 0.7rem;
+            background: #1e90ff;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 6px;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 12px;
+            background: #ffffff;
+            padding: 14px 20px;
+            border-top: 1px solid #eef6ff;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .chat-input-area input {
+            flex: 1;
+            border: 1.5px solid #dbeafe;
+            outline: none;
+            padding: 12px 18px;
+            font-size: 1rem;
+            background: #f8fcff;
+            border-radius: 30px;
+            transition: border-color 0.2s;
+        }
+        .chat-input-area input:focus {
+            border-color: #1e90ff;
+        }
+        .chat-input-area button {
+            background: #1e90ff;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 30px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .chat-input-area button:hover {
+            background: #1a7ad9;
+            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
+        }
+        .upload-preview {
+            display: none;
+            margin: 8px 20px;
+            align-items: center;
+            gap: 12px;
+        }
+        .upload-preview img {
+            max-width: 60px;
+            border-radius: 12px;
+            border: 2px solid #1e90ff;
+        }
+        .upload-preview .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f0f8ff;
+            border-top: 3px solid #1e90ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── PROFILE ─── */
+        .profile-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid #eef6ff;
+            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.03);
+        }
+        .profile-pic-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #1e90ff;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            background: #f0f8ff;
+            overflow: hidden;
+            color: #0a2540;
+            font-weight: 700;
+        }
+        .profile-pic-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-card h3 {
+            font-size: 1.4rem;
+            color: #0a2540;
+        }
+        .profile-card .email {
+            color: #6a8aaa;
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid #eef6ff;
+        }
+        .stat-number {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #0a2540;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: #6a8aaa;
+            margin-top: 4px;
+        }
+        .change-pic-btn,
+        .follow-btn {
+            background: #1e90ff;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .follow-btn.following {
+            background: #0a2540;
+        }
+        .follow-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* ─── COACH ─── */
+        .coach-badge {
+            background: #1e90ff;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            margin-left: 10px;
+            letter-spacing: 0.5px;
+        }
+        .mod-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .mod-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #fff;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .mod-actions button:active {
+            transform: scale(0.96);
+        }
+        .accept-btn {
+            background: #22c55e;
+            box-shadow: 0 2px 10px rgba(34, 197, 94, 0.25);
+        }
+        .reject-btn {
+            background: #ef4444;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.25);
+        }
+        .empty-subtle {
+            color: #6a8aaa;
+            font-size: 1rem;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        /* ─── MODALS ─── */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 37, 64, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            padding: 24px;
+            backdrop-filter: blur(4px);
+        }
+        .modal.open {
+            display: flex;
+        }
+        .modal-content {
+            background: #ffffff;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 32px;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(10, 37, 64, 0.15);
+            animation: modalIn 0.25s ease;
+            border: 1px solid #eef6ff;
+        }
+        @keyframes modalIn {
+            from {
+                transform: scale(0.92) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-content h3 {
+            font-weight: 700;
+            color: #0a2540;
+            margin-bottom: 16px;
+            font-size: 1.4rem;
+        }
+        .modal-content textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: 18px;
+            border: 1.5px solid #dbeafe;
+            background: #f8fcff;
+            resize: none;
+            margin-bottom: 14px;
+            outline: none;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .modal-content textarea:focus {
+            border-color: #1e90ff;
+        }
+        .modal-content .btn-primary {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-top: 4px;
+            cursor: pointer;
+            background: #1e90ff;
+            color: #fff;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .modal-content .btn-primary:hover {
+            background: #1a7ad9;
+            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.3);
+        }
+        .modal-content .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 10px;
+            cursor: pointer;
+            background: #f0f8ff;
+            color: #1e90ff;
+            transition: background 0.2s;
+            border: 1.5px solid #dbeafe;
+        }
+        .modal-content .btn-secondary:hover {
+            background: #e0edff;
+        }
+
+        .upload-area {
+            border: 2px dashed #1e90ff;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+            color: #1e90ff;
+        }
+        .preview-img {
+            max-width: 100%;
+            margin-top: 8px;
+            display: none;
+        }
+        .preview-video {
+            max-width: 100%;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* ─── GYM DETAIL ─── */
+        .gym-detail-card {
+            background: linear-gradient(145deg, #0a2a4a, #1e90ff);
+            border-radius: 32px;
+            padding: 24px;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .gym-emoji {
+            font-size: 3rem;
+        }
+        .gym-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+        .gym-location,
+        .gym-radius {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .welcome-text {
+            margin: 16px 0;
+            font-size: 1.1rem;
+        }
+        .join-gym-btn {
+            background: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0a2a4a;
+            cursor: pointer;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        /* ─── COMMENTS ─── */
+        .comment-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: flex-start;
+            background: #f0f8ff;
+            border-radius: 16px;
+            padding: 8px 12px;
+        }
+        .comment-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #1e90ff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .comment-content {
+            flex: 1;
+        }
+        .comment-name {
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: #0a2540;
+        }
+        .comment-text {
+            font-size: 0.85rem;
+            color: #0a2540;
+        }
+        .comment-delete {
+            background: none;
+            border: none;
+            color: #1e90ff;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+            .app-container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+            .chat-area {
+                border-radius: 0;
+            }
+        }
+        .screen::-webkit-scrollbar,
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .screen::-webkit-scrollbar-thumb,
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #c5d9f0;
+            border-radius: 10px;
+        }
+        .screen::-webkit-scrollbar-track,
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0a2540;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- LOGIN -->
+        <div id="loginScreen" class="login-screen">
+            <h1>🧠 <span>Mind</span>Space</h1>
+            <p class="sub">Connect · Grow · Thrive</p>
+            <div class="login-inputs">
+                <input type="text" id="loginName" placeholder="Full name" value="Rahul Kumar" />
+                <input type="email" id="loginEmail" placeholder="Email address" value="rahul@mindspace.io" />
+            </div>
+            <div class="login-options">
+                <button id="userLoginBtn">👤 User Login</button>
+                <button id="gymOwnerLoginBtn">🏋️ Coach Panel</button>
+            </div>
+        </div>
+
+        <!-- APP MAIN -->
+        <div id="appMain" class="app-main">
+
+            <!-- HEADER -->
+            <header class="app-header">
+                <div class="brand">🧠 <span>Mind</span>Space</div>
+                <div class="right-group">
+                    <span id="pointsDisplay" class="points-badge">⭐ 0</span>
+                    <div class="user-badge">
+                        <div class="avatar" id="headerAvatar">R</div>
+                        <span id="userNameDisplay">User</span>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">✕</button>
+                </div>
+            </header>
+
+            <!-- HOME -->
+            <div id="home" class="screen active">
+                <div id="feedContainer">
+                    <div class="feed-empty-state">
+                        <div class="big-icon">🌱</div>
+                        <h3>Your feed is quiet</h3>
+                        <p>Be the first to share a thought, a win, or a question with the community.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMMUNITY -->
+            <div id="community" class="screen">
+                <div class="section-title">👥 Communities &amp; Channels</div>
+                <div class="community-grid">
+                    <div class="group-card" id="cardGym">
+                        <div class="group-icon">🏋️</div>
+                        <div class="group-info">
+                            <div class="group-name">Fitness Gym</div>
+                            <div class="group-desc">📍 Darbhanga Hub · Radius 50m</div>
+                        </div>
+                    </div>
+                    <div class="group-card" id="cardCheckin">
+                        <div class="group-icon">📍</div>
+                        <div class="group-info">
+                            <div class="group-name">Daily Fitness Check‑in</div>
+                            <div class="group-desc">Verify entry to grab +10 Points instantly</div>
+                        </div>
+                    </div>
+                    <div class="group-card" id="cardStoic">
+                        <div class="group-icon">🏛️</div>
+                        <div class="group-info">
+                            <div class="group-name">Stoic Wisdom</div>
+                            <div class="group-desc">Tap to enter live full‑screen room</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE -->
+            <div id="profile" class="screen">
+                <button class="back-btn" id="backFromProfile" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
+                <div id="ownProfileContainer"></div>
+            </div>
+
+            <!-- VIEW PROFILE -->
+            <div id="viewProfile" class="screen">
+                <button class="back-btn" id="backFromViewProfile" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
+                <div id="viewProfileContainer"></div>
+            </div>
+
+            <!-- COACH PANEL -->
+            <div id="coachPanel" class="screen">
+                <button class="back-btn" id="backFromCoach" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
+                <div style="font-weight:700; margin-bottom:16px; color:#0a2540; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:1.2rem;">
+                    🏋️ Moderate Dashboard <span class="coach-badge">COACH</span>
+                </div>
+                <div id="pendingPostsContainer">
+                    <div class="empty-subtle">✨ No pending posts to review.</div>
+                </div>
+            </div>
+
+            <!-- GYM DETAIL -->
+            <div id="gymDetail" class="screen">
+                <button class="back-btn" id="backFromGym" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
+                <div class="gym-detail-card">
+                    <div class="gym-emoji">🏋️</div>
+                    <div class="gym-name">Fitness Gym</div>
+                    <div class="gym-location">📍 Darbhanga</div>
+                    <div class="gym-radius">Radius: 60m</div>
+                    <div class="welcome-text">Welcome to Fitness Gym<br>Train hard, stay consistent!</div>
+                    <button class="join-gym-btn" id="joinGymBtn">🔗 Join Gym</button>
+                </div>
+            </div>
+
+            <!-- NAV -->
+            <nav class="nav-bar" id="mainNav">
+                <button class="nav-btn active-nav" data-screen="home">
+                    <span class="nav-icon">🏠</span><span>Home</span>
+                </button>
+                <button class="nav-btn" data-screen="community">
+                    <span class="nav-icon">👥</span><span>Community</span>
+                </button>
+                <button class="nav-btn" id="navPostBtn">
+                    <span class="nav-icon">✨</span><span>Post</span>
+                </button>
+                <button class="nav-btn" data-screen="profile">
+                    <span class="nav-icon">👤</span><span>Profile</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- CHAT OVERLAY -->
+        <div id="chatArea" class="chat-area">
+            <div class="chat-top">
+                <button class="back-btn" id="backFromChat">← Back</button>
+                <span class="chat-title" id="chatTitle">🏛️ Stoic Wisdom Chat</span>
+                <div>
+                    <button class="chat-checkin-btn" id="chatCheckinBtn" title="Check-in">📍</button>
+                    <button class="chat-upload-btn" id="chatUploadBtn">📷</button>
+                </div>
+            </div>
+            <div id="chatMessagesArea" class="chat-messages">
+                <div class="message other-message"><span class="msg-meta">🏛️ Stoic Bot</span>Welcome to the deep logic sanctuary. Share quotes or ask layout inquiries.</div>
+            </div>
+            <div id="uploadPreview" class="upload-preview">
+                <img id="previewThumb" src="" alt="Preview" />
+                <div class="spinner" id="uploadSpinner"></div>
+                <span id="uploadStatus"></span>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Write inside deep thought thread…" />
+                <button id="sendMsgBtn">Send</button>
+            </div>
+            <input type="file" id="chatFileInput" accept="image/*" style="display:none" />
+        </div>
+
+        <!-- POST MODAL -->
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <h3>✨ Compose Mind Post</h3>
+                <textarea id="postText" rows="4" placeholder="What realization did you encounter today?"></textarea>
+                <div class="upload-area" id="imageUploadLabel">📸 Add photo/video</div>
+                <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none" />
+                <img id="imagePreview" class="preview-img" />
+                <video id="videoPreview" class="preview-video" controls></video>
+                <button class="btn-primary" id="submitPostBtn">Publish Timeline</button>
+                <button class="btn-secondary" id="closeModalBtn">Discard</button>
+            </div>
+        </div>
+
+        <!-- PROFILE PIC MODAL -->
+        <div id="profilePicModal" class="modal">
+            <div class="modal-content">
+                <h3>Update Profile Picture</h3>
+                <div class="upload-area" id="profilePicUploadLabel">📸 Choose new profile picture</div>
+                <input type="file" id="profilePicInput" accept="image/*" style="display:none" />
+                <img id="profilePicPreview" style="max-width:100%; border-radius:50%; margin-top:12px; display:none;" />
+                <button class="btn-primary" id="submitProfilePicBtn">Update</button>
+                <button class="btn-secondary" id="closeProfilePicModal">Cancel</button>
+            </div>
+        </div>
+
+        <!-- COMMENT MODAL -->
+        <div id="commentModal" class="modal">
+            <div class="modal-content">
+                <h3>Comments</h3>
+                <div id="commentsList" style="max-height:300px; overflow-y:auto; margin-bottom:12px;"></div>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <input type="text" id="newCommentInput" placeholder="Write a comment..." style="flex:1; border:1.5px solid #dbeafe; border-radius:30px; padding:12px 18px; outline:none;" />
+                    <button id="submitCommentBtn" style="background:#1e90ff; border:none; padding:12px 24px; border-radius:30px; color:#fff; font-weight:600; cursor:pointer;">Post</button>
+                </div>
+                <button class="btn-secondary" id="closeCommentModal" style="margin-top:12px;">Close</button>
+            </div>
+        </div>
+
+        <!-- TOAST -->
+        <div id="toast" class="toast"></div>
+
+    </div>
+
+    <script>
+        // ─── BACKEND CONSTANTS ───
+        const API_BASE_URL = 'https://gymownerui.saketjhaa3.workers.dev';
+        const ABLY_KEY = "iYpArg.XhHP3g:4fsCL3e0Cf4SutL579ypnUXAHY9Iz7dwO7hbUXeh7Bk";
+        const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dp0lnalyv/auto/upload';
+        const CLOUDINARY_PRESET = 'samar123';
+
+        // ─── STATE ───
+        let currentUser = null;
+        let currentGroup = 'Stoic Wisdom';
+        let selectedMedia = null;
+        let ably = null;
+        let channel = null;
+        let viewingProfileEmail = null;
+        let currentPostIdForComments = null;
+        let followingSet = new Set();
+
+        // ─── DOM REFS ───
+        const loginScreen = document.getElementById('loginScreen');
+        const appMain = document.getElementById('appMain');
+        const loginName = document.getElementById('loginName');
+        const loginEmail = document.getElementById('loginEmail');
+        const userLoginBtn = document.getElementById('userLoginBtn');
+        const gymOwnerLoginBtn = document.getElementById('gymOwnerLoginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const pointsDisplay = document.getElementById('pointsDisplay');
+        const feedContainer = document.getElementById('feedContainer');
+        const chatMessagesArea = document.getElementById('chatMessagesArea');
+        const chatInput = document.getElementById('chatInput');
+        const sendMsgBtn = document.getElementById('sendMsgBtn');
+        const backFromChat = document.getElementById('backFromChat');
+        const backFromProfile = document.getElementById('backFromProfile');
+        const backFromViewProfile = document.getElementById('backFromViewProfile');
+        const backFromCoach = document.getElementById('backFromCoach');
+        const backFromGym = document.getElementById('backFromGym');
+        const navPostBtn = document.getElementById('navPostBtn');
+        const uploadModal = document.getElementById('uploadModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const submitPostBtn = document.getElementById('submitPostBtn');
+        const postText = document.getElementById('postText');
+        const mediaInput = document.getElementById('mediaInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const videoPreview = document.getElementById('videoPreview');
+        const imageUploadLabel = document.getElementById('imageUploadLabel');
+        const ownProfileContainer = document.getElementById('ownProfileContainer');
+        const viewProfileContainer = document.getElementById('viewProfileContainer');
+        const pendingPostsContainer = document.getElementById('pendingPostsContainer');
+        const chatUploadBtn = document.getElementById('chatUploadBtn');
+        const chatFileInput = document.getElementById('chatFileInput');
+        const chatCheckinBtn = document.getElementById('chatCheckinBtn');
+        const uploadPreview = document.getElementById('uploadPreview');
+        const previewThumb = document.getElementById('previewThumb');
+        const uploadSpinner = document.getElementById('uploadSpinner');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const profilePicModal = document.getElementById('profilePicModal');
+        const profilePicUploadLabel = document.getElementById('profilePicUploadLabel');
+        const profilePicInput = document.getElementById('profilePicInput');
+        const profilePicPreview = document.getElementById('profilePicPreview');
+        const submitProfilePicBtn = document.getElementById('submitProfilePicBtn');
+        const closeProfilePicModal = document.getElementById('closeProfilePicModal');
+        const commentModal = document.getElementById('commentModal');
+        const commentsListDiv = document.getElementById('commentsList');
+        const newCommentInput = document.getElementById('newCommentInput');
+        const submitCommentBtn = document.getElementById('submitCommentBtn');
+        const closeCommentModal = document.getElementById('closeCommentModal');
+        const joinGymBtn = document.getElementById('joinGymBtn');
+        const chatTitle = document.getElementById('chatTitle');
+        const headerAvatar = document.getElementById('headerAvatar');
+        const toastEl = document.getElementById('toast');
+
+        // ─── TOAST ───
+        let toastTimer = null;
+
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+        }
+
+        // ─── HELPERS ───
+        function updatePointsDisplay(points) {
+            pointsDisplay.innerText = '⭐ ' + (points || 0);
+        }
+
+        async function fetchJSON(url, options) {
+            const fullUrl = url.startsWith('http') ? url : API_BASE_URL + url;
+            const res = await fetch(fullUrl, {
+                ...options,
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) }
+            });
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        }
+
+        function escapeHtml(s) {
+            if (!s) return '';
+            return s.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+        }
+
+        function showScreen(id) {
+            document.getElementById('chatArea').classList.remove('active');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+            const navBtn = document.querySelector(`.nav-btn[data-screen="${id}"]`);
+            if (navBtn) navBtn.classList.add('active-nav');
+            if (id === 'chat') updateChatUploadVisibility();
+        }
+
+        // ─── AUTH ───
+        async function checkLogin() {
+            try {
+                const data = await fetchJSON('/api/me', { credentials: 'include' });
+                if (data.name && data.email) {
+                    currentUser = data;
+                    userNameDisplay.innerText = currentUser.name;
+                    updatePointsDisplay(currentUser.points || 0);
+                    updateHeaderAvatar(currentUser.profilePic, currentUser.name);
+                    loginScreen.style.display = 'none';
+                    appMain.style.display = 'flex';
+                    await loadFollowingSet();
+                    initAbly();
+                    loadPosts();
+                    loadMessages();
+                    if (currentUser.role === 'gym_owner') {
+                        let coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
+                        if (!coachBtn) {
+                            const nav = document.querySelector('.nav-bar');
+                            const btn = document.createElement('button');
+                            btn.className = 'nav-btn';
+                            btn.setAttribute('data-screen', 'coachPanel');
+                            btn.innerHTML = `<span class="nav-icon">🏋️</span><span>Coach</span>`;
+                            btn.addEventListener('click', () => { loadPendingPosts();
+                                showScreen('coachPanel'); });
+                            nav.appendChild(btn);
+                        }
+                        showScreen('coachPanel');
+                        loadPendingPosts();
+                    } else {
+                        const coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
+                        if (coachBtn) coachBtn.remove();
+                        showScreen('home');
+                    }
+                    loadOwnProfile();
+                    updateChatUploadVisibility();
+                } else {
+                    loginScreen.style.display = 'flex';
+                    appMain.style.display = 'none';
+                }
+            } catch (e) {
+                loginScreen.style.display = 'flex';
+                appMain.style.display = 'none';
+            }
+        }
+
+        function updateHeaderAvatar(pic, name) {
+            if (pic) {
+                headerAvatar.innerHTML = '<img src="' + escapeHtml(pic) + '" alt="avatar" />';
+            } else {
+                headerAvatar.innerHTML = name ? name.charAt(0).toUpperCase() : 'U';
+            }
+        }
+
+        async function doLogin(role) {
+            const name = loginName.value.trim();
+            let email = loginEmail.value.trim();
+            if (!name || !email) return alert('Enter name and email');
+            if (role === 'gym_owner' && !email.includes('@')) email = email + '@gym.local';
+            const endpoint = role === 'gym_owner' ? '/api/gym-login' : '/api/login';
+            try {
+                const data = await fetchJSON(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify({ name, email }),
+                    credentials: 'include'
+                });
+                if (data.success) {
+                    currentUser = data.user;
+                    userNameDisplay.innerText = currentUser.name;
+                    updatePointsDisplay(currentUser.points || 0);
+                    updateHeaderAvatar(currentUser.profilePic, currentUser.name);
+                    loginScreen.style.display = 'none';
+                    appMain.style.display = 'flex';
+                    await loadFollowingSet();
+                    initAbly();
+                    loadPosts();
+                    loadMessages();
+                    if (currentUser.role === 'gym_owner') {
+                        let coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
+                        if (!coachBtn) {
+                            const nav = document.querySelector('.nav-bar');
+                            const btn = document.createElement('button');
+                            btn.className = 'nav-btn';
+                            btn.setAttribute('data-screen', 'coachPanel');
+                            btn.innerHTML = `<span class="nav-icon">🏋️</span><span>Coach</span>`;
+                            btn.addEventListener('click', () => { loadPendingPosts();
+                                showScreen('coachPanel'); });
+                            nav.appendChild(btn);
+                        }
+                        showScreen('coachPanel');
+                        loadPendingPosts();
+                    } else {
+                        const coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
+                        if (coachBtn) coachBtn.remove();
+                        showScreen('home');
+                    }
+                    loadOwnProfile();
+                    updateChatUploadVisibility();
+                } else alert('Login failed');
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        async function doLogout() {
+            await fetch(API_BASE_URL + '/api/logout', { method: 'POST', credentials: 'include' });
+            if (ably) ably.close();
+            loginScreen.style.display = 'flex';
+            appMain.style.display = 'none';
+            loginName.value = '';
+            loginEmail.value = '';
+            const coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
+            if (coachBtn) coachBtn.remove();
+            showToast('Logged out');
+        }
+
+        // ─── FOLLOWS ───
+        async function loadFollowingSet() {
+            try {
+                const res = await fetchJSON('/api/following?email=' + encodeURIComponent(currentUser.email), { credentials: 'include' });
+                followingSet = new Set(res.following || []);
+            } catch (e) { console.error(e); }
+        }
+
+        async function toggleFollow(targetEmail, btnElement) {
+            const isFollowing = btnElement.classList.contains('following');
+            try {
+                if (isFollowing) {
+                    await fetchJSON('/api/unfollow', { method: 'POST', body: JSON.stringify({ targetEmail }), credentials: 'include' });
+                    followingSet.delete(targetEmail);
+                    btnElement.classList.remove('following');
+                    btnElement.innerText = '+ Follow';
+                    showToast('Unfollowed');
+                } else {
+                    await fetchJSON('/api/follow', { method: 'POST', body: JSON.stringify({ targetEmail }), credentials: 'include' });
+                    followingSet.add(targetEmail);
+                    btnElement.classList.add('following');
+                    btnElement.innerText = '✓ Following';
+                    showToast('Followed!');
+                }
+                // Refresh profile if we're viewing it
+                if (viewingProfileEmail === targetEmail) {
+                    viewOtherUserProfile(targetEmail);
+                }
+            } catch (e) { alert('Failed to update follow'); }
+        }
+
+        // ─── ABLY ───
+        function initAbly() {
+            if (ably) ably.close();
+            ably = new Ably.Realtime({ key: ABLY_KEY });
+            channel = ably.channels.get('gym-chat');
+            channel.subscribe('message', (msg) => {
+                const data = msg.data;
+                if (data.type === 'new_post') {
+                    addPostToDOM(data.data, true);
+                    if (data.data.points !== undefined) updatePointsDisplay(data.data.points);
+                } else if (data.type === 'new_message' && data.data.group === currentGroup) {
+                    addMessageToChat(data.data, false);
+                } else if (data.type === 'like_update') {
+                    updatePostLikeUI(data.data.postId, data.data.likeCount);
+                } else if (data.type === 'new_comment') {
+                    if (currentPostIdForComments === data.data.postId) loadComments(data.data.postId);
+                    updatePostCommentCount(data.data.postId, data.data.commentCount);
+                } else if (data.type === 'delete_comment') {
+                    if (currentPostIdForComments === data.data.postId) loadComments(data.data.postId);
+                    updatePostCommentCount(data.data.postId, data.data.commentCount);
+                } else if (data.type === 'moderation_update') {
+                    if (currentUser?.role === 'gym_owner') loadPendingPosts();
+                    if (data.data.pointsUpdate && data.data.pointsUpdate.email === currentUser.email) {
+                        updatePointsDisplay(data.data.pointsUpdate.points);
+                    }
+                    const postDiv = document.querySelector(`.post-card[data-post-id="${data.data.postId}"]`);
+                    if (postDiv) {
+                        let badgeSpan = postDiv.querySelector('.mod-status');
+                        if (!badgeSpan && data.data.status !== 'pending') {
+                            badgeSpan = document.createElement('span');
+                            badgeSpan.className = 'mod-status ' + data.data.status;
+                            badgeSpan.innerText = data.data.status.toUpperCase();
+                            const header = postDiv.querySelector('.post-header');
+                            if (header) header.appendChild(badgeSpan);
+                        } else if (badgeSpan) {
+                            badgeSpan.className = 'mod-status ' + data.data.status;
+                            badgeSpan.innerText = data.data.status.toUpperCase();
+                        }
+                    }
+                }
+            });
+        }
+
+        // ─── POSTS ───
+        async function loadPosts() {
+            try {
+                const posts = await fetchJSON('/api/posts', { credentials: 'include' });
+                feedContainer.innerHTML = '';
+                posts.forEach(p => addPostToDOM(p, false));
+            } catch (e) { console.error(e); }
+        }
+
+        function addPostToDOM(post, isNew) {
+            const div = document.createElement('div');
+            div.className = 'post-card';
+            div.dataset.postId = post.id;
+
+            let modBadge = '';
+            if (post.moderationStatus && post.moderationStatus !== 'pending') {
+                modBadge = '<span class="mod-status ' + post.moderationStatus + '">' + post.moderationStatus.toUpperCase() +
+                    '</span>';
+            }
+
+            const avatarHtml = post.userProfilePic ? '<img src="' + escapeHtml(post.userProfilePic) +
+                '" style="width:100%;height:100%;object-fit:cover;">' : post.username.charAt(0).toUpperCase();
+
+            let mediaHtml = '';
+            if (post.media) {
+                if (post.media.match(/\.(jpg|jpeg|png|gif|webp)/i)) mediaHtml = '<img src="' + post.media +
+                    '" class="post-image" />';
+                else if (post.media.match(/\.(mp4|webm|mov)/i)) mediaHtml = '<video src="' + post.media +
+                    '" controls class="post-image" style="max-height:300px;"></video>';
+                else mediaHtml = '<a href="' + post.media + '" target="_blank">📎 Download</a>';
+            }
+
+            const likeClass = post.likedByUser ? 'action-btn liked' : 'action-btn';
+            const likeIcon = post.likedByUser ? '❤️' : '🤍';
+            const isFollowing = followingSet.has(post.userEmail);
+            const followBtnHtml = (post.userEmail !== currentUser.email) ?
+                '<button class="follow-btn-small ' + (isFollowing ? 'following' : '') + '" data-email="' + escapeHtml(post
+                    .userEmail) + '">' + (isFollowing ? '✓ Following' : '+ Follow') + '</button>' :
+                '';
+
+            div.innerHTML = `
+                <div class="post-header">
+                    <div class="avatar">${avatarHtml}</div>
+                    <div class="post-name" data-email="${escapeHtml(post.userEmail)}">${escapeHtml(post.username)}</div>
+                    ${followBtnHtml}
+                    <div class="post-time">${escapeHtml(post.timestamp)}</div>
+                    ${modBadge}
+                </div>
+                <div class="post-text">${escapeHtml(post.text)}</div>
+                ${mediaHtml}
+                <div class="post-actions">
+                    <button class="${likeClass}" data-action="like" data-postid="${post.id}">${likeIcon} <span class="like-count">${post.likeCount || 0}</span></button>
+                    <button class="action-btn" data-action="comment" data-postid="${post.id}">💬 <span class="comment-count">${post.commentCount || 0}</span></button>
+                </div>
+            `;
+
+            const likeBtn = div.querySelector('[data-action="like"]');
+            likeBtn.addEventListener('click', (e) => { e.stopPropagation();
+                toggleLike(post.id, likeBtn); });
+
+            const commentBtn = div.querySelector('[data-action="comment"]');
+            commentBtn.addEventListener('click', (e) => { e.stopPropagation();
+                openCommentModal(post.id); });
+
+            const nameSpan = div.querySelector('.post-name');
+            nameSpan.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const email = nameSpan.getAttribute('data-email');
+                if (email === currentUser.email) {
+                    showScreen('profile');
+                    loadOwnProfile();
+                } else {
+                    viewOtherUserProfile(email);
+                }
+            });
+
+            const followBtn = div.querySelector('.follow-btn-small');
+            if (followBtn) {
+                followBtn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const targetEmail = followBtn.getAttribute('data-email');
+                    await toggleFollow(targetEmail, followBtn);
+                });
+            }
+
+            if (isNew && feedContainer.firstChild) {
+                feedContainer.insertBefore(div, feedContainer.firstChild);
+            } else {
+                feedContainer.appendChild(div);
+            }
+        }
+
+        function updatePostLikeUI(postId, newLikeCount) {
+            const postDiv = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+            if (postDiv) {
+                const likeSpan = postDiv.querySelector('.like-count');
+                if (likeSpan) likeSpan.innerText = newLikeCount;
+            }
+        }
+
+        function updatePostCommentCount(postId, newCount) {
+            const postDiv = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+            if (postDiv) {
+                const commentSpan = postDiv.querySelector('.comment-count');
+                if (commentSpan) commentSpan.innerText = newCount;
+            }
+        }
+
+        async function toggleLike(postId, btnElement) {
+            const isLiked = btnElement.classList.contains('liked');
+            const action = isLiked ? 'unlike' : 'like';
+            try {
+                const res = await fetchJSON('/api/like', {
+                    method: 'POST',
+                    body: JSON.stringify({ postId, action }),
+                    credentials: 'include'
+                });
+                if (res.success) {
+                    if (action === 'like') {
+                        btnElement.classList.add('liked');
+                        btnElement.innerHTML = '❤️ <span class="like-count">' + res.likeCount + '</span>';
+                    } else {
+                        btnElement.classList.remove('liked');
+                        btnElement.innerHTML = '🤍 <span class="like-count">' + res.likeCount + '</span>';
+                    }
+                }
+            } catch (e) { alert('Error: ' + e.message); }
+        }
+
+        async function createPost(text, mediaUrl, source) {
+            const payload = { text, media: mediaUrl };
+            if (source) payload.source = source;
+            const res = await fetchJSON('/api/posts', {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                credentials: 'include'
+            });
+            if (res.points !== undefined) updatePointsDisplay(res.points);
+            showToast('Post published!');
+        }
+
+        // ─── COMMENTS ───
+        async function openCommentModal(postId) {
+            currentPostIdForComments = postId;
+            await loadComments(postId);
+            commentModal.style.display = 'flex';
+        }
+
+        async function loadComments(postId) {
+            try {
+                const comments = await fetchJSON('/api/comments?postId=' + postId, { credentials: 'include' });
+                commentsListDiv.innerHTML = '';
+                comments.forEach(c => {
+                    const avatarHtml = c.userProfilePic ? '<img src="' + escapeHtml(c.userProfilePic) +
+                        '" style="width:100%;height:100%;object-fit:cover;">' : c.username.charAt(0).toUpperCase();
+                    const commentDiv = document.createElement('div');
+                    commentDiv.className = 'comment-item';
+                    commentDiv.innerHTML = `
+                        <div class="comment-avatar">${avatarHtml}</div>
+                        <div class="comment-content">
+                            <div class="comment-name">${escapeHtml(c.username)}</div>
+                            <div class="comment-text">${escapeHtml(c.text)}</div>
+                            <div style="font-size:10px;color:#1e90ff;">${escapeHtml(c.timestamp)}</div>
+                        </div>
+                        ${c.userEmail === currentUser.email ? '<button class="comment-delete" data-comment-id="' + c.id + '">🗑️</button>' : ''}
+                    `;
+                    commentsListDiv.appendChild(commentDiv);
+                    const delBtn = commentDiv.querySelector('.comment-delete');
+                    if (delBtn) delBtn.addEventListener('click', () => deleteComment(postId, c.id));
+                });
+            } catch (e) { commentsListDiv.innerHTML = '<p>Failed to load comments</p>'; }
+        }
+
+        async function deleteComment(postId, commentId) {
+            try {
+                await fetchJSON('/api/comment', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ postId, commentId }),
+                    credentials: 'include'
+                });
+                await loadComments(postId);
+                showToast('Comment deleted');
+            } catch (e) { alert('Failed to delete comment'); }
+        }
+
+        async function addComment() {
+            const text = newCommentInput.value.trim();
+            if (!text) return;
+            try {
+                await fetchJSON('/api/comment', {
+                    method: 'POST',
+                    body: JSON.stringify({ postId: currentPostIdForComments, text }),
+                    credentials: 'include'
+                });
+                newCommentInput.value = '';
+                await loadComments(currentPostIdForComments);
+                showToast('Comment posted');
+            } catch (e) { alert('Failed to post comment'); }
+        }
+
+        // ─── CHAT ───
+        async function loadMessages() {
+            try {
+                const msgs = await fetchJSON('/api/messages?group=' + encodeURIComponent(currentGroup), { credentials: 'include' });
+                chatMessagesArea.innerHTML = '';
+                msgs.forEach(m => addMessageToChat(m, false));
+            } catch (e) { console.error(e); }
+        }
+
+        function addMessageToChat(msg, isNew) {
+            const div = document.createElement('div');
+            div.className = 'message';
+            if (msg.username === currentUser.name) div.classList.add('my-message');
+            else div.classList.add('other-message');
+
+            let mediaHtml = '';
+            if (msg.media) {
+                mediaHtml = '<img src="' + escapeHtml(msg.media) + '" class="chat-image" />';
+                if (msg.pending) {
+                    mediaHtml += '<div class="pending-badge">⏳ Pending Approval</div>';
+                }
+            }
+            div.innerHTML = `
+                <span class="msg-meta">${escapeHtml(msg.username)}</span>
+                ${escapeHtml(msg.text)}
+                ${mediaHtml}
+                <div style="font-size:0.7rem; opacity:0.6; margin-top:4px;">${escapeHtml(msg.timestamp)}</div>
+            `;
+            chatMessagesArea.appendChild(div);
+            chatMessagesArea.scrollTop = chatMessagesArea.scrollHeight;
+            if (chatMessagesArea.children.length > 50) chatMessagesArea.removeChild(chatMessagesArea.firstChild);
+        }
+
+        async function sendMessage(text, media, pending) {
+            const msgText = text || '';
+            try {
+                const body = { text: msgText, group: currentGroup };
+                if (media) { body.media = media;
+                    body.pending = pending || false; }
+                await fetchJSON('/api/messages', {
+                    method: 'POST',
+                    body: JSON.stringify(body),
+                    credentials: 'include'
+                });
+            } catch (e) { alert('Failed to send'); }
+        }
+
+        function updateChatUploadVisibility() {
+            if (currentGroup === 'Stoic Wisdom' && currentUser) {
+                chatUploadBtn.style.display = 'inline-block';
+            } else {
+                chatUploadBtn.style.display = 'none';
+            }
+        }
+
+        // ─── PROFILE ───
+        // FIX: Use /api/me for own profile to bypass the buggy /api/user/ endpoint
+        async function loadOwnProfile() {
+            if (!currentUser) return;
+            try {
+                // Use /api/me which we know works (used in checkLogin)
+                const userData = await fetchJSON('/api/me', { credentials: 'include' });
+                const userPosts = await fetchJSON('/api/user-posts?email=' + encodeURIComponent(currentUser.email), { credentials: 'include' });
+                renderProfile(userData, userPosts, true);
+                if (userData.points !== undefined) updatePointsDisplay(userData.points);
+                updateHeaderAvatar(userData.profilePic, userData.name);
+            } catch (err) {
+                console.error('Profile load error:', err);
+                ownProfileContainer.innerHTML = '<p style="color:#ef4444;">Error loading profile: ' + escapeHtml(err.message) + '</p>';
+            }
+        }
+
+        async function viewOtherUserProfile(email) {
+            viewingProfileEmail = email;
+            try {
+                const userData = await fetchJSON('/api/user/' + encodeURIComponent(email), { credentials: 'include' });
+                const userPosts = await fetchJSON('/api/user-posts?email=' + encodeURIComponent(email), { credentials: 'include' });
+                // refresh following set from server
+                const followingList = await fetchJSON('/api/following?email=' + encodeURIComponent(currentUser.email), { credentials: 'include' });
+                followingSet = new Set(followingList.following || []);
+                const isFollowing = followingSet.has(email);
+                renderProfile(userData, userPosts, false, isFollowing);
+                showScreen('viewProfile');
+            } catch (err) {
+                console.error('View profile error:', err);
+                alert('Could not load user profile: ' + err.message);
+            }
+        }
+
+        function renderProfile(userData, userPosts, isOwn, isFollowing = false) {
+            const container = isOwn ? ownProfileContainer : viewProfileContainer;
+            const profilePic = userData.profilePic || '';
+            const avatarHtml = profilePic ? '<img src="' + escapeHtml(profilePic) +
+                '" style="width:100%;height:100%;object-fit:cover;">' : userData.name.charAt(0).toUpperCase();
+
+            let actionButton = '';
+            if (!isOwn) {
+                actionButton = `<button class="follow-btn ${isFollowing ? 'following' : ''}" id="followActionBtn">${isFollowing ? '✓ Following' : '+ Follow'}</button>`;
+            } else {
+                actionButton = '<button class="change-pic-btn" id="changeProfilePicBtn">🖼️ Change Profile Picture</button>';
+            }
+
+            let postsHtml = '<h3 style="margin-top:20px;color:#0a2540;">Posts</h3><div id="profilePostsList">';
+            if (userPosts.length === 0) {
+                postsHtml += '<p style="color:#6a8aaa;">No posts yet.</p>';
+            } else {
+                userPosts.forEach(post => {
+                    let mediaHtml = '';
+                    if (post.media) {
+                        if (post.media.match(/\.(jpg|jpeg|png|gif|webp)/i)) mediaHtml = '<img src="' + post.media +
+                            '" class="post-image" style="max-height:200px;" />';
+                        else if (post.media.match(/\.(mp4|webm|mov)/i)) mediaHtml = '<video src="' + post.media +
+                            '" controls class="post-image" style="max-height:200px;"></video>';
+                        else mediaHtml = '<a href="' + post.media + '" target="_blank">📎 Download</a>';
+                    }
+                    postsHtml += `
+                        <div class="post-card" style="background:white;">
+                            <div class="post-text">${escapeHtml(post.text)}</div>
+                            ${mediaHtml}
+                            <div class="post-time" style="margin-top:8px;color:#1e90ff;">${escapeHtml(post.timestamp)}</div>
+                        </div>
+                    `;
+                });
+            }
+            postsHtml += '</div>';
+
+            container.innerHTML = `
+                <div class="profile-card">
+                    <div class="profile-pic-large">${avatarHtml}</div>
+                    <h3>${escapeHtml(userData.name)}</h3>
+                    <div class="email">${escapeHtml(userData.email)}</div>
+                    <div class="profile-stats">
+                        <div><div class="stat-number" id="statPosts">${userPosts.length}</div><div class="stat-label">Posts</div></div>
+                        <div><div class="stat-number" id="statFollowers">${userData.followersCount || 0}</div><div class="stat-label">Followers</div></div>
+                        <div><div class="stat-number" id="statFollowing">${userData.followingCount || 0}</div><div class="stat-label">Following</div></div>
+                        <div><div class="stat-number" id="statPoints">${userData.points || 0}</div><div class="stat-label">⭐ Points</div></div>
+                    </div>
+                    ${actionButton}
+                </div>
+                ${postsHtml}
+            `;
+
+            if (!isOwn) {
+                const followBtn = document.getElementById('followActionBtn');
+                if (followBtn) {
+                    followBtn.addEventListener('click', async () => {
+                        const currentlyFollowing = followBtn.classList.contains('following');
+                        try {
+                            if (currentlyFollowing) {
+                                await fetchJSON('/api/unfollow', { method: 'POST', body: JSON.stringify({ targetEmail: userData
+                                        .email }), credentials: 'include' });
+                                followingSet.delete(userData.email);
+                                followBtn.classList.remove('following');
+                                followBtn.innerText = '+ Follow';
+                                showToast('Unfollowed');
+                            } else {
+                                await fetchJSON('/api/follow', { method: 'POST', body: JSON.stringify({ targetEmail: userData
+                                        .email }), credentials: 'include' });
+                                followingSet.add(userData.email);
+                                followBtn.classList.add('following');
+                                followBtn.innerText = '✓ Following';
+                                showToast('Followed!');
+                            }
+                            // Refresh profile to update counts
+                            viewOtherUserProfile(userData.email);
+                        } catch (e) { alert('Failed to update follow'); }
+                    });
+                }
+            } else {
+                const changeBtn = document.getElementById('changeProfilePicBtn');
+                if (changeBtn) changeBtn.addEventListener('click', () => profilePicModal.style.display = 'flex');
+            }
+        }
+
+        // ─── PROFILE PICTURE ───
+        async function updateProfilePicture(file) {
+            try {
+                const url = await uploadToCloudinary(file);
+                await fetchJSON('/api/update-profile-pic', {
+                    method: 'POST',
+                    body: JSON.stringify({ profilePicUrl: url }),
+                    credentials: 'include'
+                });
+                currentUser.profilePic = url;
+                profilePicModal.style.display = 'none';
+                showToast('Profile picture updated!');
+                loadOwnProfile();
+                loadPosts();
+                updateHeaderAvatar(url, currentUser.name);
+            } catch (err) {
+                alert('Upload failed: ' + err.message);
+            }
+        }
+
+        // ─── CLOUDINARY ───
+        async function uploadToCloudinary(file) {
+            const fd = new FormData();
+            fd.append('file', file);
+            fd.append('upload_preset', CLOUDINARY_PRESET);
+            const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
+            if (!res.ok) throw new Error('Upload failed');
+            const data = await res.json();
+            return data.secure_url;
+        }
+
+        // ─── GYM & CHECKIN ───
+        async function handleJoinGym() {
+            if (!currentUser) return alert('Please login first');
+            try {
+                const data = await fetchJSON('/api/join-gym', {
+                    method: 'POST',
+                    body: JSON.stringify({ gymId: 'fitness_gym' }),
+                    credentials: 'include'
+                });
+                showToast(data.success ? '✅ Joined Fitness Gym' : '❌ Failed');
+            } catch (err) { alert('Network error'); }
+        }
+
+        async function performCheckIn() {
+            if (!currentUser) return alert('Please login first');
+            if (!navigator.geolocation) return alert('Geolocation not supported');
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const { latitude, longitude } = pos.coords;
+                try {
+                    const data = await fetchJSON('/api/checkin', {
+                        method: 'POST',
+                        body: JSON.stringify({ lat: latitude, lng: longitude }),
+                        credentials: 'include'
+                    });
+                    if (data.success) {
+                        if (data.already) {
+                            showToast('✅ Already checked in today! Points: ' + data.points);
+                        } else {
+                            showToast('✅ Check-in successful! +' + data.points + ' pts');
+                        }
+                        if (data.points !== undefined) updatePointsDisplay(data.points);
+                    } else {
+                        showToast('❌ ' + data.distance + 'm away – must be within 60m. Points reset!');
+                        if (data.points !== undefined) updatePointsDisplay(data.points);
+                    }
+                } catch (err) { alert('Network error'); }
+            }, () => alert('Location access denied'));
+        }
+
+        // ─── COACH PANEL ───
+        async function loadPendingPosts() {
+            if (!currentUser || currentUser.role !== 'gym_owner') return;
+            try {
+                const posts = await fetchJSON('/api/pending-posts', { credentials: 'include' });
+                pendingPostsContainer.innerHTML = '';
+                if (posts.length === 0) {
+                    pendingPostsContainer.innerHTML = '<div class="empty-subtle">✨ No pending posts to review.</div>';
+                    return;
+                }
+                posts.forEach(post => {
+                    const div = document.createElement('div');
+                    div.className = 'post-card';
+                    let mediaHtml = '';
+                    if (post.media) {
+                        if (post.media.match(/\.(jpg|jpeg|png|gif|webp)/i)) mediaHtml = '<img src="' + post.media +
+                            '" class="post-image" />';
+                        else if (post.media.match(/\.(mp4|webm|mov)/i)) mediaHtml = '<video src="' + post.media +
+                            '" controls class="post-image"></video>';
+                        else mediaHtml = '<a href="' + post.media + '" target="_blank">📎 Download</a>';
+                    }
+                    div.innerHTML = `
+                        <div class="post-header">
+                            <div class="avatar">${post.userProfilePic ? '<img src="' + escapeHtml(post.userProfilePic) + '" style="width:100%;height:100%;object-fit:cover;">' : post.username.charAt(0).toUpperCase()}</div>
+                            <div class="post-name">${escapeHtml(post.username)}</div>
+                            <div class="post-time">${escapeHtml(post.timestamp)}</div>
+                        </div>
+                        <div class="post-text">${escapeHtml(post.text)}</div>
+                        ${mediaHtml}
+                        <div class="mod-actions">
+                            <button class="accept-btn" data-id="${post.id}" data-action="accept">✅ Accept</button>
+                            <button class="reject-btn" data-id="${post.id}" data-action="reject">❌ Reject</button>
+                        </div>
+                    `;
+                    pendingPostsContainer.appendChild(div);
+                    const acceptBtn = div.querySelector('.accept-btn');
+                    const rejectBtn = div.querySelector('.reject-btn');
+                    acceptBtn.addEventListener('click', () => moderatePost(post.id, 'accept'));
+                    rejectBtn.addEventListener('click', () => moderatePost(post.id, 'reject'));
+                });
+            } catch (e) {
+                pendingPostsContainer.innerHTML = '<p>Error loading pending posts</p>';
+            }
+        }
+
+        async function moderatePost(postId, action) {
+            try {
+                const res = await fetchJSON('/api/moderate-post', {
+                    method: 'POST',
+                    body: JSON.stringify({ postId, action }),
+                    credentials: 'include'
+                });
+                if (res.success) {
+                    showToast('Post ' + (action === 'accept' ? 'accepted' : 'rejected') + '!');
+                    loadPendingPosts();
+                    loadPosts();
+                    if (res.pointsUpdate && res.pointsUpdate.email === currentUser.email) {
+                        updatePointsDisplay(res.pointsUpdate.points);
+                    }
+                } else alert('Moderation failed');
+            } catch (e) { alert('Error: ' + e.message); }
+        }
+
+        // ─── EVENT BINDINGS ───
+        userLoginBtn.addEventListener('click', () => doLogin('user'));
+        gymOwnerLoginBtn.addEventListener('click', () => doLogin('gym_owner'));
+        logoutBtn.addEventListener('click', doLogout);
+
+        document.querySelectorAll('.nav-btn[data-screen]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.screen;
+                if (id === 'profile') loadOwnProfile();
+                showScreen(id);
+            });
+        });
+
+        navPostBtn.addEventListener('click', () => uploadModal.style.display = 'flex');
+        closeModalBtn.addEventListener('click', () => uploadModal.style.display = 'none');
+        uploadModal.addEventListener('click', (e) => { if (e.target === uploadModal) uploadModal.style.display = 'none'; });
+
+        imageUploadLabel.addEventListener('click', () => mediaInput.click());
+        mediaInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.type.startsWith('image/')) {
+                selectedMedia = file;
+                imagePreview.style.display = 'block';
+                videoPreview.style.display = 'none';
+                const reader = new FileReader();
+                reader.onload = ev => { imagePreview.src = ev.target.result; };
+                reader.readAsDataURL(file);
+            } else if (file.type.startsWith('video/')) {
+                selectedMedia = file;
+                imagePreview.style.display = 'none';
+                videoPreview.style.display = 'block';
+                const reader = new FileReader();
+                reader.onload = ev => { videoPreview.src = ev.target.result; };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Select image or video');
+            }
+        });
+
+        submitPostBtn.addEventListener('click', async () => {
+            const text = postText.value.trim();
+            if (!text && !selectedMedia) { alert('Write something or add media'); return; }
+            let mediaUrl = '';
+            if (selectedMedia) {
+                try {
+                    mediaUrl = await uploadToCloudinary(selectedMedia);
+                } catch (err) { alert('Upload failed'); return; }
+            }
+            await createPost(text, mediaUrl);
+            uploadModal.style.display = 'none';
+            selectedMedia = null;
+            mediaInput.value = '';
+            postText.value = '';
+            imagePreview.style.display = 'none';
+            videoPreview.style.display = 'none';
+        });
+
+        document.getElementById('cardGym').addEventListener('click', () => showScreen('gymDetail'));
+        document.getElementById('cardCheckin').addEventListener('click', performCheckIn);
+        document.getElementById('cardStoic').addEventListener('click', () => {
+            currentGroup = 'Stoic Wisdom';
+            chatTitle.innerText = '🏛️ Stoic Wisdom Chat';
+            document.getElementById('chatArea').classList.add('active');
+            loadMessages();
+            updateChatUploadVisibility();
+        });
+
+        backFromChat.addEventListener('click', () => document.getElementById('chatArea').classList.remove('active'));
+        backFromProfile.addEventListener('click', () => showScreen('home'));
+        backFromViewProfile.addEventListener('click', () => { viewingProfileEmail = null;
+            showScreen('home'); });
+        backFromCoach.addEventListener('click', () => showScreen('community'));
+        backFromGym.addEventListener('click', () => showScreen('community'));
+
+        joinGymBtn.addEventListener('click', handleJoinGym);
+
+        sendMsgBtn.addEventListener('click', () => {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            sendMessage(text);
+            chatInput.value = '';
+        });
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMsgBtn.click(); });
+
+        chatUploadBtn.addEventListener('click', () => chatFileInput.click());
+        chatFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image.');
+                chatFileInput.value = '';
+                return;
+            }
+            uploadPreview.style.display = 'flex';
+            previewThumb.src = URL.createObjectURL(file);
+            uploadSpinner.style.display = 'block';
+            uploadStatus.innerText = 'Uploading...';
+            try {
+                const mediaUrl = await uploadToCloudinary(file);
+                uploadStatus.innerText = 'Uploaded!';
+                uploadSpinner.style.display = 'none';
+                const caption = chatInput.value.trim() || '📸 Shared an image';
+                await sendMessage(caption, mediaUrl, true);
+                chatInput.value = '';
+                await createPost(caption, mediaUrl, 'stoic');
+                setTimeout(() => { uploadPreview.style.display = 'none'; }, 2000);
+            } catch (err) {
+                alert('Upload failed: ' + err.message);
+                uploadSpinner.style.display = 'none';
+                uploadStatus.innerText = 'Failed';
+            } finally {
+                chatFileInput.value = '';
+            }
+        });
+
+        chatCheckinBtn.addEventListener('click', performCheckIn);
+
+        profilePicUploadLabel.addEventListener('click', () => profilePicInput.click());
+        profilePicInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = ev => { profilePicPreview.src = ev.target.result;
+                    profilePicPreview.style.display = 'block'; };
+                reader.readAsDataURL(file);
+                submitProfilePicBtn.onclick = () => updateProfilePicture(file);
+            } else alert('Select an image');
+        });
+        closeProfilePicModal.addEventListener('click', () => {
+            profilePicModal.style.display = 'none';
+            profilePicPreview.style.display = 'none';
+            profilePicInput.value = '';
+        });
+
+        submitCommentBtn.addEventListener('click', addComment);
+        closeCommentModal.addEventListener('click', () => commentModal.style.display = 'none');
+        newCommentInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addComment(); });
+
+        setInterval(() => {
+            if (currentUser?.role === 'gym_owner' && document.getElementById('coachPanel').classList.contains('active')) {
+                loadPendingPosts();
+            }
+        }, 10000);
+
+        // ─── START ───
+        checkLogin();
+        console.log('🧠 MindSpace — Fully integrated with backend API');
+    </script>
+</body>
+</html>
