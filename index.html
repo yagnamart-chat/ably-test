@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ConnectHub · Gym Checkout</title>
+    <title>ConnectHub · Signup & Login</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <!-- Google Font -->
@@ -54,116 +54,148 @@
             display: flex;
         }
 
-        /* ─── LOGIN ─── */
-        #loginScreen {
+        /* ─── AUTH (SIGNUP / LOGIN) ─── */
+        #authScreen {
             background: linear-gradient(145deg, #1a1a2e, #16213e);
             justify-content: center;
             align-items: center;
             padding: 40px 28px;
-            z-index: 2;
+            z-index: 3;
         }
-        .login-brand {
+        .auth-brand {
             text-align: center;
-            margin-bottom: 48px;
+            margin-bottom: 36px;
         }
-        .login-brand .logo-icon {
-            font-size: 48px;
+        .auth-brand .logo-icon {
+            font-size: 40px;
             color: #6c63ff;
             background: rgba(108, 99, 255, 0.15);
-            width: 80px;
-            height: 80px;
+            width: 72px;
+            height: 72px;
             border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
+            margin: 0 auto 14px;
             box-shadow: 0 12px 32px rgba(108, 99, 255, 0.25);
         }
-        .login-brand h1 {
+        .auth-brand h1 {
             color: #fff;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
         }
-        .login-brand p {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 14px;
-            margin-top: 4px;
+        .auth-brand p {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 13px;
+            margin-top: 2px;
         }
-        .login-form {
+
+        .auth-form {
             width: 100%;
             max-width: 320px;
         }
-        .login-form .input-group {
-            margin-bottom: 16px;
+        .auth-form .input-group {
+            margin-bottom: 14px;
             position: relative;
         }
-        .login-form .input-group i {
+        .auth-form .input-group i {
             position: absolute;
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: rgba(255, 255, 255, 0.3);
-            font-size: 16px;
+            font-size: 15px;
         }
-        .login-form .input-group input {
+        .auth-form .input-group input {
             width: 100%;
-            padding: 16px 16px 16px 48px;
+            padding: 14px 16px 14px 46px;
             border: none;
-            border-radius: 16px;
+            border-radius: 14px;
             background: rgba(255, 255, 255, 0.07);
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             font-family: 'Inter', sans-serif;
             outline: none;
             border: 1px solid rgba(255, 255, 255, 0.06);
             transition: background 0.3s, box-shadow 0.3s;
         }
-        .login-form .input-group input::placeholder {
+        .auth-form .input-group input::placeholder {
             color: rgba(255, 255, 255, 0.35);
         }
-        .login-form .input-group input:focus {
+        .auth-form .input-group input:focus {
             background: rgba(255, 255, 255, 0.10);
             border-color: rgba(108, 99, 255, 0.4);
             box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
         }
-        .login-btn {
+
+        .auth-btn {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             border: none;
-            border-radius: 16px;
+            border-radius: 14px;
             background: linear-gradient(135deg, #6c63ff, #5a52d5);
             color: #fff;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 8px;
+            margin-top: 4px;
             box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
         }
-        .login-btn:hover {
+        .auth-btn:hover {
             transform: scale(1.02);
         }
-        .login-btn:active {
+        .auth-btn:active {
             transform: scale(0.97);
         }
-        .login-error {
+        .auth-error {
             color: #ff6b6b;
             font-size: 13px;
             text-align: center;
-            margin-top: 12px;
+            margin-top: 10px;
             min-height: 20px;
             opacity: 0;
             transition: opacity 0.3s;
         }
-        .login-error.show {
+        .auth-error.show {
             opacity: 1;
         }
-        .login-footer {
-            margin-top: 32px;
-            color: rgba(255, 255, 255, 0.25);
-            font-size: 12px;
+        .auth-toggle {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
             text-align: center;
+            margin-top: 16px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .auth-toggle:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .auth-toggle span {
+            color: #6c63ff;
+            font-weight: 600;
+        }
+        .auth-footer {
+            margin-top: 28px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 11px;
+            text-align: center;
+        }
+        .auth-form .input-group .toggle-pw {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+        }
+        .auth-form .input-group .toggle-pw:hover {
+            color: rgba(255, 255, 255, 0.6);
         }
 
         /* ─── APP ─── */
@@ -198,16 +230,48 @@
         }
         .app-topbar .actions {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             color: #6b7280;
             font-size: 18px;
+            align-items: center;
         }
         .app-topbar .actions i {
             cursor: pointer;
-            transition: color 0.2s;
+            transition: color 0.2s, transform 0.2s;
         }
         .app-topbar .actions i:hover {
             color: #1a1a2e;
+        }
+        .app-topbar .actions .logout-btn {
+            font-size: 18px;
+            color: #ef4444;
+        }
+        .app-topbar .actions .logout-btn:hover {
+            color: #dc2626;
+            transform: scale(1.05);
+        }
+        .app-topbar .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1a2e;
+            background: #f1f3f5;
+            padding: 4px 12px 4px 8px;
+            border-radius: 20px;
+        }
+        .app-topbar .user-badge .mini-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #6c63ff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         /* ─── CONTENT ─── */
@@ -742,7 +806,7 @@
             text-align: right;
         }
 
-        /* ─── GYM CARD (new) ─── */
+        /* ─── GYM CARD ─── */
         .gym-card {
             margin-top: 16px;
             background: #fff;
@@ -762,6 +826,10 @@
             font-size: 15px;
             font-weight: 600;
             color: #1a1a2e;
+        }
+        .gym-card .gym-header h4 i {
+            color: #6c63ff;
+            margin-right: 8px;
         }
         .gym-card .gym-status {
             font-size: 13px;
@@ -986,7 +1054,7 @@
             body {
                 padding: 0;
             }
-            .login-brand h1 {
+            .auth-brand h1 {
                 font-size: 24px;
             }
             .stat-card .number {
@@ -1012,28 +1080,56 @@
     <!-- ════════════════════════════════════════════ -->
     <div class="phone" id="appContainer">
 
-        <!-- ─── LOGIN ─── -->
-        <div class="screen active" id="loginScreen">
-            <div class="login-brand">
+        <!-- ─── AUTH SCREEN (SIGNUP / LOGIN) ─── -->
+        <div class="screen active" id="authScreen">
+            <div class="auth-brand">
                 <div class="logo-icon"><i class="fas fa-people-arrows"></i></div>
-                <h1>ConnectHub</h1>
-                <p>Join the conversation</p>
+                <h1 id="authTitle">ConnectHub</h1>
+                <p id="authSubtitle">Join the conversation</p>
             </div>
-            <div class="login-form">
+
+            <!-- Signup Form -->
+            <div class="auth-form" id="signupForm">
                 <div class="input-group">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="loginUsername" placeholder="Username" value="demo" />
+                    <input type="text" id="signupName" placeholder="Full Name" />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="signupEmail" placeholder="Email (Gmail)" />
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="loginPassword" placeholder="Password" value="1234" />
+                    <input type="password" id="signupPassword" placeholder="Password" />
+                    <button class="toggle-pw" type="button" data-target="signupPassword"><i class="far fa-eye"></i></button>
                 </div>
-                <button class="login-btn" id="loginBtn">
-                    <i class="fas fa-arrow-right" style="margin-right:8px;"></i> Sign In
-                </button>
-                <div class="login-error" id="loginError">Invalid credentials. Try demo / 1234</div>
+                <div class="input-group">
+                    <i class="fas fa-check-circle"></i>
+                    <input type="password" id="signupConfirm" placeholder="Confirm Password" />
+                    <button class="toggle-pw" type="button" data-target="signupConfirm"><i class="far fa-eye"></i></button>
+                </div>
+                <button class="auth-btn" id="signupBtn"><i class="fas fa-user-plus" style="margin-right:8px;"></i> Create Account</button>
+                <div class="auth-error" id="authError"></div>
+                <div class="auth-toggle" id="gotoLogin">Already have an account? <span>Login</span></div>
             </div>
-            <div class="login-footer">v2.0 · Made with ❤️</div>
+
+            <!-- Login Form -->
+            <div class="auth-form" id="loginForm" style="display:none;">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginName" placeholder="Username (name)" />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" />
+                    <button class="toggle-pw" type="button" data-target="loginPassword"><i class="far fa-eye"></i></button>
+                </div>
+                <button class="auth-btn" id="loginBtn"><i class="fas fa-arrow-right" style="margin-right:8px;"></i> Sign In</button>
+                <div class="auth-error" id="loginError"></div>
+                <div class="auth-toggle" id="gotoSignup">Don't have an account? <span>Signup</span></div>
+            </div>
+
+            <div class="auth-footer">v2.0 · Made with ❤️</div>
         </div>
 
         <!-- ─── APP ─── -->
@@ -1041,10 +1137,17 @@
 
             <!-- Top Bar -->
             <div class="app-topbar">
-    <div class="title">Connect<span>Hub</span></div>
-</div>
+                <div class="title">Connect<span>Hub</span></div>
+                <div class="actions">
+                    <span class="user-badge" id="userBadge">
+                        <span class="mini-avatar" id="miniAvatar">AV</span>
+                        <span id="userBadgeName">Aman</span>
+                    </span>
+                    <i class="fas fa-sign-out-alt logout-btn" id="logoutBtn" title="Logout"></i>
+                </div>
+            </div>
 
-<div class="app-content" id="appContent">
+            <div class="app-content" id="appContent">
 
                 <!-- HOME TAB -->
                 <div class="tab-page active" id="tabHome">
@@ -1119,9 +1222,9 @@
                         <!-- LIST STATE -->
                         <div class="community-list-state" id="communityListState">
                             <div class="current-user-card">
-                                <div class="cu-avatar">AV</div>
+                                <div class="cu-avatar" id="cuAvatar">AV</div>
                                 <div class="cu-info">
-                                    <div class="cu-name">Aman Verma <span style="font-size:12px;font-weight:400;opacity:0.7;">(You)</span></div>
+                                    <div class="cu-name" id="cuName">Aman Verma <span style="font-size:12px;font-weight:400;opacity:0.7;">(You)</span></div>
                                     <div class="cu-status"><i class="fas fa-circle"></i> Online · 3 chats</div>
                                 </div>
                             </div>
@@ -1153,7 +1256,7 @@
                     </div>
                 </div>
 
-                <!-- STATS TAB (with gym buttons) -->
+                <!-- STATS TAB -->
                 <div class="tab-page" id="tabStats">
                     <div class="stats-grid">
                         <div class="stat-card purple">
@@ -1187,10 +1290,10 @@
                         <div class="bar-row"><span class="bar-label">Fri</span><div class="bar-track"><div class="bar-fill" style="width:70%;"></div></div><span class="bar-val">70%</span></div>
                     </div>
 
-                    <!-- GYM CARD (new) -->
+                    <!-- GYM CARD -->
                     <div class="gym-card" id="gymCard">
                         <div class="gym-header">
-                            <h4><i class="fas fa-dumbbell" style="color:#6c63ff;margin-right:8px;"></i> Gym Check-in</h4>
+                            <h4><i class="fas fa-dumbbell"></i> Gym Check-in</h4>
                             <span class="gym-status" id="gymStatus">Not joined</span>
                         </div>
                         <div class="gym-buttons">
@@ -1204,13 +1307,13 @@
                 <div class="tab-page" id="tabProfile">
                     <div class="profile-card">
                         <div class="profile-avatar" id="profileAvatar">
-                            AV
+                            <span id="profileAvatarText">AV</span>
                             <div class="upload-btn" id="uploadPhotoBtn" title="Upload photo">
                                 <i class="fas fa-camera"></i>
                             </div>
                         </div>
-                        <div class="profile-name">Aman Verma</div>
-                        <div class="profile-bio">Tech enthusiast · Developer · Learner</div>
+                        <div class="profile-name" id="profileName">Aman Verma</div>
+                        <div class="profile-bio" id="profileBio">Tech enthusiast · Developer · Learner</div>
                         <div class="profile-stats-row">
                             <div class="ps-item"><div class="num">12</div><div class="lbl">Posts</div></div>
                             <div class="ps-item"><div class="num">45</div><div class="lbl">Followers</div></div>
@@ -1218,9 +1321,9 @@
                         </div>
                     </div>
                     <div class="profile-extra">
-                        <div class="row"><span class="lbl">Member since</span><span>Jan 2026</span></div>
+                        <div class="row"><span class="lbl">Member since</span><span id="profileMemberSince">Jan 2026</span></div>
                         <div class="row"><span class="lbl">Location</span><span>Mumbai, India</span></div>
-                        <div class="row"><span class="lbl">Email</span><span>aman@connecthub.in</span></div>
+                        <div class="row"><span class="lbl">Email</span><span id="profileEmail">aman@connecthub.in</span></div>
                     </div>
                 </div>
 
@@ -1248,10 +1351,79 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  DATA
+        //  IN-MEMORY USER STORE (no localStorage)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        const DEMO_USER = { id: 0, name: 'Aman Verma', initials: 'AV', color: '#6c63ff' };
+        let users = []; // { id, name, email, password, initials, joined }
+        let currentUser = null;
+        let isSignupMode = true; // true = show signup, false = show login
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DOM REFS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const authScreen = document.getElementById('authScreen');
+        const appScreen = document.getElementById('appScreen');
+
+        const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
+        const authTitle = document.getElementById('authTitle');
+        const authSubtitle = document.getElementById('authSubtitle');
+
+        const signupName = document.getElementById('signupName');
+        const signupEmail = document.getElementById('signupEmail');
+        const signupPassword = document.getElementById('signupPassword');
+        const signupConfirm = document.getElementById('signupConfirm');
+        const signupBtn = document.getElementById('signupBtn');
+        const authError = document.getElementById('authError');
+
+        const loginName = document.getElementById('loginName');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+
+        const gotoLogin = document.getElementById('gotoLogin');
+        const gotoSignup = document.getElementById('gotoSignup');
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userBadgeName = document.getElementById('userBadgeName');
+        const miniAvatar = document.getElementById('miniAvatar');
+        const cuAvatar = document.getElementById('cuAvatar');
+        const cuName = document.getElementById('cuName');
+        const profileName = document.getElementById('profileName');
+        const profileAvatarText = document.getElementById('profileAvatarText');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileMemberSince = document.getElementById('profileMemberSince');
+
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabPages = {
+            home: document.getElementById('tabHome'),
+            community: document.getElementById('tabCommunity'),
+            stats: document.getElementById('tabStats'),
+            profile: document.getElementById('tabProfile'),
+        };
+        const contactList = document.getElementById('contactList');
+        const communityListState = document.getElementById('communityListState');
+        const communityChatState = document.getElementById('communityChatState');
+        const chatBackBtn = document.getElementById('chatBackBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const chatHeaderName = document.getElementById('chatHeaderName');
+        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
+        const chatHeaderStatus = document.getElementById('chatHeaderStatus');
+        const uploadBtn = document.getElementById('uploadPhotoBtn');
+
+        const joinGymBtn = document.getElementById('joinGymBtn');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const gymStatus = document.getElementById('gymStatus');
+
+        let activeChatUserId = null;
+        let gymJoined = false;
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  COMMUNITY DATA (static)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         const communityUsers = [{
             id: 1,
@@ -1300,69 +1472,216 @@
         }];
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  DOM REFS
+        //  AUTH — TOGGLE BETWEEN SIGNUP & LOGIN
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        const loginScreen = document.getElementById('loginScreen');
-        const appScreen = document.getElementById('appScreen');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginError = document.getElementById('loginError');
-        const loginUsername = document.getElementById('loginUsername');
-        const loginPassword = document.getElementById('loginPassword');
-
-        const navItems = document.querySelectorAll('.nav-item');
-        const tabPages = {
-            home: document.getElementById('tabHome'),
-            community: document.getElementById('tabCommunity'),
-            stats: document.getElementById('tabStats'),
-            profile: document.getElementById('tabProfile'),
-        };
-        const contactList = document.getElementById('contactList');
-        const communityListState = document.getElementById('communityListState');
-        const communityChatState = document.getElementById('communityChatState');
-        const chatBackBtn = document.getElementById('chatBackBtn');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const chatSendBtn = document.getElementById('chatSendBtn');
-        const chatHeaderName = document.getElementById('chatHeaderName');
-        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
-        const chatHeaderStatus = document.getElementById('chatHeaderStatus');
-        const uploadBtn = document.getElementById('uploadPhotoBtn');
-
-        // gym elements
-        const joinGymBtn = document.getElementById('joinGymBtn');
-        const checkoutBtn = document.getElementById('checkoutBtn');
-        const gymStatus = document.getElementById('gymStatus');
-
-        let activeChatUserId = null;
-        let gymJoined = false;
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  LOGIN
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function handleLogin() {
-            const user = loginUsername.value.trim();
-            const pass = loginPassword.value.trim();
-            if (user === 'demo' && pass === '1234') {
-                loginError.classList.remove('show');
-                loginScreen.classList.remove('active');
-                appScreen.classList.add('active');
-                renderContacts();
-                setTimeout(() => {
-                    const firstInput = document.querySelector('.chat-input-row input');
-                    if (firstInput) firstInput.focus();
-                }, 400);
+        function setAuthMode(mode) {
+            isSignupMode = mode;
+            if (mode) {
+                signupForm.style.display = 'block';
+                loginForm.style.display = 'none';
+                authTitle.textContent = 'ConnectHub';
+                authSubtitle.textContent = 'Create your account';
+                authError.textContent = '';
+                authError.classList.remove('show');
             } else {
-                loginError.textContent = 'Invalid credentials. Try demo / 1234';
-                loginError.classList.add('show');
-                setTimeout(() => loginError.classList.remove('show'), 3000);
+                signupForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                authTitle.textContent = 'Welcome Back';
+                authSubtitle.textContent = 'Sign in to continue';
+                loginError.textContent = '';
+                loginError.classList.remove('show');
             }
         }
 
+        gotoLogin.addEventListener('click', () => {
+            // If there are no users, show a message but still allow switching
+            if (users.length === 0) {
+                // Allow switching anyway — user might want to login with a pre-existing account
+                // but we have none, so we show a hint
+                loginError.textContent = 'No accounts yet. Please sign up first.';
+                loginError.classList.add('show');
+                setTimeout(() => loginError.classList.remove('show'), 2500);
+                // Still switch to login mode
+                setAuthMode(false);
+                return;
+            }
+            setAuthMode(false);
+        });
+
+        gotoSignup.addEventListener('click', () => {
+            setAuthMode(true);
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  AUTH — SIGNUP
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function handleSignup() {
+            const name = signupName.value.trim();
+            const email = signupEmail.value.trim();
+            const password = signupPassword.value.trim();
+            const confirm = signupConfirm.value.trim();
+
+            // Reset error
+            authError.textContent = '';
+            authError.classList.remove('show');
+
+            // Validation
+            if (!name || name.length < 2) {
+                authError.textContent = 'Please enter your full name (min 2 chars).';
+                authError.classList.add('show');
+                return;
+            }
+            if (!email || !email.includes('@')) {
+                authError.textContent = 'Please enter a valid email address.';
+                authError.classList.add('show');
+                return;
+            }
+            if (!password || password.length < 4) {
+                authError.textContent = 'Password must be at least 4 characters.';
+                authError.classList.add('show');
+                return;
+            }
+            if (password !== confirm) {
+                authError.textContent = 'Passwords do not match.';
+                authError.classList.add('show');
+                return;
+            }
+
+            // Check if user already exists (by name or email)
+            const existing = users.find(u => u.name.toLowerCase() === name.toLowerCase() || u.email.toLowerCase() === email
+            .toLowerCase());
+            if (existing) {
+                authError.textContent = 'User with this name or email already exists.';
+                authError.classList.add('show');
+                return;
+            }
+
+            // Create user
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                initials: initials,
+                joined: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+            };
+            users.push(newUser);
+            currentUser = newUser;
+
+            // Auto-login
+            enterApp(newUser);
+
+            // Clear form
+            signupName.value = '';
+            signupEmail.value = '';
+            signupPassword.value = '';
+            signupConfirm.value = '';
+            authError.classList.remove('show');
+        }
+
+        signupBtn.addEventListener('click', handleSignup);
+        signupName.addEventListener('keydown', (e) => { if (e.key === 'Enter') signupEmail.focus(); });
+        signupEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') signupPassword.focus(); });
+        signupPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') signupConfirm.focus(); });
+        signupConfirm.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSignup(); });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  AUTH — LOGIN
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function handleLogin() {
+            const name = loginName.value.trim();
+            const password = loginPassword.value.trim();
+
+            loginError.textContent = '';
+            loginError.classList.remove('show');
+
+            if (!name || !password) {
+                loginError.textContent = 'Please enter both username and password.';
+                loginError.classList.add('show');
+                return;
+            }
+
+            const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === password);
+            if (!user) {
+                loginError.textContent = 'Invalid username or password.';
+                loginError.classList.add('show');
+                return;
+            }
+
+            currentUser = user;
+            enterApp(user);
+            loginName.value = '';
+            loginPassword.value = '';
+            loginError.classList.remove('show');
+        }
+
         loginBtn.addEventListener('click', handleLogin);
-        loginUsername.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginPassword.focus(); });
+        loginName.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginPassword.focus(); });
         loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  AUTH — ENTER APP / LOGOUT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function enterApp(user) {
+            authScreen.classList.remove('active');
+            appScreen.classList.add('active');
+
+            // Update UI with user info
+            const displayName = user.name;
+            const initials = user.initials;
+
+            userBadgeName.textContent = displayName.split(' ')[0];
+            miniAvatar.textContent = initials;
+            cuAvatar.textContent = initials;
+            cuName.innerHTML = `${displayName} <span style="font-size:12px;font-weight:400;opacity:0.7;">(You)</span>`;
+            profileName.textContent = displayName;
+            profileAvatarText.textContent = initials;
+            profileEmail.textContent = user.email || 'user@connecthub.in';
+            profileMemberSince.textContent = user.joined || 'Jan 2026';
+
+            // Reset chat state
+            closeChat();
+            renderContacts();
+
+            // Focus on home tab
+            document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
+
+            // Gym state reset
+            gymJoined = false;
+            updateGymUI();
+
+            console.log('✅ Logged in as:', displayName);
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            appScreen.classList.remove('active');
+            authScreen.classList.add('active');
+
+            // Reset to signup if no users, else show login
+            if (users.length === 0) {
+                setAuthMode(true);
+            } else {
+                setAuthMode(false);
+                loginName.focus();
+            }
+
+            // Reset gym state
+            gymJoined = false;
+            updateGymUI();
+
+            // Close any open chat
+            closeChat();
+
+            console.log('👋 Logged out');
+        }
+
+        logoutBtn.addEventListener('click', logoutUser);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  NAVIGATION
@@ -1535,7 +1854,6 @@
             }
         }
 
-        // initial state
         updateGymUI();
 
         joinGymBtn.addEventListener('click', function() {
@@ -1551,23 +1869,41 @@
                 alert('⚠️ Please join the gym first before checking out.');
                 return;
             }
-            // simulate GPS request
-            alert('📍 Please enable GPS to complete checkout.\n(Tap OK to simulate GPS enabled)');
-            // after OK, we can optionally update status
+            alert('📍 GPS enabled! Checkout successful.\n(Simulated GPS)');
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  PROFILE — UPLOAD PHOTO (non-functional)
+        //  PROFILE — UPLOAD PHOTO
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         uploadBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            alert('📸 Photo upload is coming soon! Just the icon for now.');
+            alert('📸 Photo upload is coming soon!');
         });
 
         document.getElementById('profileAvatar').addEventListener('click', function(e) {
             if (e.target.closest('.upload-btn')) return;
-            alert('🖼️ Tap the camera icon to upload a photo (coming soon!)');
+            alert('🖼️ Tap the camera icon to upload a photo.');
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PASSWORD TOGGLE (show/hide)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        document.querySelectorAll('.toggle-pw').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.dataset.target;
+                const input = document.getElementById(targetId);
+                if (!input) return;
+                const icon = this.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.className = 'far fa-eye-slash';
+                } else {
+                    input.type = 'password';
+                    icon.className = 'far fa-eye';
+                }
+            });
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1578,7 +1914,7 @@
             if (e.key === 'Escape') {
                 if (communityChatState.classList.contains('active')) {
                     closeChat();
-                } else {
+                } else if (appScreen.classList.contains('active')) {
                     const homeBtn = document.querySelector('.nav-item[data-tab="tabHome"]');
                     if (homeBtn) homeBtn.click();
                 }
@@ -1586,15 +1922,41 @@
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  INIT
+        //  INIT — Show auth screen
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        loginUsername.focus();
-        renderContacts();
+        // Start with signup mode (no users)
+        setAuthMode(true);
+        // Pre-fill login field if there are users (for demo, if any)
+        // But since users is empty, we show signup.
+
+        // For demo convenience, if the user wants to test login,
+        // they can sign up first, then logout, then login.
+
+        // Pre-populate with a demo account for easier testing?
+        // No — let the user sign up themselves.
 
         console.log('✅ ConnectHub UI ready!');
-        console.log('💡 Login: demo / 1234');
-        console.log('🏋️ Gym buttons added in Stats tab: Join Gym (first tap) → Checkout (asks for GPS)');
+        console.log('📝 Sign up first, then log in.');
+        console.log('🏋️ Gym buttons: Join Gym → Checkout (simulated GPS)');
+        console.log('👋 Logout button in top bar.');
+
+        // If there are no users, show signup. If there are users, show login.
+        // But since users is empty on page load, we show signup.
+        // After signup, users array has data, and we auto-login.
+        // After logout, we check users.length and show login if > 0.
+
+        // ─── Auto-focus first input ───
+        setTimeout(() => {
+            if (isSignupMode) {
+                signupName.focus();
+            } else {
+                loginName.focus();
+            }
+        }, 300);
+
+        // ─── Handle case: after logout, if users exist, show login ───
+        // The logout function already handles this.
     </script>
 
 </body>
