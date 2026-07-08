@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ConnectHub · Signup & Login</title>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
         /* ─── RESET ─── */
@@ -24,12 +22,10 @@
             min-height: 100vh;
             padding: 16px;
         }
-
-        /* ─── PHONE (9:16) ─── */
         .phone {
             width: 100%;
             max-width: 390px;
-            aspect-ratio: 9 / 16;
+            aspect-ratio: 9/16;
             background: #f2f4f8;
             border-radius: 40px;
             overflow: hidden;
@@ -38,8 +34,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* ─── SCREENS ─── */
         .screen {
             display: none;
             flex-direction: column;
@@ -54,7 +48,7 @@
             display: flex;
         }
 
-        /* ─── AUTH (SIGNUP / LOGIN) ─── */
+        /* ─── AUTH ─── */
         #authScreen {
             background: linear-gradient(145deg, #1a1a2e, #16213e);
             justify-content: center;
@@ -89,7 +83,6 @@
             font-size: 13px;
             margin-top: 2px;
         }
-
         .auth-form {
             width: 100%;
             max-width: 320px;
@@ -127,7 +120,6 @@
             border-color: rgba(108, 99, 255, 0.4);
             box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
         }
-
         .auth-btn {
             width: 100%;
             padding: 15px;
@@ -190,7 +182,6 @@
             color: rgba(255, 255, 255, 0.3);
             cursor: pointer;
             font-size: 14px;
-            transition: color 0.2s;
             background: none;
             border: none;
         }
@@ -250,6 +241,14 @@
             color: #dc2626;
             transform: scale(1.05);
         }
+        .app-topbar .actions .create-post-btn {
+            font-size: 20px;
+            color: #6c63ff;
+        }
+        .app-topbar .actions .create-post-btn:hover {
+            color: #5a52d5;
+            transform: scale(1.1);
+        }
         .app-topbar .user-badge {
             display: flex;
             align-items: center;
@@ -272,6 +271,12 @@
             justify-content: center;
             font-size: 12px;
             font-weight: 600;
+            overflow: hidden;
+        }
+        .app-topbar .user-badge .mini-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* ─── CONTENT ─── */
@@ -310,7 +315,7 @@
             }
         }
 
-        /* ─── HOME FEED ─── */
+        /* ─── FEED ─── */
         .feed {
             display: flex;
             flex-direction: column;
@@ -344,6 +349,12 @@
             font-size: 16px;
             color: #fff;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .post-user {
             flex: 1;
@@ -367,6 +378,20 @@
             line-height: 1.6;
             color: #374151;
             padding: 4px 0 6px;
+        }
+        .post-image {
+            margin: 8px 0 4px;
+            border-radius: 16px;
+            overflow: hidden;
+            max-height: 300px;
+            display: flex;
+            justify-content: center;
+            background: #f1f3f5;
+        }
+        .post-image img {
+            width: 100%;
+            object-fit: cover;
+            max-height: 300px;
         }
         .post-actions {
             display: flex;
@@ -395,7 +420,6 @@
             flex-direction: column;
             position: relative;
         }
-
         .community-list-state {
             display: flex;
             flex-direction: column;
@@ -405,7 +429,6 @@
         .community-list-state.hidden {
             display: none;
         }
-
         .current-user-card {
             background: linear-gradient(135deg, #6c63ff, #8b83f0);
             border-radius: 20px;
@@ -429,6 +452,12 @@
             color: #fff;
             flex-shrink: 0;
             border: 2px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+        .current-user-card .cu-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .current-user-card .cu-info {
             flex: 1;
@@ -449,7 +478,6 @@
             font-size: 10px;
             color: #4ade80;
         }
-
         .community-divider {
             font-size: 12px;
             font-weight: 600;
@@ -458,7 +486,6 @@
             padding: 8px 4px 4px;
             text-transform: uppercase;
         }
-
         .contact-item {
             background: #fff;
             border-radius: 16px;
@@ -490,6 +517,12 @@
             font-size: 17px;
             color: #fff;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+        .contact-item .ci-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .contact-item .ci-info {
             flex: 1;
@@ -551,7 +584,6 @@
         .community-chat-state.active {
             display: flex;
         }
-
         .chat-header {
             background: #fff;
             padding: 14px 16px;
@@ -587,6 +619,12 @@
             font-size: 16px;
             color: #fff;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+        .chat-header .ch-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .chat-header .ch-info {
             flex: 1;
@@ -609,7 +647,6 @@
             display: flex;
             gap: 14px;
         }
-
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -625,7 +662,6 @@
             background: #d1d5db;
             border-radius: 8px;
         }
-
         .chat-msg {
             max-width: 82%;
             padding: 10px 14px;
@@ -662,7 +698,6 @@
         .chat-msg.received .msg-time {
             color: #9ca3af;
         }
-
         .chat-input-row {
             background: #fff;
             padding: 12px 16px;
@@ -913,6 +948,12 @@
             color: #fff;
             position: relative;
             box-shadow: 0 8px 24px rgba(108, 99, 255, 0.25);
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .profile-avatar .upload-btn {
             position: absolute;
@@ -987,6 +1028,171 @@
             color: #9ca3af;
         }
 
+        /* ─── PROFILE PHOTOS GALLERY ─── */
+        .profile-photos {
+            margin-top: 16px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 16px 16px 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+        .profile-photos h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+        .profile-photos h4 i {
+            color: #6c63ff;
+            margin-right: 6px;
+        }
+        .profile-photos .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+        .profile-photos .photo-grid .photo-item {
+            aspect-ratio: 1/1;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f1f3f5;
+        }
+        .profile-photos .photo-grid .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-photos .empty-photos {
+            color: #9ca3af;
+            font-size: 13px;
+            text-align: center;
+            padding: 12px 0;
+        }
+
+        /* ─── CREATE POST MODAL ─── */
+        .modal-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 340px;
+            padding: 24px 20px 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeUp 0.3s ease;
+        }
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-box h3 i {
+            color: #6c63ff;
+        }
+        .modal-box textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .modal-box textarea:focus {
+            border-color: #6c63ff;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        }
+        .modal-box .image-upload-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0 16px;
+        }
+        .modal-box .image-upload-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f3f5;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-box .image-upload-row label:hover {
+            background: #e5e7eb;
+        }
+        .modal-box .image-upload-row label i {
+            color: #6c63ff;
+        }
+        .modal-box .image-upload-row .file-name {
+            font-size: 13px;
+            color: #9ca3af;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .modal-box .image-upload-row input[type="file"] {
+            display: none;
+        }
+        .modal-box .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-box .modal-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .modal-box .modal-actions button:active {
+            transform: scale(0.95);
+        }
+        .modal-box .modal-actions .btn-cancel {
+            background: #f1f3f5;
+            color: #6b7280;
+        }
+        .modal-box .modal-actions .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+        .modal-box .modal-actions .btn-post {
+            background: linear-gradient(135deg, #6c63ff, #5a52d5);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+        }
+        .modal-box .modal-actions .btn-post:hover {
+            box-shadow: 0 6px 18px rgba(108, 99, 255, 0.4);
+        }
+
         /* ─── BOTTOM NAV ─── */
         .bottom-nav {
             display: flex;
@@ -1045,8 +1251,7 @@
             border: 2px solid #fff;
         }
 
-        /* ─── RESPONSIVE ─── */
-        @media (max-width: 420px) {
+        @media (max-width:420px) {
             .phone {
                 border-radius: 28px;
                 max-width: 100%;
@@ -1061,7 +1266,7 @@
                 font-size: 22px;
             }
         }
-        @media (max-height: 700px) {
+        @media (max-height:700px) {
             .phone {
                 max-height: 100vh;
                 aspect-ratio: auto;
@@ -1075,12 +1280,9 @@
 </head>
 <body>
 
-    <!-- ════════════════════════════════════════════ -->
-    <!-- PHONE                                      -->
-    <!-- ════════════════════════════════════════════ -->
     <div class="phone" id="appContainer">
 
-        <!-- ─── AUTH SCREEN (SIGNUP / LOGIN) ─── -->
+        <!-- ─── AUTH ─── -->
         <div class="screen active" id="authScreen">
             <div class="auth-brand">
                 <div class="logo-icon"><i class="fas fa-people-arrows"></i></div>
@@ -1088,7 +1290,6 @@
                 <p id="authSubtitle">Join the conversation</p>
             </div>
 
-            <!-- Signup Form -->
             <div class="auth-form" id="signupForm">
                 <div class="input-group">
                     <i class="fas fa-user"></i>
@@ -1113,7 +1314,6 @@
                 <div class="auth-toggle" id="gotoLogin">Already have an account? <span>Login</span></div>
             </div>
 
-            <!-- Login Form -->
             <div class="auth-form" id="loginForm" style="display:none;">
                 <div class="input-group">
                     <i class="fas fa-user"></i>
@@ -1135,7 +1335,6 @@
         <!-- ─── APP ─── -->
         <div class="screen" id="appScreen">
 
-            <!-- Top Bar -->
             <div class="app-topbar">
                 <div class="title">Connect<span>Hub</span></div>
                 <div class="actions">
@@ -1143,83 +1342,21 @@
                         <span class="mini-avatar" id="miniAvatar">AV</span>
                         <span id="userBadgeName">Aman</span>
                     </span>
+                    <i class="fas fa-plus-circle create-post-btn" id="createPostBtn" title="Create Post"></i>
                     <i class="fas fa-sign-out-alt logout-btn" id="logoutBtn" title="Logout"></i>
                 </div>
             </div>
 
             <div class="app-content" id="appContent">
 
-                <!-- HOME TAB -->
+                <!-- HOME -->
                 <div class="tab-page active" id="tabHome">
-                    <div class="feed">
-                        <div class="post-card">
-                            <div class="post-header">
-                                <div class="post-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c);">RS</div>
-                                <div class="post-user">
-                                    <div class="name">Riya Sharma</div>
-                                    <div class="time"><i class="far fa-clock"></i> 2h ago</div>
-                                </div>
-                            </div>
-                            <div class="post-content">Hey everyone! Just joined this amazing community. Excited to connect with you all! 🚀</div>
-                            <div class="post-actions">
-                                <span><i class="far fa-heart"></i> 24</span>
-                                <span><i class="far fa-comment"></i> 7</span>
-                                <span><i class="far fa-share-from-square"></i> 3</span>
-                            </div>
-                        </div>
-                        <div class="post-card">
-                            <div class="post-header">
-                                <div class="post-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">AS</div>
-                                <div class="post-user">
-                                    <div class="name">Arjun Singh</div>
-                                    <div class="time"><i class="far fa-clock"></i> 4h ago</div>
-                                </div>
-                            </div>
-                            <div class="post-content">Check out this new project I'm working on. It's going to be huge! 💻✨</div>
-                            <div class="post-actions">
-                                <span><i class="far fa-heart"></i> 18</span>
-                                <span><i class="far fa-comment"></i> 5</span>
-                                <span><i class="far fa-share-from-square"></i> 2</span>
-                            </div>
-                        </div>
-                        <div class="post-card">
-                            <div class="post-header">
-                                <div class="post-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);">PP</div>
-                                <div class="post-user">
-                                    <div class="name">Priya Patel</div>
-                                    <div class="time"><i class="far fa-clock"></i> 6h ago</div>
-                                </div>
-                            </div>
-                            <div class="post-content">Any recommendations for good books to read this month? 📚✨</div>
-                            <div class="post-actions">
-                                <span><i class="far fa-heart"></i> 31</span>
-                                <span><i class="far fa-comment"></i> 12</span>
-                                <span><i class="far fa-share-from-square"></i> 5</span>
-                            </div>
-                        </div>
-                        <div class="post-card">
-                            <div class="post-header">
-                                <div class="post-avatar" style="background:linear-gradient(135deg,#ffecd2,#fcb69f);">VR</div>
-                                <div class="post-user">
-                                    <div class="name">Vikram Raj</div>
-                                    <div class="time"><i class="far fa-clock"></i> 8h ago</div>
-                                </div>
-                            </div>
-                            <div class="post-content">Finally finished my portfolio website. What do you guys think? 🎨</div>
-                            <div class="post-actions">
-                                <span><i class="far fa-heart"></i> 42</span>
-                                <span><i class="far fa-comment"></i> 15</span>
-                                <span><i class="far fa-share-from-square"></i> 8</span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="feed" id="feedContainer"></div>
                 </div>
 
-                <!-- COMMUNITY TAB -->
+                <!-- COMMUNITY -->
                 <div class="tab-page" id="tabCommunity">
                     <div class="community-container" id="communityContainer">
-
-                        <!-- LIST STATE -->
                         <div class="community-list-state" id="communityListState">
                             <div class="current-user-card">
                                 <div class="cu-avatar" id="cuAvatar">AV</div>
@@ -1231,8 +1368,6 @@
                             <div class="community-divider">— Contacts —</div>
                             <div id="contactList"></div>
                         </div>
-
-                        <!-- CHAT STATE -->
                         <div class="community-chat-state" id="communityChatState">
                             <div class="chat-header">
                                 <button class="back-btn" id="chatBackBtn"><i class="fas fa-arrow-left"></i></button>
@@ -1252,21 +1387,20 @@
                                 <button class="send-btn" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
-                <!-- STATS TAB -->
+                <!-- STATS -->
                 <div class="tab-page" id="tabStats">
                     <div class="stats-grid">
                         <div class="stat-card purple">
                             <span class="icon"><i class="fas fa-newspaper"></i></span>
-                            <div class="number">42</div>
+                            <div class="number" id="statPosts">0</div>
                             <div class="label">Total Posts</div>
                         </div>
                         <div class="stat-card green">
                             <span class="icon"><i class="fas fa-users"></i></span>
-                            <div class="number">128</div>
+                            <div class="number" id="statUsers">0</div>
                             <div class="label">Total Users</div>
                         </div>
                         <div class="stat-card orange">
@@ -1280,7 +1414,6 @@
                             <div class="label">Active Today</div>
                         </div>
                     </div>
-
                     <div class="stats-extra">
                         <h4><i class="fas fa-chart-simple" style="margin-right:6px;color:#6c63ff;"></i> Weekly Activity</h4>
                         <div class="bar-row"><span class="bar-label">Mon</span><div class="bar-track"><div class="bar-fill" style="width:65%;"></div></div><span class="bar-val">65%</span></div>
@@ -1289,8 +1422,6 @@
                         <div class="bar-row"><span class="bar-label">Thu</span><div class="bar-track"><div class="bar-fill" style="width:90%;"></div></div><span class="bar-val">90%</span></div>
                         <div class="bar-row"><span class="bar-label">Fri</span><div class="bar-track"><div class="bar-fill" style="width:70%;"></div></div><span class="bar-val">70%</span></div>
                     </div>
-
-                    <!-- GYM CARD -->
                     <div class="gym-card" id="gymCard">
                         <div class="gym-header">
                             <h4><i class="fas fa-dumbbell"></i> Gym Check-in</h4>
@@ -1303,12 +1434,12 @@
                     </div>
                 </div>
 
-                <!-- PROFILE TAB -->
+                <!-- PROFILE -->
                 <div class="tab-page" id="tabProfile">
                     <div class="profile-card">
                         <div class="profile-avatar" id="profileAvatar">
                             <span id="profileAvatarText">AV</span>
-                            <div class="upload-btn" id="uploadPhotoBtn" title="Upload photo">
+                            <div class="upload-btn" id="uploadPhotoBtn" title="Upload profile photo">
                                 <i class="fas fa-camera"></i>
                             </div>
                         </div>
@@ -1325,11 +1456,14 @@
                         <div class="row"><span class="lbl">Location</span><span>Mumbai, India</span></div>
                         <div class="row"><span class="lbl">Email</span><span id="profileEmail">aman@connecthub.in</span></div>
                     </div>
+                    <div class="profile-photos" id="profilePhotos">
+                        <h4><i class="fas fa-images"></i> My Photos</h4>
+                        <div class="photo-grid" id="photoGrid"></div>
+                    </div>
                 </div>
 
             </div>
 
-            <!-- Bottom Nav -->
             <div class="bottom-nav" id="bottomNav">
                 <button class="nav-item active" data-tab="tabHome">
                     <i class="fas fa-home"></i><span>Home</span>
@@ -1347,82 +1481,39 @@
             </div>
         </div>
 
+        <!-- ─── CREATE POST MODAL ─── -->
+        <div class="modal-overlay" id="createPostModal">
+            <div class="modal-box">
+                <h3><i class="fas fa-pen-fancy"></i> Create Post</h3>
+                <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+                <div class="image-upload-row">
+                    <label for="postImageInput"><i class="fas fa-image"></i> Add Image</label>
+                    <input type="file" id="postImageInput" accept="image/*" />
+                    <span class="file-name" id="postFileName">No file chosen</span>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-cancel" id="cancelPostBtn">Cancel</button>
+                    <button class="btn-post" id="submitPostBtn">Post</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  IN-MEMORY USER STORE (no localStorage)
+        //  STORE
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        let users = []; // { id, name, email, password, initials, joined }
+        let users = [];
         let currentUser = null;
-        let isSignupMode = true; // true = show signup, false = show login
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  DOM REFS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        const authScreen = document.getElementById('authScreen');
-        const appScreen = document.getElementById('appScreen');
-
-        const signupForm = document.getElementById('signupForm');
-        const loginForm = document.getElementById('loginForm');
-        const authTitle = document.getElementById('authTitle');
-        const authSubtitle = document.getElementById('authSubtitle');
-
-        const signupName = document.getElementById('signupName');
-        const signupEmail = document.getElementById('signupEmail');
-        const signupPassword = document.getElementById('signupPassword');
-        const signupConfirm = document.getElementById('signupConfirm');
-        const signupBtn = document.getElementById('signupBtn');
-        const authError = document.getElementById('authError');
-
-        const loginName = document.getElementById('loginName');
-        const loginPassword = document.getElementById('loginPassword');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginError = document.getElementById('loginError');
-
-        const gotoLogin = document.getElementById('gotoLogin');
-        const gotoSignup = document.getElementById('gotoSignup');
-
-        const logoutBtn = document.getElementById('logoutBtn');
-        const userBadgeName = document.getElementById('userBadgeName');
-        const miniAvatar = document.getElementById('miniAvatar');
-        const cuAvatar = document.getElementById('cuAvatar');
-        const cuName = document.getElementById('cuName');
-        const profileName = document.getElementById('profileName');
-        const profileAvatarText = document.getElementById('profileAvatarText');
-        const profileEmail = document.getElementById('profileEmail');
-        const profileMemberSince = document.getElementById('profileMemberSince');
-
-        const navItems = document.querySelectorAll('.nav-item');
-        const tabPages = {
-            home: document.getElementById('tabHome'),
-            community: document.getElementById('tabCommunity'),
-            stats: document.getElementById('tabStats'),
-            profile: document.getElementById('tabProfile'),
-        };
-        const contactList = document.getElementById('contactList');
-        const communityListState = document.getElementById('communityListState');
-        const communityChatState = document.getElementById('communityChatState');
-        const chatBackBtn = document.getElementById('chatBackBtn');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const chatSendBtn = document.getElementById('chatSendBtn');
-        const chatHeaderName = document.getElementById('chatHeaderName');
-        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
-        const chatHeaderStatus = document.getElementById('chatHeaderStatus');
-        const uploadBtn = document.getElementById('uploadPhotoBtn');
-
-        const joinGymBtn = document.getElementById('joinGymBtn');
-        const checkoutBtn = document.getElementById('checkoutBtn');
-        const gymStatus = document.getElementById('gymStatus');
-
+        let isSignupMode = true;
+        let posts = [];
         let activeChatUserId = null;
         let gymJoined = false;
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  COMMUNITY DATA (static)
+        //  COMMUNITY DATA
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         const communityUsers = [{
@@ -1472,7 +1563,271 @@
         }];
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  AUTH — TOGGLE BETWEEN SIGNUP & LOGIN
+        //  DOM REFS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const authScreen = document.getElementById('authScreen');
+        const appScreen = document.getElementById('appScreen');
+        const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
+        const authTitle = document.getElementById('authTitle');
+        const authSubtitle = document.getElementById('authSubtitle');
+        const signupName = document.getElementById('signupName');
+        const signupEmail = document.getElementById('signupEmail');
+        const signupPassword = document.getElementById('signupPassword');
+        const signupConfirm = document.getElementById('signupConfirm');
+        const signupBtn = document.getElementById('signupBtn');
+        const authError = document.getElementById('authError');
+        const loginName = document.getElementById('loginName');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const gotoLogin = document.getElementById('gotoLogin');
+        const gotoSignup = document.getElementById('gotoSignup');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userBadgeName = document.getElementById('userBadgeName');
+        const miniAvatar = document.getElementById('miniAvatar');
+        const cuAvatar = document.getElementById('cuAvatar');
+        const cuName = document.getElementById('cuName');
+        const profileName = document.getElementById('profileName');
+        const profileAvatarText = document.getElementById('profileAvatarText');
+        const profileEmail = document.getElementById('profileEmail');
+        const profileMemberSince = document.getElementById('profileMemberSince');
+        const profileBio = document.getElementById('profileBio');
+        const feedContainer = document.getElementById('feedContainer');
+        const contactList = document.getElementById('contactList');
+        const communityListState = document.getElementById('communityListState');
+        const communityChatState = document.getElementById('communityChatState');
+        const chatBackBtn = document.getElementById('chatBackBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const chatHeaderName = document.getElementById('chatHeaderName');
+        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
+        const chatHeaderStatus = document.getElementById('chatHeaderStatus');
+        const uploadBtn = document.getElementById('uploadPhotoBtn');
+        const photoGrid = document.getElementById('photoGrid');
+        const joinGymBtn = document.getElementById('joinGymBtn');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const gymStatus = document.getElementById('gymStatus');
+        const statPosts = document.getElementById('statPosts');
+        const statUsers = document.getElementById('statUsers');
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabPages = {
+            home: document.getElementById('tabHome'),
+            community: document.getElementById('tabCommunity'),
+            stats: document.getElementById('tabStats'),
+            profile: document.getElementById('tabProfile'),
+        };
+        const createPostBtn = document.getElementById('createPostBtn');
+        const createPostModal = document.getElementById('createPostModal');
+        const postContent = document.getElementById('postContent');
+        const postImageInput = document.getElementById('postImageInput');
+        const postFileName = document.getElementById('postFileName');
+        const cancelPostBtn = document.getElementById('cancelPostBtn');
+        const submitPostBtn = document.getElementById('submitPostBtn');
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INITIAL POSTS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function initPosts() {
+            const demo = [{
+                id: 101,
+                userId: 1,
+                authorName: 'Riya Sharma',
+                authorInitials: 'RS',
+                authorColor: 'linear-gradient(135deg,#f093fb,#f5576c)',
+                authorAvatar: null,
+                content: 'Hey everyone! Just joined this amazing community. Excited to connect with you all! 🚀',
+                image: null,
+                timestamp: '2h ago',
+                likes: 24,
+                comments: 7
+            }, {
+                id: 102,
+                userId: 2,
+                authorName: 'Arjun Singh',
+                authorInitials: 'AS',
+                authorColor: 'linear-gradient(135deg,#4facfe,#00f2fe)',
+                authorAvatar: null,
+                content: 'Check out this new project I\'m working on. It\'s going to be huge! 💻✨',
+                image: null,
+                timestamp: '4h ago',
+                likes: 18,
+                comments: 5
+            }, {
+                id: 103,
+                userId: 3,
+                authorName: 'Priya Patel',
+                authorInitials: 'PP',
+                authorColor: 'linear-gradient(135deg,#a18cd1,#fbc2eb)',
+                authorAvatar: null,
+                content: 'Any recommendations for good books to read this month? 📚✨',
+                image: null,
+                timestamp: '6h ago',
+                likes: 31,
+                comments: 12
+            }, {
+                id: 104,
+                userId: 4,
+                authorName: 'Vikram Raj',
+                authorInitials: 'VR',
+                authorColor: 'linear-gradient(135deg,#ffecd2,#fcb69f)',
+                authorAvatar: null,
+                content: 'Finally finished my portfolio website. What do you guys think? 🎨',
+                image: null,
+                timestamp: '8h ago',
+                likes: 42,
+                comments: 15
+            }];
+            posts.push(...demo);
+        }
+        initPosts();
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER FEED
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderFeed() {
+            feedContainer.innerHTML = '';
+            if (posts.length === 0) {
+                feedContainer.innerHTML =
+                    '<div style="text-align:center;color:#9ca3af;padding:40px 0;">No posts yet. Be the first to share!</div>';
+                return;
+            }
+            const sorted = [...posts].sort((a, b) => b.id - a.id);
+            sorted.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                const timeDisplay = post.timestamp || 'Just now';
+                let imageHtml = '';
+                if (post.image) {
+                    imageHtml = `<div class="post-image"><img src="${post.image}" alt="Post image" /></div>`;
+                }
+                // Determine avatar display
+                let avatarHtml = '';
+                if (post.authorAvatar) {
+                    avatarHtml = `<img src="${post.authorAvatar}" alt="${post.authorName}" />`;
+                } else {
+                    avatarHtml = post.authorInitials;
+                }
+                card.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-avatar" style="background:${post.authorColor || '#6c63ff'};">
+                            ${avatarHtml}
+                        </div>
+                        <div class="post-user">
+                            <div class="name">${post.authorName}</div>
+                            <div class="time"><i class="far fa-clock"></i> ${timeDisplay}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.content || ''}</div>
+                    ${imageHtml}
+                    <div class="post-actions">
+                        <span><i class="far fa-heart"></i> ${post.likes || 0}</span>
+                        <span><i class="far fa-comment"></i> ${post.comments || 0}</span>
+                        <span><i class="far fa-share-from-square"></i> 0</span>
+                    </div>
+                `;
+                feedContainer.appendChild(card);
+            });
+            updateStats();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  ADD POST
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function addPost(content, imageDataUrl) {
+            if (!currentUser) return;
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('en-US', { hour: 'numeric', minute: '2-digit' });
+            const newPost = {
+                id: Date.now(),
+                userId: currentUser.id,
+                authorName: currentUser.name,
+                authorInitials: currentUser.initials,
+                authorColor: currentUser.color || '#6c63ff',
+                authorAvatar: currentUser.avatar || null, // store current avatar
+                content: content || '',
+                image: imageDataUrl || null,
+                timestamp: timeStr,
+                likes: 0,
+                comments: 0
+            };
+            posts.push(newPost);
+            renderFeed();
+            // Also save image to user's photos if any
+            if (imageDataUrl) {
+                if (!currentUser.photos) currentUser.photos = [];
+                currentUser.photos.push(imageDataUrl);
+                renderProfilePhotos();
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER PROFILE PHOTOS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderProfilePhotos() {
+            photoGrid.innerHTML = '';
+            if (!currentUser || !currentUser.photos || currentUser.photos.length === 0) {
+                photoGrid.innerHTML = '<div class="empty-photos">No photos uploaded yet.</div>';
+                return;
+            }
+            currentUser.photos.forEach(url => {
+                const item = document.createElement('div');
+                item.className = 'photo-item';
+                item.innerHTML = `<img src="${url}" alt="User photo" />`;
+                photoGrid.appendChild(item);
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  UPDATE STATS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function updateStats() {
+            statPosts.textContent = posts.length;
+            statUsers.textContent = users.length;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  UPDATE USER AVATAR IN ALL POSTS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function updateUserAvatarInPosts(userId, avatarUrl) {
+            posts.forEach(post => {
+                if (post.userId === userId) {
+                    post.authorAvatar = avatarUrl;
+                }
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  UPDATE UI AVATARS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function updateAllAvatars() {
+            if (!currentUser) return;
+            const avatar = currentUser.avatar;
+            const initials = currentUser.initials;
+
+            // Mini avatar in top bar
+            miniAvatar.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
+            // Community current user
+            cuAvatar.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
+            // Profile avatar
+            profileAvatarText.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
+            // If avatar is set, hide the text span (we keep it as container)
+            // We need to handle: profileAvatarText is a span, we replace its content
+            // For consistency, we'll keep profileAvatarText as container.
+            // We already set innerHTML above.
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  AUTH
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function setAuthMode(mode) {
@@ -1495,39 +1850,26 @@
         }
 
         gotoLogin.addEventListener('click', () => {
-            // If there are no users, show a message but still allow switching
             if (users.length === 0) {
-                // Allow switching anyway — user might want to login with a pre-existing account
-                // but we have none, so we show a hint
                 loginError.textContent = 'No accounts yet. Please sign up first.';
                 loginError.classList.add('show');
                 setTimeout(() => loginError.classList.remove('show'), 2500);
-                // Still switch to login mode
                 setAuthMode(false);
                 return;
             }
             setAuthMode(false);
         });
 
-        gotoSignup.addEventListener('click', () => {
-            setAuthMode(true);
-        });
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  AUTH — SIGNUP
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        gotoSignup.addEventListener('click', () => setAuthMode(true));
 
         function handleSignup() {
             const name = signupName.value.trim();
             const email = signupEmail.value.trim();
             const password = signupPassword.value.trim();
             const confirm = signupConfirm.value.trim();
-
-            // Reset error
             authError.textContent = '';
             authError.classList.remove('show');
 
-            // Validation
             if (!name || name.length < 2) {
                 authError.textContent = 'Please enter your full name (min 2 chars).';
                 authError.classList.add('show');
@@ -1548,17 +1890,14 @@
                 authError.classList.add('show');
                 return;
             }
-
-            // Check if user already exists (by name or email)
             const existing = users.find(u => u.name.toLowerCase() === name.toLowerCase() || u.email.toLowerCase() === email
-            .toLowerCase());
+                .toLowerCase());
             if (existing) {
                 authError.textContent = 'User with this name or email already exists.';
                 authError.classList.add('show');
                 return;
             }
 
-            // Create user
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const newUser = {
                 id: Date.now(),
@@ -1567,14 +1906,13 @@
                 password: password,
                 initials: initials,
                 joined: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+                color: '#6c63ff',
+                avatar: null,
+                photos: []
             };
             users.push(newUser);
             currentUser = newUser;
-
-            // Auto-login
             enterApp(newUser);
-
-            // Clear form
             signupName.value = '';
             signupEmail.value = '';
             signupPassword.value = '';
@@ -1588,14 +1926,9 @@
         signupPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') signupConfirm.focus(); });
         signupConfirm.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSignup(); });
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  AUTH — LOGIN
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         function handleLogin() {
             const name = loginName.value.trim();
             const password = loginPassword.value.trim();
-
             loginError.textContent = '';
             loginError.classList.remove('show');
 
@@ -1604,14 +1937,12 @@
                 loginError.classList.add('show');
                 return;
             }
-
             const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === password);
             if (!user) {
                 loginError.textContent = 'Invalid username or password.';
                 loginError.classList.add('show');
                 return;
             }
-
             currentUser = user;
             enterApp(user);
             loginName.value = '';
@@ -1624,37 +1955,35 @@
         loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  AUTH — ENTER APP / LOGOUT
+        //  ENTER / EXIT APP
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function enterApp(user) {
             authScreen.classList.remove('active');
             appScreen.classList.add('active');
 
-            // Update UI with user info
             const displayName = user.name;
             const initials = user.initials;
 
             userBadgeName.textContent = displayName.split(' ')[0];
-            miniAvatar.textContent = initials;
-            cuAvatar.textContent = initials;
+            // Update avatars
+            updateAllAvatars();
             cuName.innerHTML = `${displayName} <span style="font-size:12px;font-weight:400;opacity:0.7;">(You)</span>`;
             profileName.textContent = displayName;
-            profileAvatarText.textContent = initials;
             profileEmail.textContent = user.email || 'user@connecthub.in';
             profileMemberSince.textContent = user.joined || 'Jan 2026';
+            profileBio.textContent = 'Tech enthusiast · Developer · Learner';
 
-            // Reset chat state
             closeChat();
             renderContacts();
+            renderFeed();
+            renderProfilePhotos();
+            updateStats();
 
-            // Focus on home tab
-            document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
-
-            // Gym state reset
             gymJoined = false;
             updateGymUI();
 
+            document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
             console.log('✅ Logged in as:', displayName);
         }
 
@@ -1662,22 +1991,12 @@
             currentUser = null;
             appScreen.classList.remove('active');
             authScreen.classList.add('active');
-
-            // Reset to signup if no users, else show login
-            if (users.length === 0) {
-                setAuthMode(true);
-            } else {
-                setAuthMode(false);
-                loginName.focus();
-            }
-
-            // Reset gym state
+            if (users.length === 0) setAuthMode(true);
+            else { setAuthMode(false);
+                loginName.focus(); }
             gymJoined = false;
             updateGymUI();
-
-            // Close any open chat
             closeChat();
-
             console.log('👋 Logged out');
         }
 
@@ -1696,15 +2015,14 @@
                 const target = document.getElementById(tabId);
                 if (target) target.classList.add('active');
                 document.getElementById('appContent').scrollTop = 0;
-
-                if (tabId !== 'tabCommunity') {
-                    closeChat();
-                }
+                if (tabId !== 'tabCommunity') closeChat();
+                if (tabId === 'tabProfile') renderProfilePhotos();
+                if (tabId === 'tabStats') updateStats();
             });
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  COMMUNITY — RENDER CONTACTS
+        //  COMMUNITY
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function renderContacts() {
@@ -1714,12 +2032,13 @@
                 const preview = lastMsg ?
                     `<span class="sender">${lastMsg.sender === 'You' ? 'You' : lastMsg.sender}:</span> ${lastMsg.text}` :
                     'No messages yet';
-
                 const div = document.createElement('div');
                 div.className = 'contact-item';
                 div.dataset.userId = user.id;
                 div.innerHTML = `
-                    <div class="ci-avatar" style="background:${user.color};">${user.initials}</div>
+                    <div class="ci-avatar" style="background:${user.color};">
+                        ${user.avatar ? `<img src="${user.avatar}" alt="${user.name}" />` : user.initials}
+                    </div>
                     <div class="ci-info">
                         <div class="ci-name">${user.name}</div>
                         <div class="ci-preview">${preview}</div>
@@ -1732,26 +2051,18 @@
             });
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  COMMUNITY — OPEN / CLOSE CHAT
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         function openChat(userId) {
             const user = communityUsers.find(u => u.id === userId);
             if (!user) return;
             activeChatUserId = userId;
-
             chatHeaderName.textContent = user.name;
-            chatHeaderAvatar.textContent = user.initials;
+            chatHeaderAvatar.innerHTML = user.avatar ? `<img src="${user.avatar}" alt="${user.name}" />` : user.initials;
             chatHeaderAvatar.style.background = user.color;
             chatHeaderStatus.textContent = user.status === 'online' ? '● Online' : '○ Offline';
             chatHeaderStatus.className = 'ch-status ' + user.status;
-
             renderChatMessages(user);
-
             communityListState.classList.add('hidden');
             communityChatState.classList.add('active');
-
             setTimeout(() => chatInput.focus(), 100);
         }
 
@@ -1764,10 +2075,6 @@
 
         chatBackBtn.addEventListener('click', closeChat);
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  CHAT — RENDER MESSAGES
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         function renderChatMessages(user) {
             chatMessages.innerHTML = '';
             if (!user || user.messages.length === 0) {
@@ -1778,35 +2085,22 @@
                 const isSent = msg.sender === 'You';
                 const div = document.createElement('div');
                 div.className = `chat-msg ${isSent ? 'sent' : 'received'}`;
-                div.innerHTML = `
-                    ${msg.text}
-                    <span class="msg-time">${msg.time}</span>
-                `;
+                div.innerHTML = `${msg.text}<span class="msg-time">${msg.time}</span>`;
                 chatMessages.appendChild(div);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  CHAT — SEND MESSAGE
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         function sendChatMessage() {
             const text = chatInput.value.trim();
             if (!text || activeChatUserId === null) return;
-
             const user = communityUsers.find(u => u.id === activeChatUserId);
             if (!user) return;
-
             const now = new Date();
             const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-
             user.messages.push({ sender: 'You', text: text, time: timeStr });
-
             renderChatMessages(user);
             chatInput.value = '';
-
-            // auto-reply
             if (user.messages.length % 3 === 0) {
                 const replies = [
                     'That\'s great! 👍', 'Interesting! Tell me more.', 'Cool! 😎',
@@ -1823,17 +2117,14 @@
                     renderContacts();
                 }, 600 + Math.random() * 1400);
             }
-
             renderContacts();
         }
 
         chatSendBtn.addEventListener('click', sendChatMessage);
-        chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') sendChatMessage();
-        });
+        chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendChatMessage(); });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  GYM — JOIN & CHECKOUT
+        //  GYM
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function updateGymUI() {
@@ -1853,7 +2144,6 @@
                 checkoutBtn.style.opacity = '0.4';
             }
         }
-
         updateGymUI();
 
         joinGymBtn.addEventListener('click', function() {
@@ -1873,21 +2163,113 @@
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  PROFILE — UPLOAD PHOTO
+        //  PROFILE PHOTO UPLOAD (avatar)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const avatarInput = document.createElement('input');
+        avatarInput.type = 'file';
+        avatarInput.accept = 'image/*';
+        avatarInput.style.display = 'none';
+        document.body.appendChild(avatarInput);
 
         uploadBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            alert('📸 Photo upload is coming soon!');
+            avatarInput.click();
         });
 
-        document.getElementById('profileAvatar').addEventListener('click', function(e) {
-            if (e.target.closest('.upload-btn')) return;
-            alert('🖼️ Tap the camera icon to upload a photo.');
+        avatarInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const dataUrl = ev.target.result;
+                if (currentUser) {
+                    currentUser.avatar = dataUrl;
+                    // Update avatar in all posts by this user
+                    updateUserAvatarInPosts(currentUser.id, dataUrl);
+                    // Update all UI
+                    updateAllAvatars();
+                    renderFeed(); // re-render feed to update avatars in posts
+                    renderContacts(); // update community contacts
+                    // Also update chat header if open
+                    if (activeChatUserId !== null) {
+                        const chatUser = communityUsers.find(u => u.id === activeChatUserId);
+                        if (chatUser) {
+                            chatHeaderAvatar.innerHTML = `<img src="${dataUrl}" alt="${currentUser.name}" />`;
+                        }
+                    }
+                    alert('✅ Profile picture updated!');
+                }
+                avatarInput.value = '';
+            };
+            reader.readAsDataURL(file);
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  PASSWORD TOGGLE (show/hide)
+        //  CREATE POST MODAL
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        let selectedPostImage = null;
+
+        createPostBtn.addEventListener('click', () => {
+            createPostModal.classList.add('active');
+            postContent.value = '';
+            selectedPostImage = null;
+            postFileName.textContent = 'No file chosen';
+            postImageInput.value = '';
+            setTimeout(() => postContent.focus(), 100);
+        });
+
+        cancelPostBtn.addEventListener('click', () => {
+            createPostModal.classList.remove('active');
+        });
+
+        // Close modal on overlay click
+        createPostModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        postImageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                selectedPostImage = file;
+                postFileName.textContent = file.name;
+            } else {
+                selectedPostImage = null;
+                postFileName.textContent = 'No file chosen';
+            }
+        });
+
+        submitPostBtn.addEventListener('click', function() {
+            const content = postContent.value.trim();
+            if (!content && !selectedPostImage) {
+                alert('Please enter some text or attach an image.');
+                return;
+            }
+            // Handle image
+            if (selectedPostImage) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const dataUrl = ev.target.result;
+                    addPost(content, dataUrl);
+                    createPostModal.classList.remove('active');
+                    // Navigate to home to see new post
+                    document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
+                    alert('✅ Post created!');
+                };
+                reader.readAsDataURL(selectedPostImage);
+            } else {
+                addPost(content, null);
+                createPostModal.classList.remove('active');
+                document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
+                alert('✅ Post created!');
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PASSWORD TOGGLE
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         document.querySelectorAll('.toggle-pw').forEach(btn => {
@@ -1907,56 +2289,32 @@
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  KEYBOARD SHORTCUT: Escape to close chat / go home
+        //  KEYBOARD SHORTCUT: Escape
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                if (communityChatState.classList.contains('active')) {
+                if (createPostModal.classList.contains('active')) {
+                    createPostModal.classList.remove('active');
+                } else if (communityChatState.classList.contains('active')) {
                     closeChat();
                 } else if (appScreen.classList.contains('active')) {
-                    const homeBtn = document.querySelector('.nav-item[data-tab="tabHome"]');
-                    if (homeBtn) homeBtn.click();
+                    document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
                 }
             }
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  INIT — Show auth screen
+        //  INIT
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        // Start with signup mode (no users)
         setAuthMode(true);
-        // Pre-fill login field if there are users (for demo, if any)
-        // But since users is empty, we show signup.
-
-        // For demo convenience, if the user wants to test login,
-        // they can sign up first, then logout, then login.
-
-        // Pre-populate with a demo account for easier testing?
-        // No — let the user sign up themselves.
-
-        console.log('✅ ConnectHub UI ready!');
-        console.log('📝 Sign up first, then log in.');
-        console.log('🏋️ Gym buttons: Join Gym → Checkout (simulated GPS)');
-        console.log('👋 Logout button in top bar.');
-
-        // If there are no users, show signup. If there are users, show login.
-        // But since users is empty on page load, we show signup.
-        // After signup, users array has data, and we auto-login.
-        // After logout, we check users.length and show login if > 0.
-
-        // ─── Auto-focus first input ───
-        setTimeout(() => {
-            if (isSignupMode) {
-                signupName.focus();
-            } else {
-                loginName.focus();
-            }
-        }, 300);
-
-        // ─── Handle case: after logout, if users exist, show login ───
-        // The logout function already handles this.
+        setTimeout(() => { if (isSignupMode) signupName.focus();
+            else loginName.focus(); }, 300);
+        renderContacts();
+        renderFeed();
+        updateStats();
+        console.log('✅ ConnectHub ready! Post creation from top bar, profile avatar upload works.');
     </script>
 
 </body>
