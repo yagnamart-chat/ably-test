@@ -2,2162 +2,1605 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>MindSpace — Social UX</title>
-    <script src="https://cdn.ably.com/lib/ably.min-1.js">
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ConnectHub · Gym Checkout</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
-        /* ─── RESET & BASE ─── */
+        /* ─── RESET ─── */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         body {
-            background: #e6f0ff;
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 12px;
-        }
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            height: 94vh;
-            max-height: 860px;
-            background: #ffffff;
-            border-radius: 36px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(30, 144, 255, 0.15);
-            border: 1px solid rgba(30, 144, 255, 0.08);
+            padding: 16px;
         }
 
-        /* ─── LOGIN ─── */
-        .login-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 2.4rem 2rem;
-            background: #ffffff;
-        }
-        .login-screen h1 {
-            font-size: 3.2rem;
-            color: #0a2540;
-            margin-bottom: 6px;
-        }
-        .login-screen h1 span {
-            color: #1e90ff;
-        }
-        .login-screen .sub {
-            color: #6a8aaa;
-            font-size: 1.1rem;
-            margin-bottom: 2.4rem;
-        }
-        .login-inputs {
+        /* ─── PHONE (9:16) ─── */
+        .phone {
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        .login-inputs input {
-            padding: 18px 22px;
-            border-radius: 60px;
-            border: 1.5px solid #dbeafe;
-            background: #f8fcff;
-            color: #0a2540;
-            font-size: 1.05rem;
-            outline: none;
-            transition: all 0.3s;
-        }
-        .login-inputs input:focus {
-            border-color: #1e90ff;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(30, 144, 255, 0.08);
-        }
-        .login-inputs input::placeholder {
-            color: #a0bcd6;
-        }
-        .login-options {
-            display: flex;
-            gap: 14px;
-            width: 100%;
-        }
-        .login-options button {
-            flex: 1;
-            padding: 16px 0;
-            border: none;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1.05rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .login-options button:active {
-            transform: scale(0.97);
-        }
-        .login-options button:first-child {
-            background: #1e90ff;
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(30, 144, 255, 0.35);
-        }
-        .login-options button:last-child {
-            background: #eef6ff;
-            color: #1e90ff;
-            border: 1.5px solid #dbeafe;
-        }
-
-        /* ─── APP SHELL ─── */
-        .app-main {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            background: #ffffff;
-            position: relative;
-        }
-        .app-header {
-            background: #ffffff;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eef6ff;
-            flex-shrink: 0;
-            z-index: 5;
-        }
-        .app-header .brand {
-            font-weight: 800;
-            color: #0a2540;
-            font-size: 1.3rem;
-        }
-        .app-header .brand span {
-            color: #1e90ff;
-        }
-        .right-group {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .points-badge {
-            background: #1e90ff;
-            color: #fff;
-            padding: 4px 14px;
+            max-width: 390px;
+            aspect-ratio: 9 / 16;
+            background: #f2f4f8;
             border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #f0f8ff;
-            padding: 6px 14px 6px 8px;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #0a2540;
-            border: 1px solid #dbeafe;
-        }
-        .user-badge .avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #1e90ff;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-            flex-shrink: 0;
             overflow: hidden;
-        }
-        .user-badge .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .logout-btn {
-            background: none;
-            border: none;
-            color: #94a3b8;
-            font-size: 1.4rem;
-            cursor: pointer;
-            padding: 0 4px;
-            transition: color 0.2s;
-        }
-        .logout-btn:hover {
-            color: #1e90ff;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* SCREENS */
+        /* ─── SCREENS ─── */
         .screen {
             display: none;
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
             flex-direction: column;
-            background: #ffffff;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #f2f4f8;
         }
         .screen.active {
             display: flex;
         }
 
-        /* NAV */
-        .nav-bar {
-            display: flex;
-            background: #ffffff;
-            border-top: 1px solid #eef6ff;
-            padding: 10px 6px;
-            justify-content: space-around;
-            flex-shrink: 0;
-        }
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #8aabca;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
+        /* ─── LOGIN ─── */
+        #loginScreen {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            justify-content: center;
             align-items: center;
-            font-size: 0.8rem;
-            gap: 3px;
-            padding: 6px 14px;
-            border-radius: 14px;
-            transition: all 0.2s;
-            font-weight: 500;
+            padding: 40px 28px;
+            z-index: 2;
         }
-        .nav-btn.active-nav {
-            color: #1e90ff;
+        .login-brand {
+            text-align: center;
+            margin-bottom: 48px;
         }
-        .nav-icon {
-            font-size: 1.6rem;
-        }
-
-        /* ─── FEED ─── */
-        .feed-empty-state {
+        .login-brand .logo-icon {
+            font-size: 48px;
+            color: #6c63ff;
+            background: rgba(108, 99, 255, 0.15);
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex: 1;
-            color: #8aabca;
-            text-align: center;
-            padding: 40px 20px;
+            margin: 0 auto 16px;
+            box-shadow: 0 12px 32px rgba(108, 99, 255, 0.25);
         }
-        .feed-empty-state .big-icon {
-            font-size: 4rem;
+        .login-brand h1 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .login-brand p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .login-form {
+            width: 100%;
+            max-width: 320px;
+        }
+        .login-form .input-group {
             margin-bottom: 16px;
+            position: relative;
         }
-        .feed-empty-state h3 {
-            font-size: 1.4rem;
-            color: #0a2540;
-            margin-bottom: 8px;
+        .login-form .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 16px;
         }
-        .feed-empty-state p {
-            font-size: 1rem;
-            max-width: 280px;
-            line-height: 1.5;
-            color: #6a8aaa;
+        .login-form .input-group input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border: none;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        .login-form .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.35);
+        }
+        .login-form .input-group input:focus {
+            background: rgba(255, 255, 255, 0.10);
+            border-color: rgba(108, 99, 255, 0.4);
+            box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #6c63ff, #5a52d5);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 8px;
+            box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
+        }
+        .login-btn:hover {
+            transform: scale(1.02);
+        }
+        .login-btn:active {
+            transform: scale(0.97);
+        }
+        .login-error {
+            color: #ff6b6b;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .login-error.show {
+            opacity: 1;
+        }
+        .login-footer {
+            margin-top: 32px;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 12px;
+            text-align: center;
         }
 
-        /* POST CARDS */
-        .post-card {
+        /* ─── APP ─── */
+        #appScreen {
+            background: #f2f4f8;
+            z-index: 1;
+        }
+        #appScreen.active {
+            display: flex;
+        }
+
+        /* ─── TOP BAR ─── */
+        .app-topbar {
+            padding: 16px 20px 12px;
             background: #ffffff;
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 18px;
-            border: 1px solid #eef6ff;
-            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.04);
-            transition: box-shadow 0.2s;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            padding-top: 18px;
+            min-height: 60px;
+        }
+        .app-topbar .title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: -0.3px;
+        }
+        .app-topbar .title span {
+            color: #6c63ff;
+        }
+        .app-topbar .actions {
+            display: flex;
+            gap: 12px;
+            color: #6b7280;
+            font-size: 18px;
+        }
+        .app-topbar .actions i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .app-topbar .actions i:hover {
+            color: #1a1a2e;
+        }
+
+        /* ─── CONTENT ─── */
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 16px 8px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        .app-content::-webkit-scrollbar {
+            width: 3px;
+        }
+        .app-content::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 8px;
+        }
+
+        /* ─── TABS ─── */
+        .tab-page {
+            display: none;
+            animation: fadeUp 0.3s ease;
+            height: 100%;
+        }
+        .tab-page.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ─── HOME FEED ─── */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 8px;
+        }
+        .post-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 18px 18px 14px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: transform 0.15s;
         }
         .post-card:hover {
-            box-shadow: 0 6px 24px rgba(30, 144, 255, 0.08);
+            transform: translateY(-1px);
         }
         .post-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
-        .avatar {
-            width: 44px;
-            height: 44px;
+        .post-avatar {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #1e90ff;
-            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            overflow: hidden;
-            flex-shrink: 0;
-            font-size: 1.1rem;
-        }
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .post-name {
             font-weight: 600;
-            font-size: 1.05rem;
-            color: #0a2540;
-            cursor: pointer;
-        }
-        .post-name:hover {
-            text-decoration: underline;
-        }
-        .post-time {
-            font-size: 0.8rem;
-            color: #8aabca;
-            margin-left: auto;
+            font-size: 16px;
+            color: #fff;
             flex-shrink: 0;
         }
-        .post-text {
-            font-size: 1.05rem;
-            color: #1a304a;
-            line-height: 1.5;
-            margin-bottom: 10px;
+        .post-user {
+            flex: 1;
         }
-        .post-image {
-            width: 100%;
-            border-radius: 16px;
-            margin-top: 6px;
-            max-height: 300px;
-            object-fit: cover;
-            border: 1px solid #eef6ff;
+        .post-user .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+        .post-user .time {
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+        .post-user .time i {
+            margin-right: 4px;
+            font-size: 10px;
+        }
+        .post-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #374151;
+            padding: 4px 0 6px;
         }
         .post-actions {
             display: flex;
-            gap: 24px;
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px solid #eef6ff;
+            gap: 20px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #f1f3f5;
+            color: #9ca3af;
+            font-size: 13px;
         }
-        .action-btn {
-            background: none;
-            border: none;
-            color: #6a8aaa;
-            cursor: pointer;
-            font-size: 1rem;
+        .post-actions span {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 10px;
-            border-radius: 20px;
-            transition: background 0.2s, color 0.2s;
+            cursor: default;
         }
-        .action-btn:hover {
-            background: #f0f8ff;
-        }
-        .action-btn.liked {
-            color: #1e90ff;
-        }
-        .follow-btn-small {
-            background: #1e90ff;
-            border: none;
-            color: #fff;
-            font-size: 0.7rem;
-            padding: 4px 12px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .follow-btn-small.following {
-            background: #0a2540;
-        }
-        .mod-status {
-            font-size: 0.7rem;
-            padding: 2px 10px;
-            border-radius: 40px;
-            display: inline-block;
-            background: #eef6ff;
-            color: #1e90ff;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-        .mod-status.accepted {
-            background: #22c55e;
-            color: #fff;
-        }
-        .mod-status.rejected {
-            background: #ef4444;
-            color: #fff;
+        .post-actions span i {
+            font-size: 15px;
+            color: #9ca3af;
         }
 
         /* ─── COMMUNITY ─── */
-        .section-title {
-            font-weight: 700;
-            font-size: 1.3rem;
-            color: #0a2540;
-            margin-bottom: 18px;
-        }
-        .community-grid {
+        .community-container {
+            height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            position: relative;
         }
-        .group-card {
-            background: #ffffff;
-            border-radius: 22px;
-            padding: 20px;
-            cursor: pointer;
-            border: 1px solid #eef6ff;
+
+        .community-list-state {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 8px;
+        }
+        .community-list-state.hidden {
+            display: none;
+        }
+
+        .current-user-card {
+            background: linear-gradient(135deg, #6c63ff, #8b83f0);
+            border-radius: 20px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            gap: 18px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.03);
+            gap: 14px;
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.25);
+            margin-bottom: 4px;
         }
-        .group-card:active {
-            transform: scale(0.98);
-        }
-        .group-card:hover {
-            box-shadow: 0 6px 20px rgba(30, 144, 255, 0.08);
-        }
-        .group-icon {
-            font-size: 2.2rem;
-            width: 58px;
-            height: 58px;
-            border-radius: 18px;
-            background: #f0f8ff;
+        .current-user-card .cu-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-        }
-        .group-info {
-            flex: 1;
-        }
-        .group-name {
+            font-size: 20px;
             font-weight: 700;
-            color: #0a2540;
-            font-size: 1.1rem;
-            margin-bottom: 3px;
+            color: #fff;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
-        .group-desc {
-            font-size: 0.9rem;
-            color: #6a8aaa;
+        .current-user-card .cu-info {
+            flex: 1;
+            color: #fff;
+        }
+        .current-user-card .cu-info .cu-name {
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .current-user-card .cu-info .cu-status {
+            font-size: 13px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .current-user-card .cu-info .cu-status i {
+            font-size: 10px;
+            color: #4ade80;
         }
 
-        /* ─── CHAT ─── */
-        .chat-area {
+        .community-divider {
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            letter-spacing: 0.5px;
+            padding: 8px 4px 4px;
+            text-transform: uppercase;
+        }
+
+        .contact-item {
+            background: #fff;
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            border: 1px solid transparent;
+        }
+        .contact-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            border-color: rgba(108, 99, 255, 0.1);
+        }
+        .contact-item:active {
+            transform: scale(0.98);
+        }
+        .contact-item .ci-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 17px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .contact-item .ci-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .contact-item .ci-info .ci-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: #1a1a2e;
+        }
+        .contact-item .ci-info .ci-preview {
+            font-size: 13px;
+            color: #9ca3af;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 1px;
+        }
+        .contact-item .ci-info .ci-preview .sender {
+            font-weight: 500;
+            color: #6b7280;
+        }
+        .contact-item .ci-status {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f1f3f5;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+        .contact-item .ci-status.online {
+            background: #dcfce7;
+            color: #22c55e;
+        }
+        .contact-item .ci-status.offline {
+            background: #f1f3f5;
+            color: #9ca3af;
+        }
+        .contact-item .ci-arrow {
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        .community-chat-state {
             display: none;
             flex-direction: column;
             height: 100%;
-            background: #ffffff;
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            z-index: 100;
-            border-radius: 36px;
-            overflow: hidden;
-            border: 1px solid #eef6ff;
+            right: 0;
+            bottom: 0;
+            background: #f2f4f8;
+            z-index: 10;
+            border-radius: 0;
+            padding: 0;
         }
-        .chat-area.active {
+        .community-chat-state.active {
             display: flex;
         }
-        .chat-top {
+
+        .chat-header {
+            background: #fff;
+            padding: 14px 16px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
-            background: #ffffff;
-            border-bottom: 1px solid #eef6ff;
+            gap: 12px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            flex-shrink: 0;
+            min-height: 60px;
+        }
+        .chat-header .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #1a1a2e;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .chat-header .back-btn:hover {
+            color: #6c63ff;
+        }
+        .chat-header .ch-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: #fff;
             flex-shrink: 0;
         }
-        .back-btn {
-            background: none;
-            border: none;
-            color: #1e90ff;
+        .chat-header .ch-info {
+            flex: 1;
+        }
+        .chat-header .ch-info .ch-name {
             font-weight: 600;
-            font-size: 1.05rem;
-            cursor: pointer;
+            font-size: 16px;
+            color: #1a1a2e;
+        }
+        .chat-header .ch-info .ch-status {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        .chat-header .ch-info .ch-status.online {
+            color: #22c55e;
+        }
+        .chat-header .ch-actions {
+            color: #6b7280;
+            font-size: 18px;
             display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 10px;
+            gap: 14px;
         }
-        .back-btn:hover {
-            color: #0a70d0;
-        }
-        .chat-title {
-            font-weight: 700;
-            color: #0a2540;
-            font-size: 1.15rem;
-        }
-        .chat-upload-btn,
-        .chat-checkin-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 6px 10px;
-            color: #1e90ff;
-            transition: color 0.2s;
-        }
+
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 16px 16px 8px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: #fafcff;
+            gap: 6px;
         }
-        .message {
-            max-width: 80%;
-            padding: 12px 18px;
-            border-radius: 22px;
-            font-size: 1.02rem;
-            line-height: 1.45;
-            display: flex;
-            flex-direction: column;
-            word-break: break-word;
+        .chat-messages::-webkit-scrollbar {
+            width: 3px;
         }
-        .my-message {
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 8px;
+        }
+
+        .chat-msg {
+            max-width: 82%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            animation: fadeUp 0.2s ease;
+        }
+        .chat-msg.sent {
             align-self: flex-end;
-            background: #1e90ff;
+            background: #6c63ff;
             color: #fff;
             border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.2);
         }
-        .other-message {
+        .chat-msg.received {
             align-self: flex-start;
-            background: #f0f8ff;
-            color: #0a2540;
-            border: 1px solid #dbeafe;
+            background: #fff;
+            color: #1a1a2e;
             border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
         }
-        .msg-meta {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            margin-bottom: 4px;
-            font-weight: 600;
+        .chat-msg .msg-time {
+            font-size: 10px;
+            opacity: 0.6;
+            display: block;
+            text-align: right;
+            margin-top: 4px;
+            font-weight: 400;
         }
-        .my-message .msg-meta {
-            color: rgba(255, 255, 255, 0.8);
+        .chat-msg.sent .msg-time {
+            color: rgba(255, 255, 255, 0.7);
         }
-        .other-message .msg-meta {
-            color: #6a8aaa;
+        .chat-msg.received .msg-time {
+            color: #9ca3af;
         }
-        .chat-image {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-top: 6px;
-            max-height: 200px;
-            object-fit: cover;
-            border: 1px solid #eef6ff;
-        }
-        .pending-badge {
-            font-size: 0.7rem;
-            background: #1e90ff;
-            color: #fff;
-            padding: 2px 10px;
-            border-radius: 40px;
-            display: inline-block;
-            margin-top: 6px;
-        }
-        .chat-input-area {
+
+        .chat-input-row {
+            background: #fff;
+            padding: 12px 16px;
             display: flex;
-            gap: 12px;
-            background: #ffffff;
-            padding: 14px 20px;
-            border-top: 1px solid #eef6ff;
+            gap: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+            flex-shrink: 0;
             align-items: center;
+        }
+        .chat-input-row input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 24px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+            background: #f8f9fc;
+        }
+        .chat-input-row input:focus {
+            border-color: #6c63ff;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.08);
+            background: #fff;
+        }
+        .chat-input-row .send-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #6c63ff, #5a52d5);
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+        }
+        .chat-input-row .send-btn:hover {
+            transform: scale(1.04);
+        }
+        .chat-input-row .send-btn:active {
+            transform: scale(0.93);
+        }
+        .chat-empty {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        /* ─── STATS ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            padding-bottom: 8px;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .stat-card .label {
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        .stat-card .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .stat-card.purple .icon {
+            color: #6c63ff;
+        }
+        .stat-card.green .icon {
+            color: #22c55e;
+        }
+        .stat-card.orange .icon {
+            color: #f59e0b;
+        }
+        .stat-card.blue .icon {
+            color: #3b82f6;
+        }
+        .stats-extra {
+            margin-top: 16px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        }
+        .stats-extra h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+        .stats-extra .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .stats-extra .bar-row .bar-label {
+            font-size: 12px;
+            color: #6b7280;
+            width: 60px;
             flex-shrink: 0;
         }
-        .chat-input-area input {
+        .stats-extra .bar-row .bar-track {
             flex: 1;
-            border: 1.5px solid #dbeafe;
-            outline: none;
-            padding: 12px 18px;
-            font-size: 1rem;
-            background: #f8fcff;
-            border-radius: 30px;
-            transition: border-color 0.2s;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
         }
-        .chat-input-area input:focus {
-            border-color: #1e90ff;
+        .stats-extra .bar-row .bar-track .bar-fill {
+            height: 100%;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #6c63ff, #a78bfa);
+            width: 0%;
         }
-        .chat-input-area button {
-            background: #1e90ff;
-            border: none;
-            padding: 12px 22px;
-            border-radius: 30px;
-            color: #fff;
+        .stats-extra .bar-row .bar-val {
+            font-size: 12px;
             font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
+            color: #1a1a2e;
+            width: 32px;
+            text-align: right;
         }
-        .chat-input-area button:hover {
-            background: #1a7ad9;
-            box-shadow: 0 4px 12px rgba(30, 144, 255, 0.3);
-        }
-        .upload-preview {
-            display: none;
-            margin: 8px 20px;
-            align-items: center;
+
+        /* ─── GYM CARD (new) ─── */
+        .gym-card {
+            margin-top: 16px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px 20px 18px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
-        .upload-preview img {
-            max-width: 60px;
-            border-radius: 12px;
-            border: 2px solid #1e90ff;
+        .gym-card .gym-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .upload-preview .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid #f0f8ff;
-            border-top: 3px solid #1e90ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            display: none;
+        .gym-card .gym-header h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
         }
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+        .gym-card .gym-status {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: #f1f3f5;
+            color: #6b7280;
+        }
+        .gym-card .gym-status.joined {
+            background: #dcfce7;
+            color: #22c55e;
+        }
+        .gym-card .gym-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .gym-card .gym-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .gym-card .gym-buttons button:active {
+            transform: scale(0.96);
+        }
+        .gym-card .gym-buttons .btn-join {
+            background: linear-gradient(135deg, #6c63ff, #5a52d5);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(108, 99, 255, 0.25);
+        }
+        .gym-card .gym-buttons .btn-join:hover {
+            box-shadow: 0 6px 18px rgba(108, 99, 255, 0.35);
+        }
+        .gym-card .gym-buttons .btn-join:disabled {
+            opacity: 0.6;
+            cursor: default;
+            box-shadow: none;
+        }
+        .gym-card .gym-buttons .btn-checkout {
+            background: #f1f3f5;
+            color: #1a1a2e;
+            border: 1px solid #e5e7eb;
+        }
+        .gym-card .gym-buttons .btn-checkout:hover {
+            background: #e5e7eb;
+        }
+        .gym-card .gym-buttons .btn-checkout:disabled {
+            opacity: 0.4;
+            cursor: default;
         }
 
         /* ─── PROFILE ─── */
         .profile-card {
-            background: #ffffff;
-            border-radius: 28px;
-            padding: 28px;
+            background: #fff;
+            border-radius: 24px;
+            padding: 24px 20px 20px;
             text-align: center;
-            margin-bottom: 20px;
-            border: 1px solid #eef6ff;
-            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.03);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
         }
-        .profile-pic-large {
-            width: 100px;
-            height: 100px;
+        .profile-avatar {
+            width: 96px;
+            height: 96px;
             border-radius: 50%;
-            border: 4px solid #1e90ff;
-            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #6c63ff, #a78bfa);
+            margin: 0 auto 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.8rem;
-            background: #f0f8ff;
-            overflow: hidden;
-            color: #0a2540;
+            font-size: 36px;
             font-weight: 700;
+            color: #fff;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(108, 99, 255, 0.25);
         }
-        .profile-pic-large img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .profile-card h3 {
-            font-size: 1.4rem;
-            color: #0a2540;
-        }
-        .profile-card .email {
-            color: #6a8aaa;
-            font-size: 1rem;
-            margin-top: 4px;
-        }
-        .profile-stats {
+        .profile-avatar .upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #f2f4f8;
+            color: #6c63ff;
+            font-size: 14px;
             display: flex;
-            justify-content: space-around;
-            margin-top: 22px;
-            padding-top: 18px;
-            border-top: 1px solid #eef6ff;
-        }
-        .stat-number {
-            font-weight: 700;
-            font-size: 1.4rem;
-            color: #0a2540;
-        }
-        .stat-label {
-            font-size: 0.85rem;
-            color: #6a8aaa;
-            margin-top: 4px;
-        }
-        .change-pic-btn,
-        .follow-btn {
-            background: #1e90ff;
-            color: #fff;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-weight: 600;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            margin-top: 12px;
-        }
-        .follow-btn.following {
-            background: #0a2540;
-        }
-        .follow-btn:hover {
-            opacity: 0.9;
-        }
-
-        /* ─── COACH ─── */
-        .coach-badge {
-            background: #1e90ff;
-            color: #fff;
-            font-size: 0.7rem;
-            padding: 4px 12px;
-            border-radius: 12px;
-            text-transform: uppercase;
-            margin-left: 10px;
-            letter-spacing: 0.5px;
-        }
-        .mod-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 14px;
-        }
-        .mod-actions button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 24px;
-            font-weight: 700;
-            cursor: pointer;
-            color: #fff;
-            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .mod-actions button:active {
-            transform: scale(0.96);
+        .profile-avatar .upload-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(108, 99, 255, 0.25);
         }
-        .accept-btn {
-            background: #22c55e;
-            box-shadow: 0 2px 10px rgba(34, 197, 94, 0.25);
+        .profile-avatar .upload-btn:active {
+            transform: scale(0.92);
         }
-        .reject-btn {
-            background: #ef4444;
-            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.25);
+        .profile-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
         }
-        .empty-subtle {
-            color: #6a8aaa;
-            font-size: 1rem;
-            text-align: center;
-            padding: 30px 10px;
+        .profile-bio {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 2px;
         }
-
-        /* ─── MODALS ─── */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 37, 64, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-            padding: 24px;
-            backdrop-filter: blur(4px);
-        }
-        .modal.open {
+        .profile-stats-row {
             display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f3f5;
         }
-        .modal-content {
-            background: #ffffff;
-            width: 100%;
-            max-width: 420px;
-            border-radius: 32px;
-            padding: 28px;
-            box-shadow: 0 20px 60px rgba(10, 37, 64, 0.15);
-            animation: modalIn 0.25s ease;
-            border: 1px solid #eef6ff;
+        .profile-stats-row .ps-item {
+            text-align: center;
         }
-        @keyframes modalIn {
-            from {
-                transform: scale(0.92) translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1) translateY(0);
-                opacity: 1;
-            }
-        }
-        .modal-content h3 {
+        .profile-stats-row .ps-item .num {
+            font-size: 18px;
             font-weight: 700;
-            color: #0a2540;
-            margin-bottom: 16px;
-            font-size: 1.4rem;
+            color: #1a1a2e;
         }
-        .modal-content textarea {
-            width: 100%;
-            padding: 16px;
-            border-radius: 18px;
-            border: 1.5px solid #dbeafe;
-            background: #f8fcff;
-            resize: none;
-            margin-bottom: 14px;
-            outline: none;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: border-color 0.2s;
+        .profile-stats-row .ps-item .lbl {
+            font-size: 12px;
+            color: #9ca3af;
         }
-        .modal-content textarea:focus {
-            border-color: #1e90ff;
-        }
-        .modal-content .btn-primary {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            margin-top: 4px;
-            cursor: pointer;
-            background: #1e90ff;
-            color: #fff;
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        .modal-content .btn-primary:hover {
-            background: #1a7ad9;
-            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.3);
-        }
-        .modal-content .btn-secondary {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-top: 10px;
-            cursor: pointer;
-            background: #f0f8ff;
-            color: #1e90ff;
-            transition: background 0.2s;
-            border: 1.5px solid #dbeafe;
-        }
-        .modal-content .btn-secondary:hover {
-            background: #e0edff;
-        }
-
-        .upload-area {
-            border: 2px dashed #1e90ff;
+        .profile-extra {
+            margin-top: 16px;
+            background: #fff;
             border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 12px;
-            cursor: pointer;
-            color: #1e90ff;
+            padding: 18px 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
         }
-        .preview-img {
-            max-width: 100%;
-            margin-top: 8px;
-            display: none;
-        }
-        .preview-video {
-            max-width: 100%;
-            margin-top: 8px;
-            display: none;
-        }
-
-        /* ─── GYM DETAIL ─── */
-        .gym-detail-card {
-            background: linear-gradient(145deg, #0a2a4a, #1e90ff);
-            border-radius: 32px;
-            padding: 24px;
-            color: #ffffff;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .gym-emoji {
-            font-size: 3rem;
-        }
-        .gym-name {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 8px 0;
-        }
-        .gym-location,
-        .gym-radius {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        .welcome-text {
-            margin: 16px 0;
-            font-size: 1.1rem;
-        }
-        .join-gym-btn {
-            background: #ffffff;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 60px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #0a2a4a;
-            cursor: pointer;
-            width: 80%;
-            margin: 0 auto;
-        }
-
-        /* ─── COMMENTS ─── */
-        .comment-item {
+        .profile-extra .row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            align-items: flex-start;
-            background: #f0f8ff;
-            border-radius: 16px;
-            padding: 8px 12px;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+            color: #374151;
         }
-        .comment-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #1e90ff;
+        .profile-extra .row .lbl {
+            color: #9ca3af;
+        }
+
+        /* ─── BOTTOM NAV ─── */
+        .bottom-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            background: #ffffff;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 8px 0 10px;
+            flex-shrink: 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+            position: relative;
+            z-index: 5;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            padding: 4px 12px;
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            color: #9ca3af;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .nav-item i {
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .nav-item.active {
+            color: #6c63ff;
+        }
+        .nav-item.active i {
+            transform: translateY(-2px);
+        }
+        .nav-item .badge {
+            position: absolute;
+            top: -2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
+            background: #ef4444;
             color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-        .comment-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .comment-content {
-            flex: 1;
-        }
-        .comment-name {
-            font-weight: bold;
-            font-size: 0.75rem;
-            color: #0a2540;
-        }
-        .comment-text {
-            font-size: 0.85rem;
-            color: #0a2540;
-        }
-        .comment-delete {
-            background: none;
-            border: none;
-            color: #1e90ff;
-            cursor: pointer;
-            font-size: 12px;
+            border: 2px solid #fff;
         }
 
         /* ─── RESPONSIVE ─── */
-        @media (max-width: 480px) {
+        @media (max-width: 420px) {
+            .phone {
+                border-radius: 28px;
+                max-width: 100%;
+            }
             body {
                 padding: 0;
             }
-            .app-container {
-                height: 100vh;
+            .login-brand h1 {
+                font-size: 24px;
+            }
+            .stat-card .number {
+                font-size: 22px;
+            }
+        }
+        @media (max-height: 700px) {
+            .phone {
                 max-height: 100vh;
+                aspect-ratio: auto;
                 border-radius: 0;
             }
-            .chat-area {
-                border-radius: 0;
+            body {
+                padding: 0;
             }
-        }
-        .screen::-webkit-scrollbar,
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
-        }
-        .screen::-webkit-scrollbar-thumb,
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #c5d9f0;
-            border-radius: 10px;
-        }
-        .screen::-webkit-scrollbar-track,
-        .chat-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        /* toast */
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #0a2540;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-        .toast.show {
-            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <!-- ════════════════════════════════════════════ -->
+    <!-- PHONE                                      -->
+    <!-- ════════════════════════════════════════════ -->
+    <div class="phone" id="appContainer">
 
-        <!-- LOGIN -->
-        <div id="loginScreen" class="login-screen">
-            <h1>🧠 <span>Mind</span>Space</h1>
-            <p class="sub">Connect · Grow · Thrive</p>
-            <div class="login-inputs">
-                <input type="text" id="loginName" placeholder="Full name" value="Rahul Kumar" />
-                <input type="email" id="loginEmail" placeholder="Email address" value="rahul@mindspace.io" />
+        <!-- ─── LOGIN ─── -->
+        <div class="screen active" id="loginScreen">
+            <div class="login-brand">
+                <div class="logo-icon"><i class="fas fa-people-arrows"></i></div>
+                <h1>ConnectHub</h1>
+                <p>Join the conversation</p>
             </div>
-            <div class="login-options">
-                <button id="userLoginBtn">👤 User Login</button>
-                <button id="gymOwnerLoginBtn">🏋️ Coach Panel</button>
+            <div class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUsername" placeholder="Username" value="demo" />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" value="1234" />
+                </div>
+                <button class="login-btn" id="loginBtn">
+                    <i class="fas fa-arrow-right" style="margin-right:8px;"></i> Sign In
+                </button>
+                <div class="login-error" id="loginError">Invalid credentials. Try demo / 1234</div>
             </div>
+            <div class="login-footer">v2.0 · Made with ❤️</div>
         </div>
 
-        <!-- APP MAIN -->
-        <div id="appMain" class="app-main">
+        <!-- ─── APP ─── -->
+        <div class="screen" id="appScreen">
 
-            <!-- HEADER -->
-            <header class="app-header">
-                <div class="brand">🧠 <span>Mind</span>Space</div>
-                <div class="right-group">
-                    <span id="pointsDisplay" class="points-badge">⭐ 0</span>
-                    <div class="user-badge">
-                        <div class="avatar" id="headerAvatar">R</div>
-                        <span id="userNameDisplay">User</span>
-                    </div>
-                    <button class="logout-btn" id="logoutBtn">✕</button>
-                </div>
-            </header>
-
-            <!-- HOME -->
-            <div id="home" class="screen active">
-                <div id="feedContainer">
-                    <div class="feed-empty-state">
-                        <div class="big-icon">🌱</div>
-                        <h3>Your feed is quiet</h3>
-                        <p>Be the first to share a thought, a win, or a question with the community.</p>
-                    </div>
+            <!-- Top Bar -->
+            <div class="app-topbar">
+                <div class="title">Connect<span>Hub</span></div>
+                <div class="actions">
+                    <i class="fas fa-search"></i>
+                    <i class="fas fa-bell"></i>
                 </div>
             </div>
 
-            <!-- COMMUNITY -->
-            <div id="community" class="screen">
-                <div class="section-title">👥 Communities &amp; Channels</div>
-                <div class="community-grid">
-                    <div class="group-card" id="cardGym">
-                        <div class="group-icon">🏋️</div>
-                        <div class="group-info">
-                            <div class="group-name">Fitness Gym</div>
-                            <div class="group-desc">📍 Darbhanga Hub · Radius 50m</div>
+            <!-- Content -->
+            <div class="app-content" id="appContent">
+
+                <!-- HOME TAB -->
+                <div class="tab-page active" id="tabHome">
+                    <div class="feed">
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="post-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c);">RS</div>
+                                <div class="post-user">
+                                    <div class="name">Riya Sharma</div>
+                                    <div class="time"><i class="far fa-clock"></i> 2h ago</div>
+                                </div>
+                            </div>
+                            <div class="post-content">Hey everyone! Just joined this amazing community. Excited to connect with you all! 🚀</div>
+                            <div class="post-actions">
+                                <span><i class="far fa-heart"></i> 24</span>
+                                <span><i class="far fa-comment"></i> 7</span>
+                                <span><i class="far fa-share-from-square"></i> 3</span>
+                            </div>
+                        </div>
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="post-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">AS</div>
+                                <div class="post-user">
+                                    <div class="name">Arjun Singh</div>
+                                    <div class="time"><i class="far fa-clock"></i> 4h ago</div>
+                                </div>
+                            </div>
+                            <div class="post-content">Check out this new project I'm working on. It's going to be huge! 💻✨</div>
+                            <div class="post-actions">
+                                <span><i class="far fa-heart"></i> 18</span>
+                                <span><i class="far fa-comment"></i> 5</span>
+                                <span><i class="far fa-share-from-square"></i> 2</span>
+                            </div>
+                        </div>
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="post-avatar" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);">PP</div>
+                                <div class="post-user">
+                                    <div class="name">Priya Patel</div>
+                                    <div class="time"><i class="far fa-clock"></i> 6h ago</div>
+                                </div>
+                            </div>
+                            <div class="post-content">Any recommendations for good books to read this month? 📚✨</div>
+                            <div class="post-actions">
+                                <span><i class="far fa-heart"></i> 31</span>
+                                <span><i class="far fa-comment"></i> 12</span>
+                                <span><i class="far fa-share-from-square"></i> 5</span>
+                            </div>
+                        </div>
+                        <div class="post-card">
+                            <div class="post-header">
+                                <div class="post-avatar" style="background:linear-gradient(135deg,#ffecd2,#fcb69f);">VR</div>
+                                <div class="post-user">
+                                    <div class="name">Vikram Raj</div>
+                                    <div class="time"><i class="far fa-clock"></i> 8h ago</div>
+                                </div>
+                            </div>
+                            <div class="post-content">Finally finished my portfolio website. What do you guys think? 🎨</div>
+                            <div class="post-actions">
+                                <span><i class="far fa-heart"></i> 42</span>
+                                <span><i class="far fa-comment"></i> 15</span>
+                                <span><i class="far fa-share-from-square"></i> 8</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="group-card" id="cardCheckin">
-                        <div class="group-icon">📍</div>
-                        <div class="group-info">
-                            <div class="group-name">Daily Fitness Check‑in</div>
-                            <div class="group-desc">Verify entry to grab +10 Points instantly</div>
+                </div>
+
+                <!-- COMMUNITY TAB -->
+                <div class="tab-page" id="tabCommunity">
+                    <div class="community-container" id="communityContainer">
+
+                        <!-- LIST STATE -->
+                        <div class="community-list-state" id="communityListState">
+                            <div class="current-user-card">
+                                <div class="cu-avatar">AV</div>
+                                <div class="cu-info">
+                                    <div class="cu-name">Aman Verma <span style="font-size:12px;font-weight:400;opacity:0.7;">(You)</span></div>
+                                    <div class="cu-status"><i class="fas fa-circle"></i> Online · 3 chats</div>
+                                </div>
+                            </div>
+                            <div class="community-divider">— Contacts —</div>
+                            <div id="contactList"></div>
+                        </div>
+
+                        <!-- CHAT STATE -->
+                        <div class="community-chat-state" id="communityChatState">
+                            <div class="chat-header">
+                                <button class="back-btn" id="chatBackBtn"><i class="fas fa-arrow-left"></i></button>
+                                <div class="ch-avatar" id="chatHeaderAvatar">RS</div>
+                                <div class="ch-info">
+                                    <div class="ch-name" id="chatHeaderName">Riya Sharma</div>
+                                    <div class="ch-status online" id="chatHeaderStatus">● Online</div>
+                                </div>
+                                <div class="ch-actions">
+                                    <i class="fas fa-phone"></i>
+                                    <i class="fas fa-video"></i>
+                                </div>
+                            </div>
+                            <div class="chat-messages" id="chatMessages"></div>
+                            <div class="chat-input-row">
+                                <input type="text" id="chatInput" placeholder="Type a message..." />
+                                <button class="send-btn" id="chatSendBtn"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- STATS TAB (with gym buttons) -->
+                <div class="tab-page" id="tabStats">
+                    <div class="stats-grid">
+                        <div class="stat-card purple">
+                            <span class="icon"><i class="fas fa-newspaper"></i></span>
+                            <div class="number">42</div>
+                            <div class="label">Total Posts</div>
+                        </div>
+                        <div class="stat-card green">
+                            <span class="icon"><i class="fas fa-users"></i></span>
+                            <div class="number">128</div>
+                            <div class="label">Total Users</div>
+                        </div>
+                        <div class="stat-card orange">
+                            <span class="icon"><i class="fas fa-comments"></i></span>
+                            <div class="number">1.2K</div>
+                            <div class="label">Total Messages</div>
+                        </div>
+                        <div class="stat-card blue">
+                            <span class="icon"><i class="fas fa-user-check"></i></span>
+                            <div class="number">56</div>
+                            <div class="label">Active Today</div>
                         </div>
                     </div>
-                    <div class="group-card" id="cardStoic">
-                        <div class="group-icon">🏛️</div>
-                        <div class="group-info">
-                            <div class="group-name">Stoic Wisdom</div>
-                            <div class="group-desc">Tap to enter live full‑screen room</div>
+
+                    <div class="stats-extra">
+                        <h4><i class="fas fa-chart-simple" style="margin-right:6px;color:#6c63ff;"></i> Weekly Activity</h4>
+                        <div class="bar-row"><span class="bar-label">Mon</span><div class="bar-track"><div class="bar-fill" style="width:65%;"></div></div><span class="bar-val">65%</span></div>
+                        <div class="bar-row"><span class="bar-label">Tue</span><div class="bar-track"><div class="bar-fill" style="width:80%;"></div></div><span class="bar-val">80%</span></div>
+                        <div class="bar-row"><span class="bar-label">Wed</span><div class="bar-track"><div class="bar-fill" style="width:45%;"></div></div><span class="bar-val">45%</span></div>
+                        <div class="bar-row"><span class="bar-label">Thu</span><div class="bar-track"><div class="bar-fill" style="width:90%;"></div></div><span class="bar-val">90%</span></div>
+                        <div class="bar-row"><span class="bar-label">Fri</span><div class="bar-track"><div class="bar-fill" style="width:70%;"></div></div><span class="bar-val">70%</span></div>
+                    </div>
+
+                    <!-- GYM CARD (new) -->
+                    <div class="gym-card" id="gymCard">
+                        <div class="gym-header">
+                            <h4><i class="fas fa-dumbbell" style="color:#6c63ff;margin-right:8px;"></i> Gym Check-in</h4>
+                            <span class="gym-status" id="gymStatus">Not joined</span>
+                        </div>
+                        <div class="gym-buttons">
+                            <button class="btn-join" id="joinGymBtn"><i class="fas fa-user-plus"></i> Join Gym</button>
+                            <button class="btn-checkout" id="checkoutBtn"><i class="fas fa-map-marker-alt"></i> Checkout</button>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- PROFILE -->
-            <div id="profile" class="screen">
-                <button class="back-btn" id="backFromProfile" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
-                <div id="ownProfileContainer"></div>
-            </div>
-
-            <!-- VIEW PROFILE -->
-            <div id="viewProfile" class="screen">
-                <button class="back-btn" id="backFromViewProfile" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
-                <div id="viewProfileContainer"></div>
-            </div>
-
-            <!-- COACH PANEL -->
-            <div id="coachPanel" class="screen">
-                <button class="back-btn" id="backFromCoach" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
-                <div style="font-weight:700; margin-bottom:16px; color:#0a2540; display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:1.2rem;">
-                    🏋️ Moderate Dashboard <span class="coach-badge">COACH</span>
+                <!-- PROFILE TAB -->
+                <div class="tab-page" id="tabProfile">
+                    <div class="profile-card">
+                        <div class="profile-avatar" id="profileAvatar">
+                            AV
+                            <div class="upload-btn" id="uploadPhotoBtn" title="Upload photo">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        <div class="profile-name">Aman Verma</div>
+                        <div class="profile-bio">Tech enthusiast · Developer · Learner</div>
+                        <div class="profile-stats-row">
+                            <div class="ps-item"><div class="num">12</div><div class="lbl">Posts</div></div>
+                            <div class="ps-item"><div class="num">45</div><div class="lbl">Followers</div></div>
+                            <div class="ps-item"><div class="num">28</div><div class="lbl">Following</div></div>
+                        </div>
+                    </div>
+                    <div class="profile-extra">
+                        <div class="row"><span class="lbl">Member since</span><span>Jan 2026</span></div>
+                        <div class="row"><span class="lbl">Location</span><span>Mumbai, India</span></div>
+                        <div class="row"><span class="lbl">Email</span><span>aman@connecthub.in</span></div>
+                    </div>
                 </div>
-                <div id="pendingPostsContainer">
-                    <div class="empty-subtle">✨ No pending posts to review.</div>
-                </div>
+
             </div>
 
-            <!-- GYM DETAIL -->
-            <div id="gymDetail" class="screen">
-                <button class="back-btn" id="backFromGym" style="align-self:flex-start; margin-bottom:12px;">← Back</button>
-                <div class="gym-detail-card">
-                    <div class="gym-emoji">🏋️</div>
-                    <div class="gym-name">Fitness Gym</div>
-                    <div class="gym-location">📍 Darbhanga</div>
-                    <div class="gym-radius">Radius: 60m</div>
-                    <div class="welcome-text">Welcome to Fitness Gym<br>Train hard, stay consistent!</div>
-                    <button class="join-gym-btn" id="joinGymBtn">🔗 Join Gym</button>
-                </div>
-            </div>
-
-            <!-- NAV -->
-            <nav class="nav-bar" id="mainNav">
-                <button class="nav-btn active-nav" data-screen="home">
-                    <span class="nav-icon">🏠</span><span>Home</span>
+            <!-- Bottom Nav -->
+            <div class="bottom-nav" id="bottomNav">
+                <button class="nav-item active" data-tab="tabHome">
+                    <i class="fas fa-home"></i><span>Home</span>
                 </button>
-                <button class="nav-btn" data-screen="community">
-                    <span class="nav-icon">👥</span><span>Community</span>
+                <button class="nav-item" data-tab="tabCommunity">
+                    <i class="fas fa-users"></i><span>Community</span>
+                    <span class="badge">3</span>
                 </button>
-                <button class="nav-btn" id="navPostBtn">
-                    <span class="nav-icon">✨</span><span>Post</span>
+                <button class="nav-item" data-tab="tabStats">
+                    <i class="fas fa-chart-simple"></i><span>Stats</span>
                 </button>
-                <button class="nav-btn" data-screen="profile">
-                    <span class="nav-icon">👤</span><span>Profile</span>
+                <button class="nav-item" data-tab="tabProfile">
+                    <i class="fas fa-user"></i><span>Profile</span>
                 </button>
-            </nav>
-        </div>
-
-        <!-- CHAT OVERLAY -->
-        <div id="chatArea" class="chat-area">
-            <div class="chat-top">
-                <button class="back-btn" id="backFromChat">← Back</button>
-                <span class="chat-title" id="chatTitle">🏛️ Stoic Wisdom Chat</span>
-                <div>
-                    <button class="chat-checkin-btn" id="chatCheckinBtn" title="Check-in">📍</button>
-                    <button class="chat-upload-btn" id="chatUploadBtn">📷</button>
-                </div>
-            </div>
-            <div id="chatMessagesArea" class="chat-messages">
-                <div class="message other-message"><span class="msg-meta">🏛️ Stoic Bot</span>Welcome to the deep logic sanctuary. Share quotes or ask layout inquiries.</div>
-            </div>
-            <div id="uploadPreview" class="upload-preview">
-                <img id="previewThumb" src="" alt="Preview" />
-                <div class="spinner" id="uploadSpinner"></div>
-                <span id="uploadStatus"></span>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" placeholder="Write inside deep thought thread…" />
-                <button id="sendMsgBtn">Send</button>
-            </div>
-            <input type="file" id="chatFileInput" accept="image/*" style="display:none" />
-        </div>
-
-        <!-- POST MODAL -->
-        <div id="uploadModal" class="modal">
-            <div class="modal-content">
-                <h3>✨ Compose Mind Post</h3>
-                <textarea id="postText" rows="4" placeholder="What realization did you encounter today?"></textarea>
-                <div class="upload-area" id="imageUploadLabel">📸 Add photo/video</div>
-                <input type="file" id="mediaInput" accept="image/*,video/*" style="display:none" />
-                <img id="imagePreview" class="preview-img" />
-                <video id="videoPreview" class="preview-video" controls></video>
-                <button class="btn-primary" id="submitPostBtn">Publish Timeline</button>
-                <button class="btn-secondary" id="closeModalBtn">Discard</button>
             </div>
         </div>
-
-        <!-- PROFILE PIC MODAL -->
-        <div id="profilePicModal" class="modal">
-            <div class="modal-content">
-                <h3>Update Profile Picture</h3>
-                <div class="upload-area" id="profilePicUploadLabel">📸 Choose new profile picture</div>
-                <input type="file" id="profilePicInput" accept="image/*" style="display:none" />
-                <img id="profilePicPreview" style="max-width:100%; border-radius:50%; margin-top:12px; display:none;" />
-                <button class="btn-primary" id="submitProfilePicBtn">Update</button>
-                <button class="btn-secondary" id="closeProfilePicModal">Cancel</button>
-            </div>
-        </div>
-
-        <!-- COMMENT MODAL -->
-        <div id="commentModal" class="modal">
-            <div class="modal-content">
-                <h3>Comments</h3>
-                <div id="commentsList" style="max-height:300px; overflow-y:auto; margin-bottom:12px;"></div>
-                <div style="display:flex; gap:8px; margin-top:8px;">
-                    <input type="text" id="newCommentInput" placeholder="Write a comment..." style="flex:1; border:1.5px solid #dbeafe; border-radius:30px; padding:12px 18px; outline:none;" />
-                    <button id="submitCommentBtn" style="background:#1e90ff; border:none; padding:12px 24px; border-radius:30px; color:#fff; font-weight:600; cursor:pointer;">Post</button>
-                </div>
-                <button class="btn-secondary" id="closeCommentModal" style="margin-top:12px;">Close</button>
-            </div>
-        </div>
-
-        <!-- TOAST -->
-        <div id="toast" class="toast"></div>
 
     </div>
 
     <script>
-        // ─── BACKEND CONSTANTS ───
-        const API_BASE_URL = 'https://gymownerui.saketjhaa3.workers.dev';
-        const ABLY_KEY = "iYpArg.XhHP3g:4fsCL3e0Cf4SutL579ypnUXAHY9Iz7dwO7hbUXeh7Bk";
-        const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dp0lnalyv/auto/upload';
-        const CLOUDINARY_PRESET = 'samar123';
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DATA
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        // ─── STATE ───
-        let currentUser = null;
-        let currentGroup = 'Stoic Wisdom';
-        let selectedMedia = null;
-        let ably = null;
-        let channel = null;
-        let viewingProfileEmail = null;
-        let currentPostIdForComments = null;
-        let followingSet = new Set();
+        const DEMO_USER = { id: 0, name: 'Aman Verma', initials: 'AV', color: '#6c63ff' };
 
-        // ─── DOM REFS ───
+        const communityUsers = [{
+            id: 1,
+            name: 'Riya Sharma',
+            initials: 'RS',
+            status: 'online',
+            color: 'linear-gradient(135deg,#f093fb,#f5576c)',
+            messages: [
+                { sender: 'Riya', text: 'Hey everyone! 👋', time: '10:32' },
+                { sender: 'You', text: 'Hi Riya! Welcome 🙌', time: '10:35' },
+            ]
+        }, {
+            id: 2,
+            name: 'Arjun Singh',
+            initials: 'AS',
+            status: 'online',
+            color: 'linear-gradient(135deg,#4facfe,#00f2fe)',
+            messages: [
+                { sender: 'Arjun', text: 'Anyone working on React?', time: '09:15' },
+                { sender: 'You', text: 'I am! What\'s up?', time: '09:18' },
+                { sender: 'Arjun', text: 'Need some help with hooks', time: '09:20' },
+            ]
+        }, {
+            id: 3,
+            name: 'Priya Patel',
+            initials: 'PP',
+            status: 'offline',
+            color: 'linear-gradient(135deg,#a18cd1,#fbc2eb)',
+            messages: [
+                { sender: 'Priya', text: 'Good morning all! ☀️', time: '08:00' },
+                { sender: 'You', text: 'Good morning Priya!', time: '08:05' },
+                { sender: 'Priya', text: 'How is everyone doing?', time: '08:10' },
+                { sender: 'You', text: 'All good! You?', time: '08:12' },
+            ]
+        }, {
+            id: 4,
+            name: 'Vikram Raj',
+            initials: 'VR',
+            status: 'online',
+            color: 'linear-gradient(135deg,#ffecd2,#fcb69f)',
+            messages: [
+                { sender: 'Vikram', text: 'Check out my new portfolio! 🎨', time: '07:45' },
+                { sender: 'You', text: 'Looks amazing Vikram!', time: '07:50' },
+                { sender: 'Vikram', text: 'Thanks man! 🙏', time: '07:52' },
+            ]
+        }];
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DOM REFS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
         const loginScreen = document.getElementById('loginScreen');
-        const appMain = document.getElementById('appMain');
-        const loginName = document.getElementById('loginName');
-        const loginEmail = document.getElementById('loginEmail');
-        const userLoginBtn = document.getElementById('userLoginBtn');
-        const gymOwnerLoginBtn = document.getElementById('gymOwnerLoginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const userNameDisplay = document.getElementById('userNameDisplay');
-        const pointsDisplay = document.getElementById('pointsDisplay');
-        const feedContainer = document.getElementById('feedContainer');
-        const chatMessagesArea = document.getElementById('chatMessagesArea');
+        const appScreen = document.getElementById('appScreen');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+
+        const navItems = document.querySelectorAll('.nav-item');
+        const tabPages = {
+            home: document.getElementById('tabHome'),
+            community: document.getElementById('tabCommunity'),
+            stats: document.getElementById('tabStats'),
+            profile: document.getElementById('tabProfile'),
+        };
+        const contactList = document.getElementById('contactList');
+        const communityListState = document.getElementById('communityListState');
+        const communityChatState = document.getElementById('communityChatState');
+        const chatBackBtn = document.getElementById('chatBackBtn');
+        const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
-        const sendMsgBtn = document.getElementById('sendMsgBtn');
-        const backFromChat = document.getElementById('backFromChat');
-        const backFromProfile = document.getElementById('backFromProfile');
-        const backFromViewProfile = document.getElementById('backFromViewProfile');
-        const backFromCoach = document.getElementById('backFromCoach');
-        const backFromGym = document.getElementById('backFromGym');
-        const navPostBtn = document.getElementById('navPostBtn');
-        const uploadModal = document.getElementById('uploadModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const submitPostBtn = document.getElementById('submitPostBtn');
-        const postText = document.getElementById('postText');
-        const mediaInput = document.getElementById('mediaInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const videoPreview = document.getElementById('videoPreview');
-        const imageUploadLabel = document.getElementById('imageUploadLabel');
-        const ownProfileContainer = document.getElementById('ownProfileContainer');
-        const viewProfileContainer = document.getElementById('viewProfileContainer');
-        const pendingPostsContainer = document.getElementById('pendingPostsContainer');
-        const chatUploadBtn = document.getElementById('chatUploadBtn');
-        const chatFileInput = document.getElementById('chatFileInput');
-        const chatCheckinBtn = document.getElementById('chatCheckinBtn');
-        const uploadPreview = document.getElementById('uploadPreview');
-        const previewThumb = document.getElementById('previewThumb');
-        const uploadSpinner = document.getElementById('uploadSpinner');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const profilePicModal = document.getElementById('profilePicModal');
-        const profilePicUploadLabel = document.getElementById('profilePicUploadLabel');
-        const profilePicInput = document.getElementById('profilePicInput');
-        const profilePicPreview = document.getElementById('profilePicPreview');
-        const submitProfilePicBtn = document.getElementById('submitProfilePicBtn');
-        const closeProfilePicModal = document.getElementById('closeProfilePicModal');
-        const commentModal = document.getElementById('commentModal');
-        const commentsListDiv = document.getElementById('commentsList');
-        const newCommentInput = document.getElementById('newCommentInput');
-        const submitCommentBtn = document.getElementById('submitCommentBtn');
-        const closeCommentModal = document.getElementById('closeCommentModal');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const chatHeaderName = document.getElementById('chatHeaderName');
+        const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
+        const chatHeaderStatus = document.getElementById('chatHeaderStatus');
+        const uploadBtn = document.getElementById('uploadPhotoBtn');
+
+        // gym elements
         const joinGymBtn = document.getElementById('joinGymBtn');
-        const chatTitle = document.getElementById('chatTitle');
-        const headerAvatar = document.getElementById('headerAvatar');
-        const toastEl = document.getElementById('toast');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const gymStatus = document.getElementById('gymStatus');
 
-        // ─── TOAST ───
-        let toastTimer = null;
+        let activeChatUserId = null;
+        let gymJoined = false;
 
-        function showToast(msg) {
-            toastEl.textContent = msg;
-            toastEl.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
-        }
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  LOGIN
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        // ─── HELPERS ───
-        function updatePointsDisplay(points) {
-            pointsDisplay.innerText = '⭐ ' + (points || 0);
-        }
-
-        async function fetchJSON(url, options) {
-            const fullUrl = url.startsWith('http') ? url : API_BASE_URL + url;
-            const res = await fetch(fullUrl, {
-                ...options,
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) }
-            });
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        }
-
-        function escapeHtml(s) {
-            if (!s) return '';
-            return s.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-        }
-
-        function showScreen(id) {
-            document.getElementById('chatArea').classList.remove('active');
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(id);
-            if (target) target.classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            const navBtn = document.querySelector(`.nav-btn[data-screen="${id}"]`);
-            if (navBtn) navBtn.classList.add('active-nav');
-            if (id === 'chat') updateChatUploadVisibility();
-        }
-
-        // ─── AUTH ───
-        async function checkLogin() {
-            try {
-                const data = await fetchJSON('/api/me', { credentials: 'include' });
-                if (data.name && data.email) {
-                    currentUser = data;
-                    userNameDisplay.innerText = currentUser.name;
-                    updatePointsDisplay(currentUser.points || 0);
-                    updateHeaderAvatar(currentUser.profilePic, currentUser.name);
-                    loginScreen.style.display = 'none';
-                    appMain.style.display = 'flex';
-                    await loadFollowingSet();
-                    initAbly();
-                    loadPosts();
-                    loadMessages();
-                    if (currentUser.role === 'gym_owner') {
-                        let coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
-                        if (!coachBtn) {
-                            const nav = document.querySelector('.nav-bar');
-                            const btn = document.createElement('button');
-                            btn.className = 'nav-btn';
-                            btn.setAttribute('data-screen', 'coachPanel');
-                            btn.innerHTML = `<span class="nav-icon">🏋️</span><span>Coach</span>`;
-                            btn.addEventListener('click', () => { loadPendingPosts();
-                                showScreen('coachPanel'); });
-                            nav.appendChild(btn);
-                        }
-                        showScreen('coachPanel');
-                        loadPendingPosts();
-                    } else {
-                        const coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
-                        if (coachBtn) coachBtn.remove();
-                        showScreen('home');
-                    }
-                    loadOwnProfile();
-                    updateChatUploadVisibility();
-                } else {
-                    loginScreen.style.display = 'flex';
-                    appMain.style.display = 'none';
-                }
-            } catch (e) {
-                loginScreen.style.display = 'flex';
-                appMain.style.display = 'none';
-            }
-        }
-
-        function updateHeaderAvatar(pic, name) {
-            if (pic) {
-                headerAvatar.innerHTML = '<img src="' + escapeHtml(pic) + '" alt="avatar" />';
+        function handleLogin() {
+            const user = loginUsername.value.trim();
+            const pass = loginPassword.value.trim();
+            if (user === 'demo' && pass === '1234') {
+                loginError.classList.remove('show');
+                loginScreen.classList.remove('active');
+                appScreen.classList.add('active');
+                renderContacts();
+                setTimeout(() => {
+                    const firstInput = document.querySelector('.chat-input-row input');
+                    if (firstInput) firstInput.focus();
+                }, 400);
             } else {
-                headerAvatar.innerHTML = name ? name.charAt(0).toUpperCase() : 'U';
+                loginError.textContent = 'Invalid credentials. Try demo / 1234';
+                loginError.classList.add('show');
+                setTimeout(() => loginError.classList.remove('show'), 3000);
             }
         }
 
-        async function doLogin(role) {
-            const name = loginName.value.trim();
-            let email = loginEmail.value.trim();
-            if (!name || !email) return alert('Enter name and email');
-            if (role === 'gym_owner' && !email.includes('@')) email = email + '@gym.local';
-            const endpoint = role === 'gym_owner' ? '/api/gym-login' : '/api/login';
-            try {
-                const data = await fetchJSON(endpoint, {
-                    method: 'POST',
-                    body: JSON.stringify({ name, email }),
-                    credentials: 'include'
-                });
-                if (data.success) {
-                    currentUser = data.user;
-                    userNameDisplay.innerText = currentUser.name;
-                    updatePointsDisplay(currentUser.points || 0);
-                    updateHeaderAvatar(currentUser.profilePic, currentUser.name);
-                    loginScreen.style.display = 'none';
-                    appMain.style.display = 'flex';
-                    await loadFollowingSet();
-                    initAbly();
-                    loadPosts();
-                    loadMessages();
-                    if (currentUser.role === 'gym_owner') {
-                        let coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
-                        if (!coachBtn) {
-                            const nav = document.querySelector('.nav-bar');
-                            const btn = document.createElement('button');
-                            btn.className = 'nav-btn';
-                            btn.setAttribute('data-screen', 'coachPanel');
-                            btn.innerHTML = `<span class="nav-icon">🏋️</span><span>Coach</span>`;
-                            btn.addEventListener('click', () => { loadPendingPosts();
-                                showScreen('coachPanel'); });
-                            nav.appendChild(btn);
-                        }
-                        showScreen('coachPanel');
-                        loadPendingPosts();
-                    } else {
-                        const coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
-                        if (coachBtn) coachBtn.remove();
-                        showScreen('home');
-                    }
-                    loadOwnProfile();
-                    updateChatUploadVisibility();
-                } else alert('Login failed');
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        }
+        loginBtn.addEventListener('click', handleLogin);
+        loginUsername.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginPassword.focus(); });
+        loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
 
-        async function doLogout() {
-            await fetch(API_BASE_URL + '/api/logout', { method: 'POST', credentials: 'include' });
-            if (ably) ably.close();
-            loginScreen.style.display = 'flex';
-            appMain.style.display = 'none';
-            loginName.value = '';
-            loginEmail.value = '';
-            const coachBtn = document.querySelector('.nav-btn[data-screen="coachPanel"]');
-            if (coachBtn) coachBtn.remove();
-            showToast('Logged out');
-        }
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  NAVIGATION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        // ─── FOLLOWS ───
-        async function loadFollowingSet() {
-            try {
-                const res = await fetchJSON('/api/following?email=' + encodeURIComponent(currentUser.email), { credentials: 'include' });
-                followingSet = new Set(res.following || []);
-            } catch (e) { console.error(e); }
-        }
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                navItems.forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                Object.values(tabPages).forEach(p => p.classList.remove('active'));
+                const target = document.getElementById(tabId);
+                if (target) target.classList.add('active');
+                document.getElementById('appContent').scrollTop = 0;
 
-        async function toggleFollow(targetEmail, btnElement) {
-            const isFollowing = btnElement.classList.contains('following');
-            try {
-                if (isFollowing) {
-                    await fetchJSON('/api/unfollow', { method: 'POST', body: JSON.stringify({ targetEmail }), credentials: 'include' });
-                    followingSet.delete(targetEmail);
-                    btnElement.classList.remove('following');
-                    btnElement.innerText = '+ Follow';
-                    showToast('Unfollowed');
-                } else {
-                    await fetchJSON('/api/follow', { method: 'POST', body: JSON.stringify({ targetEmail }), credentials: 'include' });
-                    followingSet.add(targetEmail);
-                    btnElement.classList.add('following');
-                    btnElement.innerText = '✓ Following';
-                    showToast('Followed!');
-                }
-                // Refresh profile if we're viewing it
-                if (viewingProfileEmail === targetEmail) {
-                    viewOtherUserProfile(targetEmail);
-                }
-            } catch (e) { alert('Failed to update follow'); }
-        }
-
-        // ─── ABLY ───
-        function initAbly() {
-            if (ably) ably.close();
-            ably = new Ably.Realtime({ key: ABLY_KEY });
-            channel = ably.channels.get('gym-chat');
-            channel.subscribe('message', (msg) => {
-                const data = msg.data;
-                if (data.type === 'new_post') {
-                    addPostToDOM(data.data, true);
-                    if (data.data.points !== undefined) updatePointsDisplay(data.data.points);
-                } else if (data.type === 'new_message' && data.data.group === currentGroup) {
-                    addMessageToChat(data.data, false);
-                } else if (data.type === 'like_update') {
-                    updatePostLikeUI(data.data.postId, data.data.likeCount);
-                } else if (data.type === 'new_comment') {
-                    if (currentPostIdForComments === data.data.postId) loadComments(data.data.postId);
-                    updatePostCommentCount(data.data.postId, data.data.commentCount);
-                } else if (data.type === 'delete_comment') {
-                    if (currentPostIdForComments === data.data.postId) loadComments(data.data.postId);
-                    updatePostCommentCount(data.data.postId, data.data.commentCount);
-                } else if (data.type === 'moderation_update') {
-                    if (currentUser?.role === 'gym_owner') loadPendingPosts();
-                    if (data.data.pointsUpdate && data.data.pointsUpdate.email === currentUser.email) {
-                        updatePointsDisplay(data.data.pointsUpdate.points);
-                    }
-                    const postDiv = document.querySelector(`.post-card[data-post-id="${data.data.postId}"]`);
-                    if (postDiv) {
-                        let badgeSpan = postDiv.querySelector('.mod-status');
-                        if (!badgeSpan && data.data.status !== 'pending') {
-                            badgeSpan = document.createElement('span');
-                            badgeSpan.className = 'mod-status ' + data.data.status;
-                            badgeSpan.innerText = data.data.status.toUpperCase();
-                            const header = postDiv.querySelector('.post-header');
-                            if (header) header.appendChild(badgeSpan);
-                        } else if (badgeSpan) {
-                            badgeSpan.className = 'mod-status ' + data.data.status;
-                            badgeSpan.innerText = data.data.status.toUpperCase();
-                        }
-                    }
+                if (tabId !== 'tabCommunity') {
+                    closeChat();
                 }
             });
-        }
+        });
 
-        // ─── POSTS ───
-        async function loadPosts() {
-            try {
-                const posts = await fetchJSON('/api/posts', { credentials: 'include' });
-                feedContainer.innerHTML = '';
-                posts.forEach(p => addPostToDOM(p, false));
-            } catch (e) { console.error(e); }
-        }
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  COMMUNITY — RENDER CONTACTS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        function addPostToDOM(post, isNew) {
-            const div = document.createElement('div');
-            div.className = 'post-card';
-            div.dataset.postId = post.id;
+        function renderContacts() {
+            contactList.innerHTML = '';
+            communityUsers.forEach(user => {
+                const lastMsg = user.messages.length > 0 ? user.messages[user.messages.length - 1] : null;
+                const preview = lastMsg ?
+                    `<span class="sender">${lastMsg.sender === 'You' ? 'You' : lastMsg.sender}:</span> ${lastMsg.text}` :
+                    'No messages yet';
 
-            let modBadge = '';
-            if (post.moderationStatus && post.moderationStatus !== 'pending') {
-                modBadge = '<span class="mod-status ' + post.moderationStatus + '">' + post.moderationStatus.toUpperCase() +
-                    '</span>';
-            }
-
-            const avatarHtml = post.userProfilePic ? '<img src="' + escapeHtml(post.userProfilePic) +
-                '" style="width:100%;height:100%;object-fit:cover;">' : post.username.charAt(0).toUpperCase();
-
-            let mediaHtml = '';
-            if (post.media) {
-                if (post.media.match(/\.(jpg|jpeg|png|gif|webp)/i)) mediaHtml = '<img src="' + post.media +
-                    '" class="post-image" />';
-                else if (post.media.match(/\.(mp4|webm|mov)/i)) mediaHtml = '<video src="' + post.media +
-                    '" controls class="post-image" style="max-height:300px;"></video>';
-                else mediaHtml = '<a href="' + post.media + '" target="_blank">📎 Download</a>';
-            }
-
-            const likeClass = post.likedByUser ? 'action-btn liked' : 'action-btn';
-            const likeIcon = post.likedByUser ? '❤️' : '🤍';
-            const isFollowing = followingSet.has(post.userEmail);
-            const followBtnHtml = (post.userEmail !== currentUser.email) ?
-                '<button class="follow-btn-small ' + (isFollowing ? 'following' : '') + '" data-email="' + escapeHtml(post
-                    .userEmail) + '">' + (isFollowing ? '✓ Following' : '+ Follow') + '</button>' :
-                '';
-
-            div.innerHTML = `
-                <div class="post-header">
-                    <div class="avatar">${avatarHtml}</div>
-                    <div class="post-name" data-email="${escapeHtml(post.userEmail)}">${escapeHtml(post.username)}</div>
-                    ${followBtnHtml}
-                    <div class="post-time">${escapeHtml(post.timestamp)}</div>
-                    ${modBadge}
-                </div>
-                <div class="post-text">${escapeHtml(post.text)}</div>
-                ${mediaHtml}
-                <div class="post-actions">
-                    <button class="${likeClass}" data-action="like" data-postid="${post.id}">${likeIcon} <span class="like-count">${post.likeCount || 0}</span></button>
-                    <button class="action-btn" data-action="comment" data-postid="${post.id}">💬 <span class="comment-count">${post.commentCount || 0}</span></button>
-                </div>
-            `;
-
-            const likeBtn = div.querySelector('[data-action="like"]');
-            likeBtn.addEventListener('click', (e) => { e.stopPropagation();
-                toggleLike(post.id, likeBtn); });
-
-            const commentBtn = div.querySelector('[data-action="comment"]');
-            commentBtn.addEventListener('click', (e) => { e.stopPropagation();
-                openCommentModal(post.id); });
-
-            const nameSpan = div.querySelector('.post-name');
-            nameSpan.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const email = nameSpan.getAttribute('data-email');
-                if (email === currentUser.email) {
-                    showScreen('profile');
-                    loadOwnProfile();
-                } else {
-                    viewOtherUserProfile(email);
-                }
-            });
-
-            const followBtn = div.querySelector('.follow-btn-small');
-            if (followBtn) {
-                followBtn.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    const targetEmail = followBtn.getAttribute('data-email');
-                    await toggleFollow(targetEmail, followBtn);
-                });
-            }
-
-            if (isNew && feedContainer.firstChild) {
-                feedContainer.insertBefore(div, feedContainer.firstChild);
-            } else {
-                feedContainer.appendChild(div);
-            }
-        }
-
-        function updatePostLikeUI(postId, newLikeCount) {
-            const postDiv = document.querySelector(`.post-card[data-post-id="${postId}"]`);
-            if (postDiv) {
-                const likeSpan = postDiv.querySelector('.like-count');
-                if (likeSpan) likeSpan.innerText = newLikeCount;
-            }
-        }
-
-        function updatePostCommentCount(postId, newCount) {
-            const postDiv = document.querySelector(`.post-card[data-post-id="${postId}"]`);
-            if (postDiv) {
-                const commentSpan = postDiv.querySelector('.comment-count');
-                if (commentSpan) commentSpan.innerText = newCount;
-            }
-        }
-
-        async function toggleLike(postId, btnElement) {
-            const isLiked = btnElement.classList.contains('liked');
-            const action = isLiked ? 'unlike' : 'like';
-            try {
-                const res = await fetchJSON('/api/like', {
-                    method: 'POST',
-                    body: JSON.stringify({ postId, action }),
-                    credentials: 'include'
-                });
-                if (res.success) {
-                    if (action === 'like') {
-                        btnElement.classList.add('liked');
-                        btnElement.innerHTML = '❤️ <span class="like-count">' + res.likeCount + '</span>';
-                    } else {
-                        btnElement.classList.remove('liked');
-                        btnElement.innerHTML = '🤍 <span class="like-count">' + res.likeCount + '</span>';
-                    }
-                }
-            } catch (e) { alert('Error: ' + e.message); }
-        }
-
-        async function createPost(text, mediaUrl, source) {
-            const payload = { text, media: mediaUrl };
-            if (source) payload.source = source;
-            const res = await fetchJSON('/api/posts', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-                credentials: 'include'
-            });
-            if (res.points !== undefined) updatePointsDisplay(res.points);
-            showToast('Post published!');
-        }
-
-        // ─── COMMENTS ───
-        async function openCommentModal(postId) {
-            currentPostIdForComments = postId;
-            await loadComments(postId);
-            commentModal.style.display = 'flex';
-        }
-
-        async function loadComments(postId) {
-            try {
-                const comments = await fetchJSON('/api/comments?postId=' + postId, { credentials: 'include' });
-                commentsListDiv.innerHTML = '';
-                comments.forEach(c => {
-                    const avatarHtml = c.userProfilePic ? '<img src="' + escapeHtml(c.userProfilePic) +
-                        '" style="width:100%;height:100%;object-fit:cover;">' : c.username.charAt(0).toUpperCase();
-                    const commentDiv = document.createElement('div');
-                    commentDiv.className = 'comment-item';
-                    commentDiv.innerHTML = `
-                        <div class="comment-avatar">${avatarHtml}</div>
-                        <div class="comment-content">
-                            <div class="comment-name">${escapeHtml(c.username)}</div>
-                            <div class="comment-text">${escapeHtml(c.text)}</div>
-                            <div style="font-size:10px;color:#1e90ff;">${escapeHtml(c.timestamp)}</div>
-                        </div>
-                        ${c.userEmail === currentUser.email ? '<button class="comment-delete" data-comment-id="' + c.id + '">🗑️</button>' : ''}
-                    `;
-                    commentsListDiv.appendChild(commentDiv);
-                    const delBtn = commentDiv.querySelector('.comment-delete');
-                    if (delBtn) delBtn.addEventListener('click', () => deleteComment(postId, c.id));
-                });
-            } catch (e) { commentsListDiv.innerHTML = '<p>Failed to load comments</p>'; }
-        }
-
-        async function deleteComment(postId, commentId) {
-            try {
-                await fetchJSON('/api/comment', {
-                    method: 'DELETE',
-                    body: JSON.stringify({ postId, commentId }),
-                    credentials: 'include'
-                });
-                await loadComments(postId);
-                showToast('Comment deleted');
-            } catch (e) { alert('Failed to delete comment'); }
-        }
-
-        async function addComment() {
-            const text = newCommentInput.value.trim();
-            if (!text) return;
-            try {
-                await fetchJSON('/api/comment', {
-                    method: 'POST',
-                    body: JSON.stringify({ postId: currentPostIdForComments, text }),
-                    credentials: 'include'
-                });
-                newCommentInput.value = '';
-                await loadComments(currentPostIdForComments);
-                showToast('Comment posted');
-            } catch (e) { alert('Failed to post comment'); }
-        }
-
-        // ─── CHAT ───
-        async function loadMessages() {
-            try {
-                const msgs = await fetchJSON('/api/messages?group=' + encodeURIComponent(currentGroup), { credentials: 'include' });
-                chatMessagesArea.innerHTML = '';
-                msgs.forEach(m => addMessageToChat(m, false));
-            } catch (e) { console.error(e); }
-        }
-
-        function addMessageToChat(msg, isNew) {
-            const div = document.createElement('div');
-            div.className = 'message';
-            if (msg.username === currentUser.name) div.classList.add('my-message');
-            else div.classList.add('other-message');
-
-            let mediaHtml = '';
-            if (msg.media) {
-                mediaHtml = '<img src="' + escapeHtml(msg.media) + '" class="chat-image" />';
-                if (msg.pending) {
-                    mediaHtml += '<div class="pending-badge">⏳ Pending Approval</div>';
-                }
-            }
-            div.innerHTML = `
-                <span class="msg-meta">${escapeHtml(msg.username)}</span>
-                ${escapeHtml(msg.text)}
-                ${mediaHtml}
-                <div style="font-size:0.7rem; opacity:0.6; margin-top:4px;">${escapeHtml(msg.timestamp)}</div>
-            `;
-            chatMessagesArea.appendChild(div);
-            chatMessagesArea.scrollTop = chatMessagesArea.scrollHeight;
-            if (chatMessagesArea.children.length > 50) chatMessagesArea.removeChild(chatMessagesArea.firstChild);
-        }
-
-        async function sendMessage(text, media, pending) {
-            const msgText = text || '';
-            try {
-                const body = { text: msgText, group: currentGroup };
-                if (media) { body.media = media;
-                    body.pending = pending || false; }
-                await fetchJSON('/api/messages', {
-                    method: 'POST',
-                    body: JSON.stringify(body),
-                    credentials: 'include'
-                });
-            } catch (e) { alert('Failed to send'); }
-        }
-
-        function updateChatUploadVisibility() {
-            if (currentGroup === 'Stoic Wisdom' && currentUser) {
-                chatUploadBtn.style.display = 'inline-block';
-            } else {
-                chatUploadBtn.style.display = 'none';
-            }
-        }
-
-        // ─── PROFILE ───
-        // FIX: Use /api/me for own profile to bypass the buggy /api/user/ endpoint
-        async function loadOwnProfile() {
-            if (!currentUser) return;
-            try {
-                // Use /api/me which we know works (used in checkLogin)
-                const userData = await fetchJSON('/api/me', { credentials: 'include' });
-                const userPosts = await fetchJSON('/api/user-posts?email=' + encodeURIComponent(currentUser.email), { credentials: 'include' });
-                renderProfile(userData, userPosts, true);
-                if (userData.points !== undefined) updatePointsDisplay(userData.points);
-                updateHeaderAvatar(userData.profilePic, userData.name);
-            } catch (err) {
-                console.error('Profile load error:', err);
-                ownProfileContainer.innerHTML = '<p style="color:#ef4444;">Error loading profile: ' + escapeHtml(err.message) + '</p>';
-            }
-        }
-
-        async function viewOtherUserProfile(email) {
-            viewingProfileEmail = email;
-            try {
-                const userData = await fetchJSON('/api/user/' + encodeURIComponent(email), { credentials: 'include' });
-                const userPosts = await fetchJSON('/api/user-posts?email=' + encodeURIComponent(email), { credentials: 'include' });
-                // refresh following set from server
-                const followingList = await fetchJSON('/api/following?email=' + encodeURIComponent(currentUser.email), { credentials: 'include' });
-                followingSet = new Set(followingList.following || []);
-                const isFollowing = followingSet.has(email);
-                renderProfile(userData, userPosts, false, isFollowing);
-                showScreen('viewProfile');
-            } catch (err) {
-                console.error('View profile error:', err);
-                alert('Could not load user profile: ' + err.message);
-            }
-        }
-
-        function renderProfile(userData, userPosts, isOwn, isFollowing = false) {
-            const container = isOwn ? ownProfileContainer : viewProfileContainer;
-            const profilePic = userData.profilePic || '';
-            const avatarHtml = profilePic ? '<img src="' + escapeHtml(profilePic) +
-                '" style="width:100%;height:100%;object-fit:cover;">' : userData.name.charAt(0).toUpperCase();
-
-            let actionButton = '';
-            if (!isOwn) {
-                actionButton = `<button class="follow-btn ${isFollowing ? 'following' : ''}" id="followActionBtn">${isFollowing ? '✓ Following' : '+ Follow'}</button>`;
-            } else {
-                actionButton = '<button class="change-pic-btn" id="changeProfilePicBtn">🖼️ Change Profile Picture</button>';
-            }
-
-            let postsHtml = '<h3 style="margin-top:20px;color:#0a2540;">Posts</h3><div id="profilePostsList">';
-            if (userPosts.length === 0) {
-                postsHtml += '<p style="color:#6a8aaa;">No posts yet.</p>';
-            } else {
-                userPosts.forEach(post => {
-                    let mediaHtml = '';
-                    if (post.media) {
-                        if (post.media.match(/\.(jpg|jpeg|png|gif|webp)/i)) mediaHtml = '<img src="' + post.media +
-                            '" class="post-image" style="max-height:200px;" />';
-                        else if (post.media.match(/\.(mp4|webm|mov)/i)) mediaHtml = '<video src="' + post.media +
-                            '" controls class="post-image" style="max-height:200px;"></video>';
-                        else mediaHtml = '<a href="' + post.media + '" target="_blank">📎 Download</a>';
-                    }
-                    postsHtml += `
-                        <div class="post-card" style="background:white;">
-                            <div class="post-text">${escapeHtml(post.text)}</div>
-                            ${mediaHtml}
-                            <div class="post-time" style="margin-top:8px;color:#1e90ff;">${escapeHtml(post.timestamp)}</div>
-                        </div>
-                    `;
-                });
-            }
-            postsHtml += '</div>';
-
-            container.innerHTML = `
-                <div class="profile-card">
-                    <div class="profile-pic-large">${avatarHtml}</div>
-                    <h3>${escapeHtml(userData.name)}</h3>
-                    <div class="email">${escapeHtml(userData.email)}</div>
-                    <div class="profile-stats">
-                        <div><div class="stat-number" id="statPosts">${userPosts.length}</div><div class="stat-label">Posts</div></div>
-                        <div><div class="stat-number" id="statFollowers">${userData.followersCount || 0}</div><div class="stat-label">Followers</div></div>
-                        <div><div class="stat-number" id="statFollowing">${userData.followingCount || 0}</div><div class="stat-label">Following</div></div>
-                        <div><div class="stat-number" id="statPoints">${userData.points || 0}</div><div class="stat-label">⭐ Points</div></div>
+                const div = document.createElement('div');
+                div.className = 'contact-item';
+                div.dataset.userId = user.id;
+                div.innerHTML = `
+                    <div class="ci-avatar" style="background:${user.color};">${user.initials}</div>
+                    <div class="ci-info">
+                        <div class="ci-name">${user.name}</div>
+                        <div class="ci-preview">${preview}</div>
                     </div>
-                    ${actionButton}
-                </div>
-                ${postsHtml}
-            `;
-
-            if (!isOwn) {
-                const followBtn = document.getElementById('followActionBtn');
-                if (followBtn) {
-                    followBtn.addEventListener('click', async () => {
-                        const currentlyFollowing = followBtn.classList.contains('following');
-                        try {
-                            if (currentlyFollowing) {
-                                await fetchJSON('/api/unfollow', { method: 'POST', body: JSON.stringify({ targetEmail: userData
-                                        .email }), credentials: 'include' });
-                                followingSet.delete(userData.email);
-                                followBtn.classList.remove('following');
-                                followBtn.innerText = '+ Follow';
-                                showToast('Unfollowed');
-                            } else {
-                                await fetchJSON('/api/follow', { method: 'POST', body: JSON.stringify({ targetEmail: userData
-                                        .email }), credentials: 'include' });
-                                followingSet.add(userData.email);
-                                followBtn.classList.add('following');
-                                followBtn.innerText = '✓ Following';
-                                showToast('Followed!');
-                            }
-                            // Refresh profile to update counts
-                            viewOtherUserProfile(userData.email);
-                        } catch (e) { alert('Failed to update follow'); }
-                    });
-                }
-            } else {
-                const changeBtn = document.getElementById('changeProfilePicBtn');
-                if (changeBtn) changeBtn.addEventListener('click', () => profilePicModal.style.display = 'flex');
-            }
-        }
-
-        // ─── PROFILE PICTURE ───
-        async function updateProfilePicture(file) {
-            try {
-                const url = await uploadToCloudinary(file);
-                await fetchJSON('/api/update-profile-pic', {
-                    method: 'POST',
-                    body: JSON.stringify({ profilePicUrl: url }),
-                    credentials: 'include'
-                });
-                currentUser.profilePic = url;
-                profilePicModal.style.display = 'none';
-                showToast('Profile picture updated!');
-                loadOwnProfile();
-                loadPosts();
-                updateHeaderAvatar(url, currentUser.name);
-            } catch (err) {
-                alert('Upload failed: ' + err.message);
-            }
-        }
-
-        // ─── CLOUDINARY ───
-        async function uploadToCloudinary(file) {
-            const fd = new FormData();
-            fd.append('file', file);
-            fd.append('upload_preset', CLOUDINARY_PRESET);
-            const res = await fetch(CLOUDINARY_URL, { method: 'POST', body: fd });
-            if (!res.ok) throw new Error('Upload failed');
-            const data = await res.json();
-            return data.secure_url;
-        }
-
-        // ─── GYM & CHECKIN ───
-        async function handleJoinGym() {
-            if (!currentUser) return alert('Please login first');
-            try {
-                const data = await fetchJSON('/api/join-gym', {
-                    method: 'POST',
-                    body: JSON.stringify({ gymId: 'fitness_gym' }),
-                    credentials: 'include'
-                });
-                showToast(data.success ? '✅ Joined Fitness Gym' : '❌ Failed');
-            } catch (err) { alert('Network error'); }
-        }
-
-        async function performCheckIn() {
-            if (!currentUser) return alert('Please login first');
-            if (!navigator.geolocation) return alert('Geolocation not supported');
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const { latitude, longitude } = pos.coords;
-                try {
-                    const data = await fetchJSON('/api/checkin', {
-                        method: 'POST',
-                        body: JSON.stringify({ lat: latitude, lng: longitude }),
-                        credentials: 'include'
-                    });
-                    if (data.success) {
-                        if (data.already) {
-                            showToast('✅ Already checked in today! Points: ' + data.points);
-                        } else {
-                            showToast('✅ Check-in successful! +' + data.points + ' pts');
-                        }
-                        if (data.points !== undefined) updatePointsDisplay(data.points);
-                    } else {
-                        showToast('❌ ' + data.distance + 'm away – must be within 60m. Points reset!');
-                        if (data.points !== undefined) updatePointsDisplay(data.points);
-                    }
-                } catch (err) { alert('Network error'); }
-            }, () => alert('Location access denied'));
-        }
-
-        // ─── COACH PANEL ───
-        async function loadPendingPosts() {
-            if (!currentUser || currentUser.role !== 'gym_owner') return;
-            try {
-                const posts = await fetchJSON('/api/pending-posts', { credentials: 'include' });
-                pendingPostsContainer.innerHTML = '';
-                if (posts.length === 0) {
-                    pendingPostsContainer.innerHTML = '<div class="empty-subtle">✨ No pending posts to review.</div>';
-                    return;
-                }
-                posts.forEach(post => {
-                    const div = document.createElement('div');
-                    div.className = 'post-card';
-                    let mediaHtml = '';
-                    if (post.media) {
-                        if (post.media.match(/\.(jpg|jpeg|png|gif|webp)/i)) mediaHtml = '<img src="' + post.media +
-                            '" class="post-image" />';
-                        else if (post.media.match(/\.(mp4|webm|mov)/i)) mediaHtml = '<video src="' + post.media +
-                            '" controls class="post-image"></video>';
-                        else mediaHtml = '<a href="' + post.media + '" target="_blank">📎 Download</a>';
-                    }
-                    div.innerHTML = `
-                        <div class="post-header">
-                            <div class="avatar">${post.userProfilePic ? '<img src="' + escapeHtml(post.userProfilePic) + '" style="width:100%;height:100%;object-fit:cover;">' : post.username.charAt(0).toUpperCase()}</div>
-                            <div class="post-name">${escapeHtml(post.username)}</div>
-                            <div class="post-time">${escapeHtml(post.timestamp)}</div>
-                        </div>
-                        <div class="post-text">${escapeHtml(post.text)}</div>
-                        ${mediaHtml}
-                        <div class="mod-actions">
-                            <button class="accept-btn" data-id="${post.id}" data-action="accept">✅ Accept</button>
-                            <button class="reject-btn" data-id="${post.id}" data-action="reject">❌ Reject</button>
-                        </div>
-                    `;
-                    pendingPostsContainer.appendChild(div);
-                    const acceptBtn = div.querySelector('.accept-btn');
-                    const rejectBtn = div.querySelector('.reject-btn');
-                    acceptBtn.addEventListener('click', () => moderatePost(post.id, 'accept'));
-                    rejectBtn.addEventListener('click', () => moderatePost(post.id, 'reject'));
-                });
-            } catch (e) {
-                pendingPostsContainer.innerHTML = '<p>Error loading pending posts</p>';
-            }
-        }
-
-        async function moderatePost(postId, action) {
-            try {
-                const res = await fetchJSON('/api/moderate-post', {
-                    method: 'POST',
-                    body: JSON.stringify({ postId, action }),
-                    credentials: 'include'
-                });
-                if (res.success) {
-                    showToast('Post ' + (action === 'accept' ? 'accepted' : 'rejected') + '!');
-                    loadPendingPosts();
-                    loadPosts();
-                    if (res.pointsUpdate && res.pointsUpdate.email === currentUser.email) {
-                        updatePointsDisplay(res.pointsUpdate.points);
-                    }
-                } else alert('Moderation failed');
-            } catch (e) { alert('Error: ' + e.message); }
-        }
-
-        // ─── EVENT BINDINGS ───
-        userLoginBtn.addEventListener('click', () => doLogin('user'));
-        gymOwnerLoginBtn.addEventListener('click', () => doLogin('gym_owner'));
-        logoutBtn.addEventListener('click', doLogout);
-
-        document.querySelectorAll('.nav-btn[data-screen]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.dataset.screen;
-                if (id === 'profile') loadOwnProfile();
-                showScreen(id);
+                    <div class="ci-status ${user.status}">${user.status === 'online' ? '● Online' : '○ Offline'}</div>
+                    <div class="ci-arrow"><i class="fas fa-chevron-right"></i></div>
+                `;
+                div.addEventListener('click', () => openChat(user.id));
+                contactList.appendChild(div);
             });
-        });
+        }
 
-        navPostBtn.addEventListener('click', () => uploadModal.style.display = 'flex');
-        closeModalBtn.addEventListener('click', () => uploadModal.style.display = 'none');
-        uploadModal.addEventListener('click', (e) => { if (e.target === uploadModal) uploadModal.style.display = 'none'; });
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  COMMUNITY — OPEN / CLOSE CHAT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        imageUploadLabel.addEventListener('click', () => mediaInput.click());
-        mediaInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (file.type.startsWith('image/')) {
-                selectedMedia = file;
-                imagePreview.style.display = 'block';
-                videoPreview.style.display = 'none';
-                const reader = new FileReader();
-                reader.onload = ev => { imagePreview.src = ev.target.result; };
-                reader.readAsDataURL(file);
-            } else if (file.type.startsWith('video/')) {
-                selectedMedia = file;
-                imagePreview.style.display = 'none';
-                videoPreview.style.display = 'block';
-                const reader = new FileReader();
-                reader.onload = ev => { videoPreview.src = ev.target.result; };
-                reader.readAsDataURL(file);
-            } else {
-                alert('Select image or video');
-            }
-        });
+        function openChat(userId) {
+            const user = communityUsers.find(u => u.id === userId);
+            if (!user) return;
+            activeChatUserId = userId;
 
-        submitPostBtn.addEventListener('click', async () => {
-            const text = postText.value.trim();
-            if (!text && !selectedMedia) { alert('Write something or add media'); return; }
-            let mediaUrl = '';
-            if (selectedMedia) {
-                try {
-                    mediaUrl = await uploadToCloudinary(selectedMedia);
-                } catch (err) { alert('Upload failed'); return; }
-            }
-            await createPost(text, mediaUrl);
-            uploadModal.style.display = 'none';
-            selectedMedia = null;
-            mediaInput.value = '';
-            postText.value = '';
-            imagePreview.style.display = 'none';
-            videoPreview.style.display = 'none';
-        });
+            chatHeaderName.textContent = user.name;
+            chatHeaderAvatar.textContent = user.initials;
+            chatHeaderAvatar.style.background = user.color;
+            chatHeaderStatus.textContent = user.status === 'online' ? '● Online' : '○ Offline';
+            chatHeaderStatus.className = 'ch-status ' + user.status;
 
-        document.getElementById('cardGym').addEventListener('click', () => showScreen('gymDetail'));
-        document.getElementById('cardCheckin').addEventListener('click', performCheckIn);
-        document.getElementById('cardStoic').addEventListener('click', () => {
-            currentGroup = 'Stoic Wisdom';
-            chatTitle.innerText = '🏛️ Stoic Wisdom Chat';
-            document.getElementById('chatArea').classList.add('active');
-            loadMessages();
-            updateChatUploadVisibility();
-        });
+            renderChatMessages(user);
 
-        backFromChat.addEventListener('click', () => document.getElementById('chatArea').classList.remove('active'));
-        backFromProfile.addEventListener('click', () => showScreen('home'));
-        backFromViewProfile.addEventListener('click', () => { viewingProfileEmail = null;
-            showScreen('home'); });
-        backFromCoach.addEventListener('click', () => showScreen('community'));
-        backFromGym.addEventListener('click', () => showScreen('community'));
+            communityListState.classList.add('hidden');
+            communityChatState.classList.add('active');
 
-        joinGymBtn.addEventListener('click', handleJoinGym);
+            setTimeout(() => chatInput.focus(), 100);
+        }
 
-        sendMsgBtn.addEventListener('click', () => {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            sendMessage(text);
-            chatInput.value = '';
-        });
-        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMsgBtn.click(); });
+        function closeChat() {
+            communityListState.classList.remove('hidden');
+            communityChatState.classList.remove('active');
+            activeChatUserId = null;
+            renderContacts();
+        }
 
-        chatUploadBtn.addEventListener('click', () => chatFileInput.click());
-        chatFileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (!file.type.startsWith('image/')) {
-                alert('Please select an image.');
-                chatFileInput.value = '';
+        chatBackBtn.addEventListener('click', closeChat);
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  CHAT — RENDER MESSAGES
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderChatMessages(user) {
+            chatMessages.innerHTML = '';
+            if (!user || user.messages.length === 0) {
+                chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Say hello! 👋</div>';
                 return;
             }
-            uploadPreview.style.display = 'flex';
-            previewThumb.src = URL.createObjectURL(file);
-            uploadSpinner.style.display = 'block';
-            uploadStatus.innerText = 'Uploading...';
-            try {
-                const mediaUrl = await uploadToCloudinary(file);
-                uploadStatus.innerText = 'Uploaded!';
-                uploadSpinner.style.display = 'none';
-                const caption = chatInput.value.trim() || '📸 Shared an image';
-                await sendMessage(caption, mediaUrl, true);
-                chatInput.value = '';
-                await createPost(caption, mediaUrl, 'stoic');
-                setTimeout(() => { uploadPreview.style.display = 'none'; }, 2000);
-            } catch (err) {
-                alert('Upload failed: ' + err.message);
-                uploadSpinner.style.display = 'none';
-                uploadStatus.innerText = 'Failed';
-            } finally {
-                chatFileInput.value = '';
+            user.messages.forEach(msg => {
+                const isSent = msg.sender === 'You';
+                const div = document.createElement('div');
+                div.className = `chat-msg ${isSent ? 'sent' : 'received'}`;
+                div.innerHTML = `
+                    ${msg.text}
+                    <span class="msg-time">${msg.time}</span>
+                `;
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  CHAT — SEND MESSAGE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text || activeChatUserId === null) return;
+
+            const user = communityUsers.find(u => u.id === activeChatUserId);
+            if (!user) return;
+
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+            user.messages.push({ sender: 'You', text: text, time: timeStr });
+
+            renderChatMessages(user);
+            chatInput.value = '';
+
+            // auto-reply
+            if (user.messages.length % 3 === 0) {
+                const replies = [
+                    'That\'s great! 👍', 'Interesting! Tell me more.', 'Cool! 😎',
+                    'Got it!', 'Nice!', 'Haha 😄', 'Absolutely!', 'Sure thing!',
+                    'Let me think about that...', 'Awesome!', 'Really? 😮', 'I agree!'
+                ];
+                const reply = replies[Math.floor(Math.random() * replies.length)];
+                setTimeout(() => {
+                    const replyTime = new Date();
+                    const rt = String(replyTime.getHours()).padStart(2, '0') + ':' + String(replyTime.getMinutes())
+                        .padStart(2, '0');
+                    user.messages.push({ sender: user.name, text: reply, time: rt });
+                    renderChatMessages(user);
+                    renderContacts();
+                }, 600 + Math.random() * 1400);
+            }
+
+            renderContacts();
+        }
+
+        chatSendBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  GYM — JOIN & CHECKOUT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function updateGymUI() {
+            if (gymJoined) {
+                gymStatus.textContent = '✅ Joined';
+                gymStatus.className = 'gym-status joined';
+                joinGymBtn.disabled = true;
+                joinGymBtn.innerHTML = '<i class="fas fa-check"></i> Joined';
+                checkoutBtn.disabled = false;
+                checkoutBtn.style.opacity = '1';
+            } else {
+                gymStatus.textContent = 'Not joined';
+                gymStatus.className = 'gym-status';
+                joinGymBtn.disabled = false;
+                joinGymBtn.innerHTML = '<i class="fas fa-user-plus"></i> Join Gym';
+                checkoutBtn.disabled = true;
+                checkoutBtn.style.opacity = '0.4';
+            }
+        }
+
+        // initial state
+        updateGymUI();
+
+        joinGymBtn.addEventListener('click', function() {
+            if (!gymJoined) {
+                gymJoined = true;
+                alert('🏋️ You have joined the gym!');
+                updateGymUI();
             }
         });
 
-        chatCheckinBtn.addEventListener('click', performCheckIn);
-
-        profilePicUploadLabel.addEventListener('click', () => profilePicInput.click());
-        profilePicInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = ev => { profilePicPreview.src = ev.target.result;
-                    profilePicPreview.style.display = 'block'; };
-                reader.readAsDataURL(file);
-                submitProfilePicBtn.onclick = () => updateProfilePicture(file);
-            } else alert('Select an image');
-        });
-        closeProfilePicModal.addEventListener('click', () => {
-            profilePicModal.style.display = 'none';
-            profilePicPreview.style.display = 'none';
-            profilePicInput.value = '';
-        });
-
-        submitCommentBtn.addEventListener('click', addComment);
-        closeCommentModal.addEventListener('click', () => commentModal.style.display = 'none');
-        newCommentInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addComment(); });
-
-        setInterval(() => {
-            if (currentUser?.role === 'gym_owner' && document.getElementById('coachPanel').classList.contains('active')) {
-                loadPendingPosts();
+        checkoutBtn.addEventListener('click', function() {
+            if (!gymJoined) {
+                alert('⚠️ Please join the gym first before checking out.');
+                return;
             }
-        }, 10000);
+            // simulate GPS request
+            alert('📍 Please enable GPS to complete checkout.\n(Tap OK to simulate GPS enabled)');
+            // after OK, we can optionally update status
+        });
 
-        // ─── START ───
-        checkLogin();
-        console.log('🧠 MindSpace — Fully integrated with backend API');
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PROFILE — UPLOAD PHOTO (non-functional)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        uploadBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            alert('📸 Photo upload is coming soon! Just the icon for now.');
+        });
+
+        document.getElementById('profileAvatar').addEventListener('click', function(e) {
+            if (e.target.closest('.upload-btn')) return;
+            alert('🖼️ Tap the camera icon to upload a photo (coming soon!)');
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  KEYBOARD SHORTCUT: Escape to close chat / go home
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (communityChatState.classList.contains('active')) {
+                    closeChat();
+                } else {
+                    const homeBtn = document.querySelector('.nav-item[data-tab="tabHome"]');
+                    if (homeBtn) homeBtn.click();
+                }
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        loginUsername.focus();
+        renderContacts();
+
+        console.log('✅ ConnectHub UI ready!');
+        console.log('💡 Login: demo / 1234');
+        console.log('🏋️ Gym buttons added in Stats tab: Join Gym (first tap) → Checkout (asks for GPS)');
     </script>
+
 </body>
 </html>
