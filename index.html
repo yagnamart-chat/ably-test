@@ -1504,6 +1504,7 @@
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  STORE
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const API_BASE = "https://dilse.sauravjha.workers.dev/api";
 
         let users = [];
         let currentUser = null;
@@ -1862,7 +1863,7 @@
 
         gotoSignup.addEventListener('click', () => setAuthMode(true));
 
-        function handleSignup() {
+        async function handleSignup() {
             const name = signupName.value.trim();
             const email = signupEmail.value.trim();
             const password = signupPassword.value.trim();
@@ -1898,26 +1899,48 @@
                 return;
             }
 
-            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-            const newUser = {
-                id: Date.now(),
-                name: name,
-                email: email,
-                password: password,
-                initials: initials,
-                joined: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-                color: '#6c63ff',
-                avatar: null,
-                photos: []
-            };
-            users.push(newUser);
-            currentUser = newUser;
-            enterApp(newUser);
-            signupName.value = '';
-            signupEmail.value = '';
-            signupPassword.value = '';
-            signupConfirm.value = '';
-            authError.classList.remove('show');
+            try {
+
+    const response = await fetch(`${API_BASE}/auth/signup`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name,
+            email,
+            password
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        authError.textContent = data.error || "Signup failed.";
+        authError.classList.add("show");
+        return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    currentUser = data.user;
+
+    signupName.value = "";
+    signupEmail.value = "";
+    signupPassword.value = "";
+    signupConfirm.value = "";
+
+    authError.classList.remove("show");
+
+    enterApp(data.user);
+
+} catch (err) {
+
+    authError.textContent = "Unable to connect to server.";
+    authError.classList.add("show");
+
+}
         }
 
         signupBtn.addEventListener('click', handleSignup);
@@ -1926,28 +1949,65 @@
         signupPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') signupConfirm.focus(); });
         signupConfirm.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSignup(); });
 
-        function handleLogin() {
-            const name = loginName.value.trim();
-            const password = loginPassword.value.trim();
-            loginError.textContent = '';
-            loginError.classList.remove('show');
+        async function handleLogin() {
 
-            if (!name || !password) {
-                loginError.textContent = 'Please enter both username and password.';
-                loginError.classList.add('show');
-                return;
-            }
-            const user = users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.password === password);
-            if (!user) {
-                loginError.textContent = 'Invalid username or password.';
-                loginError.classList.add('show');
-                return;
-            }
-            currentUser = user;
-            enterApp(user);
-            loginName.value = '';
-            loginPassword.value = '';
-            loginError.classList.remove('show');
+    const name = loginName.value.trim();
+    const password = loginPassword.value.trim();
+
+    loginError.textContent = "";
+    loginError.classList.remove("show");
+
+    if (!name || !password) {
+        loginError.textContent = "Please enter both username and password.";
+        loginError.classList.add("show");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(`${API_BASE}/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            loginError.textContent = data.error || "Invalid username or password.";
+            loginError.classList.add("show");
+            return;
+        }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        currentUser = data.user;
+
+        loginName.value = "";
+        loginPassword.value = "";
+
+        loginError.classList.remove("show");
+
+        enterApp(data.user);
+
+    } catch (err) {
+
+        console.error(err);
+
+        loginError.textContent = "Unable to connect to server.";
+        loginError.classList.add("show");
+
+    }
+
+}
+
+}
         }
 
         loginBtn.addEventListener('click', handleLogin);
