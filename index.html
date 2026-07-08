@@ -350,6 +350,7 @@
             color: #fff;
             flex-shrink: 0;
             overflow: hidden;
+            background: #6c63ff;
         }
         .post-avatar img {
             width: 100%;
@@ -406,11 +407,22 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            cursor: default;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .post-actions span:hover {
+            color: #6c63ff;
         }
         .post-actions span i {
             font-size: 15px;
             color: #9ca3af;
+            transition: color 0.2s;
+        }
+        .post-actions span.liked i {
+            color: #ef4444;
+        }
+        .post-actions span.liked {
+            color: #ef4444;
         }
 
         /* ─── COMMUNITY ─── */
@@ -518,6 +530,7 @@
             color: #fff;
             flex-shrink: 0;
             overflow: hidden;
+            background: #6c63ff;
         }
         .contact-item .ci-avatar img {
             width: 100%;
@@ -620,6 +633,7 @@
             color: #fff;
             flex-shrink: 0;
             overflow: hidden;
+            background: #6c63ff;
         }
         .chat-header .ch-avatar img {
             width: 100%;
@@ -1405,12 +1419,12 @@
                         </div>
                         <div class="stat-card orange">
                             <span class="icon"><i class="fas fa-comments"></i></span>
-                            <div class="number">1.2K</div>
+                            <div class="number" id="statMessages">0</div>
                             <div class="label">Total Messages</div>
                         </div>
                         <div class="stat-card blue">
                             <span class="icon"><i class="fas fa-user-check"></i></span>
-                            <div class="number">56</div>
+                            <div class="number" id="statActive">0</div>
                             <div class="label">Active Today</div>
                         </div>
                     </div>
@@ -1446,9 +1460,9 @@
                         <div class="profile-name" id="profileName">Aman Verma</div>
                         <div class="profile-bio" id="profileBio">Tech enthusiast · Developer · Learner</div>
                         <div class="profile-stats-row">
-                            <div class="ps-item"><div class="num">12</div><div class="lbl">Posts</div></div>
-                            <div class="ps-item"><div class="num">45</div><div class="lbl">Followers</div></div>
-                            <div class="ps-item"><div class="num">28</div><div class="lbl">Following</div></div>
+                            <div class="ps-item"><div class="num">0</div><div class="lbl">Posts</div></div>
+                            <div class="ps-item"><div class="num">0</div><div class="lbl">Followers</div></div>
+                            <div class="ps-item"><div class="num">0</div><div class="lbl">Following</div></div>
                         </div>
                     </div>
                     <div class="profile-extra">
@@ -1502,71 +1516,24 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  STORE
+        //  CONFIG
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const API_BASE = "https://dilse.sauravjha.workers.dev/api";
+        const API_BASE = "https://dilse.sauravjha.workers.dev/api";
 
-        let users = [];
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  STATE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         let currentUser = null;
         let isSignupMode = true;
         let posts = [];
+        let allUsers = [];
         let activeChatUserId = null;
         let gymJoined = false;
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  COMMUNITY DATA
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        const communityUsers = [{
-            id: 1,
-            name: 'Riya Sharma',
-            initials: 'RS',
-            status: 'online',
-            color: 'linear-gradient(135deg,#f093fb,#f5576c)',
-            messages: [
-                { sender: 'Riya', text: 'Hey everyone! 👋', time: '10:32' },
-                { sender: 'You', text: 'Hi Riya! Welcome 🙌', time: '10:35' },
-            ]
-        }, {
-            id: 2,
-            name: 'Arjun Singh',
-            initials: 'AS',
-            status: 'online',
-            color: 'linear-gradient(135deg,#4facfe,#00f2fe)',
-            messages: [
-                { sender: 'Arjun', text: 'Anyone working on React?', time: '09:15' },
-                { sender: 'You', text: 'I am! What\'s up?', time: '09:18' },
-                { sender: 'Arjun', text: 'Need some help with hooks', time: '09:20' },
-            ]
-        }, {
-            id: 3,
-            name: 'Priya Patel',
-            initials: 'PP',
-            status: 'offline',
-            color: 'linear-gradient(135deg,#a18cd1,#fbc2eb)',
-            messages: [
-                { sender: 'Priya', text: 'Good morning all! ☀️', time: '08:00' },
-                { sender: 'You', text: 'Good morning Priya!', time: '08:05' },
-                { sender: 'Priya', text: 'How is everyone doing?', time: '08:10' },
-                { sender: 'You', text: 'All good! You?', time: '08:12' },
-            ]
-        }, {
-            id: 4,
-            name: 'Vikram Raj',
-            initials: 'VR',
-            status: 'online',
-            color: 'linear-gradient(135deg,#ffecd2,#fcb69f)',
-            messages: [
-                { sender: 'Vikram', text: 'Check out my new portfolio! 🎨', time: '07:45' },
-                { sender: 'You', text: 'Looks amazing Vikram!', time: '07:50' },
-                { sender: 'Vikram', text: 'Thanks man! 🙏', time: '07:52' },
-            ]
-        }];
+        let token = localStorage.getItem('token');
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  DOM REFS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         const authScreen = document.getElementById('authScreen');
         const appScreen = document.getElementById('appScreen');
         const signupForm = document.getElementById('signupForm');
@@ -1613,6 +1580,8 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         const gymStatus = document.getElementById('gymStatus');
         const statPosts = document.getElementById('statPosts');
         const statUsers = document.getElementById('statUsers');
+        const statMessages = document.getElementById('statMessages');
+        const statActive = document.getElementById('statActive');
         const navItems = document.querySelectorAll('.nav-item');
         const tabPages = {
             home: document.getElementById('tabHome'),
@@ -1629,208 +1598,34 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         const submitPostBtn = document.getElementById('submitPostBtn');
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  INITIAL POSTS
+        //  HELPERS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function initPosts() {
-            const demo = [{
-                id: 101,
-                userId: 1,
-                authorName: 'Riya Sharma',
-                authorInitials: 'RS',
-                authorColor: 'linear-gradient(135deg,#f093fb,#f5576c)',
-                authorAvatar: null,
-                content: 'Hey everyone! Just joined this amazing community. Excited to connect with you all! 🚀',
-                image: null,
-                timestamp: '2h ago',
-                likes: 24,
-                comments: 7
-            }, {
-                id: 102,
-                userId: 2,
-                authorName: 'Arjun Singh',
-                authorInitials: 'AS',
-                authorColor: 'linear-gradient(135deg,#4facfe,#00f2fe)',
-                authorAvatar: null,
-                content: 'Check out this new project I\'m working on. It\'s going to be huge! 💻✨',
-                image: null,
-                timestamp: '4h ago',
-                likes: 18,
-                comments: 5
-            }, {
-                id: 103,
-                userId: 3,
-                authorName: 'Priya Patel',
-                authorInitials: 'PP',
-                authorColor: 'linear-gradient(135deg,#a18cd1,#fbc2eb)',
-                authorAvatar: null,
-                content: 'Any recommendations for good books to read this month? 📚✨',
-                image: null,
-                timestamp: '6h ago',
-                likes: 31,
-                comments: 12
-            }, {
-                id: 104,
-                userId: 4,
-                authorName: 'Vikram Raj',
-                authorInitials: 'VR',
-                authorColor: 'linear-gradient(135deg,#ffecd2,#fcb69f)',
-                authorAvatar: null,
-                content: 'Finally finished my portfolio website. What do you guys think? 🎨',
-                image: null,
-                timestamp: '8h ago',
-                likes: 42,
-                comments: 15
-            }];
-            posts.push(...demo);
-        }
-        initPosts();
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  RENDER FEED
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function renderFeed() {
-            feedContainer.innerHTML = '';
-            if (posts.length === 0) {
-                feedContainer.innerHTML =
-                    '<div style="text-align:center;color:#9ca3af;padding:40px 0;">No posts yet. Be the first to share!</div>';
-                return;
-            }
-            const sorted = [...posts].sort((a, b) => b.id - a.id);
-            sorted.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                const timeDisplay = post.timestamp || 'Just now';
-                let imageHtml = '';
-                if (post.image) {
-                    imageHtml = `<div class="post-image"><img src="${post.image}" alt="Post image" /></div>`;
-                }
-                // Determine avatar display
-                let avatarHtml = '';
-                if (post.authorAvatar) {
-                    avatarHtml = `<img src="${post.authorAvatar}" alt="${post.authorName}" />`;
-                } else {
-                    avatarHtml = post.authorInitials;
-                }
-                card.innerHTML = `
-                    <div class="post-header">
-                        <div class="post-avatar" style="background:${post.authorColor || '#6c63ff'};">
-                            ${avatarHtml}
-                        </div>
-                        <div class="post-user">
-                            <div class="name">${post.authorName}</div>
-                            <div class="time"><i class="far fa-clock"></i> ${timeDisplay}</div>
-                        </div>
-                    </div>
-                    <div class="post-content">${post.content || ''}</div>
-                    ${imageHtml}
-                    <div class="post-actions">
-                        <span><i class="far fa-heart"></i> ${post.likes || 0}</span>
-                        <span><i class="far fa-comment"></i> ${post.comments || 0}</span>
-                        <span><i class="far fa-share-from-square"></i> 0</span>
-                    </div>
-                `;
-                feedContainer.appendChild(card);
-            });
-            updateStats();
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  ADD POST
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function addPost(content, imageDataUrl) {
-            if (!currentUser) return;
-            const now = new Date();
-            const timeStr = now.toLocaleDateString('en-US', { hour: 'numeric', minute: '2-digit' });
-            const newPost = {
-                id: Date.now(),
-                userId: currentUser.id,
-                authorName: currentUser.name,
-                authorInitials: currentUser.initials,
-                authorColor: currentUser.color || '#6c63ff',
-                authorAvatar: currentUser.avatar || null, // store current avatar
-                content: content || '',
-                image: imageDataUrl || null,
-                timestamp: timeStr,
-                likes: 0,
-                comments: 0
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             };
-            posts.push(newPost);
-            renderFeed();
-            // Also save image to user's photos if any
-            if (imageDataUrl) {
-                if (!currentUser.photos) currentUser.photos = [];
-                currentUser.photos.push(imageDataUrl);
-                renderProfilePhotos();
-            }
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  RENDER PROFILE PHOTOS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function renderProfilePhotos() {
-            photoGrid.innerHTML = '';
-            if (!currentUser || !currentUser.photos || currentUser.photos.length === 0) {
-                photoGrid.innerHTML = '<div class="empty-photos">No photos uploaded yet.</div>';
-                return;
-            }
-            currentUser.photos.forEach(url => {
-                const item = document.createElement('div');
-                item.className = 'photo-item';
-                item.innerHTML = `<img src="${url}" alt="User photo" />`;
-                photoGrid.appendChild(item);
-            });
+        function showAuthError(msg) {
+            authError.textContent = msg;
+            authError.classList.add('show');
+            setTimeout(() => authError.classList.remove('show'), 3000);
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  UPDATE STATS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function updateStats() {
-            statPosts.textContent = posts.length;
-            statUsers.textContent = users.length;
+        function showLoginError(msg) {
+            loginError.textContent = msg;
+            loginError.classList.add('show');
+            setTimeout(() => loginError.classList.remove('show'), 3000);
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  UPDATE USER AVATAR IN ALL POSTS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function updateUserAvatarInPosts(userId, avatarUrl) {
-            posts.forEach(post => {
-                if (post.userId === userId) {
-                    post.authorAvatar = avatarUrl;
-                }
-            });
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  UPDATE UI AVATARS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function updateAllAvatars() {
-            if (!currentUser) return;
-            const avatar = currentUser.avatar;
-            const initials = currentUser.initials;
-
-            // Mini avatar in top bar
-            miniAvatar.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
-            // Community current user
-            cuAvatar.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
-            // Profile avatar
-            profileAvatarText.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
-            // If avatar is set, hide the text span (we keep it as container)
-            // We need to handle: profileAvatarText is a span, we replace its content
-            // For consistency, we'll keep profileAvatarText as container.
-            // We already set innerHTML above.
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  AUTH
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         function setAuthMode(mode) {
             isSignupMode = mode;
             if (mode) {
@@ -1850,17 +1645,7 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
             }
         }
 
-        gotoLogin.addEventListener('click', () => {
-            if (users.length === 0) {
-                loginError.textContent = 'No accounts yet. Please sign up first.';
-                loginError.classList.add('show');
-                setTimeout(() => loginError.classList.remove('show'), 2500);
-                setAuthMode(false);
-                return;
-            }
-            setAuthMode(false);
-        });
-
+        gotoLogin.addEventListener('click', () => setAuthMode(false));
         gotoSignup.addEventListener('click', () => setAuthMode(true));
 
         async function handleSignup() {
@@ -1871,76 +1656,31 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
             authError.textContent = '';
             authError.classList.remove('show');
 
-            if (!name || name.length < 2) {
-                authError.textContent = 'Please enter your full name (min 2 chars).';
-                authError.classList.add('show');
-                return;
-            }
-            if (!email || !email.includes('@')) {
-                authError.textContent = 'Please enter a valid email address.';
-                authError.classList.add('show');
-                return;
-            }
-            if (!password || password.length < 4) {
-                authError.textContent = 'Password must be at least 4 characters.';
-                authError.classList.add('show');
-                return;
-            }
-            if (password !== confirm) {
-                authError.textContent = 'Passwords do not match.';
-                authError.classList.add('show');
-                return;
-            }
-            const existing = users.find(u => u.name.toLowerCase() === name.toLowerCase() || u.email.toLowerCase() === email
-                .toLowerCase());
-            if (existing) {
-                authError.textContent = 'User with this name or email already exists.';
-                authError.classList.add('show');
-                return;
-            }
+            if (!name || name.length < 2) { showAuthError('Please enter your full name (min 2 chars).'); return; }
+            if (!email || !email.includes('@')) { showAuthError('Please enter a valid email address.'); return; }
+            if (!password || password.length < 4) { showAuthError('Password must be at least 4 characters.'); return; }
+            if (password !== confirm) { showAuthError('Passwords do not match.'); return; }
 
             try {
-
-    const response = await fetch(`${API_BASE}/auth/signup`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            name,
-            email,
-            password
-        })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        authError.textContent = data.error || "Signup failed.";
-        authError.classList.add("show");
-        return;
-    }
-
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-
-    currentUser = data.user;
-
-    signupName.value = "";
-    signupEmail.value = "";
-    signupPassword.value = "";
-    signupConfirm.value = "";
-
-    authError.classList.remove("show");
-
-    enterApp(data.user);
-
-} catch (err) {
-
-    authError.textContent = "Unable to connect to server.";
-    authError.classList.add("show");
-
-}
+                const res = await fetch(`${API_BASE}/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) { showAuthError(data.error || 'Signup failed.'); return; }
+                token = data.token;
+                localStorage.setItem('token', token);
+                currentUser = data.user;
+                signupName.value = '';
+                signupEmail.value = '';
+                signupPassword.value = '';
+                signupConfirm.value = '';
+                authError.classList.remove('show');
+                enterApp(currentUser);
+            } catch (err) {
+                showAuthError('Unable to connect to server.');
+            }
         }
 
         signupBtn.addEventListener('click', handleSignup);
@@ -1950,60 +1690,31 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         signupConfirm.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSignup(); });
 
         async function handleLogin() {
+            const name = loginName.value.trim();
+            const password = loginPassword.value.trim();
+            loginError.textContent = '';
+            loginError.classList.remove('show');
 
-    const name = loginName.value.trim();
-    const password = loginPassword.value.trim();
+            if (!name || !password) { showLoginError('Please enter both username and password.'); return; }
 
-    loginError.textContent = "";
-    loginError.classList.remove("show");
-
-    if (!name || !password) {
-        loginError.textContent = "Please enter both username and password.";
-        loginError.classList.add("show");
-        return;
-    }
-
-    try {
-
-        const response = await fetch(`${API_BASE}/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name,
-                password
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            loginError.textContent = data.error || "Invalid username or password.";
-            loginError.classList.add("show");
-            return;
-        }
-
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        currentUser = data.user;
-
-        loginName.value = "";
-        loginPassword.value = "";
-
-        loginError.classList.remove("show");
-
-        enterApp(data.user);
-
-    } catch (err) {
-
-        console.error(err);
-
-        loginError.textContent = "Unable to connect to server.";
-        loginError.classList.add("show");
-
-    }
+            try {
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, password })
+                });
+                const data = await res.json();
+                if (!res.ok) { showLoginError(data.error || 'Invalid username or password.'); return; }
+                token = data.token;
+                localStorage.setItem('token', token);
+                currentUser = data.user;
+                loginName.value = '';
+                loginPassword.value = '';
+                loginError.classList.remove('show');
+                enterApp(currentUser);
+            } catch (err) {
+                showLoginError('Unable to connect to server.');
+            }
         }
 
         loginBtn.addEventListener('click', handleLogin);
@@ -2013,93 +1724,384 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  ENTER / EXIT APP
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function enterApp(user) {
+        async function enterApp(user) {
             authScreen.classList.remove('active');
             appScreen.classList.add('active');
 
-            const displayName = user.name;
-            const initials = user.initials;
+            // Refresh user data from /auth/me
+            try {
+                const res = await fetch(`${API_BASE}/auth/me`, { headers: getHeaders() });
+                if (res.ok) {
+                    const data = await res.json();
+                    currentUser = data.user;
+                }
+            } catch (e) {}
 
+            // Update UI
+            const displayName = currentUser.name;
+            const initials = getInitials(displayName);
+            currentUser.initials = initials;
             userBadgeName.textContent = displayName.split(' ')[0];
-            // Update avatars
             updateAllAvatars();
             cuName.innerHTML = `${displayName} <span style="font-size:12px;font-weight:400;opacity:0.7;">(You)</span>`;
             profileName.textContent = displayName;
-            profileEmail.textContent = user.email || 'user@connecthub.in';
-            profileMemberSince.textContent = user.joined || 'Jan 2026';
-            profileBio.textContent = 'Tech enthusiast · Developer · Learner';
+            profileEmail.textContent = currentUser.email || 'user@connecthub.in';
+            profileMemberSince.textContent = currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Jan 2026';
+            profileBio.textContent = currentUser.bio || 'Tech enthusiast · Developer · Learner';
+
+            // Load data
+            await loadAllUsers();
+            await loadFeed();
+            await loadStats();
+            await loadProfilePhotos();
+            renderContacts();
+
+            // Check gym status
+            await checkGymStatus();
 
             closeChat();
-            renderContacts();
-            renderFeed();
-            renderProfilePhotos();
-            updateStats();
-
-            gymJoined = false;
-            updateGymUI();
-
             document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
-            console.log('✅ Logged in as:', displayName);
         }
 
         function logoutUser() {
             currentUser = null;
+            token = null;
+            localStorage.removeItem('token');
             appScreen.classList.remove('active');
             authScreen.classList.add('active');
-            if (users.length === 0) setAuthMode(true);
-            else { setAuthMode(false);
-                loginName.focus(); }
+            setAuthMode(true);
             gymJoined = false;
             updateGymUI();
             closeChat();
-            console.log('👋 Logged out');
         }
 
         logoutBtn.addEventListener('click', logoutUser);
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  NAVIGATION
+        //  FETCH HELPERS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const tabId = this.dataset.tab;
-                navItems.forEach(n => n.classList.remove('active'));
-                this.classList.add('active');
-                Object.values(tabPages).forEach(p => p.classList.remove('active'));
-                const target = document.getElementById(tabId);
-                if (target) target.classList.add('active');
-                document.getElementById('appContent').scrollTop = 0;
-                if (tabId !== 'tabCommunity') closeChat();
-                if (tabId === 'tabProfile') renderProfilePhotos();
-                if (tabId === 'tabStats') updateStats();
+        async function apiFetch(url, options = {}) {
+            const res = await fetch(url, {
+                ...options,
+                headers: {
+                    ...options.headers,
+                    'Authorization': `Bearer ${token}`
+                }
             });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || 'Request failed');
+            }
+            return res.json();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  LOAD DATA
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        async function loadAllUsers() {
+            try {
+                const data = await apiFetch(`${API_BASE}/users`);
+                allUsers = data.users || [];
+            } catch (e) { allUsers = []; }
+        }
+
+        async function loadFeed() {
+            try {
+                const data = await apiFetch(`${API_BASE}/posts`);
+                posts = data.posts || [];
+                renderFeed();
+            } catch (e) {
+                posts = [];
+                renderFeed();
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const data = await apiFetch(`${API_BASE}/stats`);
+                statPosts.textContent = data.totalPosts || 0;
+                statUsers.textContent = data.totalUsers || 0;
+                statMessages.textContent = data.totalMessages || 0;
+                statActive.textContent = data.activeToday || 0;
+            } catch (e) {
+                statPosts.textContent = '0';
+                statUsers.textContent = '0';
+                statMessages.textContent = '0';
+                statActive.textContent = '0';
+            }
+        }
+
+        async function loadProfilePhotos() {
+            try {
+                const data = await apiFetch(`${API_BASE}/profile/photos`);
+                const photos = data.photos || [];
+                renderProfilePhotos(photos);
+            } catch (e) {
+                renderProfilePhotos([]);
+            }
+        }
+
+        async function checkGymStatus() {
+            try {
+                const data = await apiFetch(`${API_BASE}/gym/status`);
+                gymJoined = data.joined || false;
+                updateGymUI();
+            } catch (e) {
+                gymJoined = false;
+                updateGymUI();
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER FEED
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function renderFeed() {
+            feedContainer.innerHTML = '';
+            if (!posts || posts.length === 0) {
+                feedContainer.innerHTML =
+                    '<div style="text-align:center;color:#9ca3af;padding:40px 0;">No posts yet. Be the first to share!</div>';
+                return;
+            }
+            const sorted = [...posts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            sorted.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'post-card';
+                const timeDisplay = post.created_at ? new Date(post.created_at).toLocaleDateString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit'
+                }) : 'Just now';
+                let imageHtml = '';
+                if (post.image) {
+                    imageHtml = `<div class="post-image"><img src="${post.image}" alt="Post image" /></div>`;
+                }
+                const avatarHtml = post.avatar ? `<img src="${post.avatar}" alt="${post.author}" />` : (post.author || 'User');
+                const likes = post.likes || 0;
+                const comments = post.comments || 0;
+                const isLiked = post.liked || false;
+
+                card.innerHTML = `
+                    <div class="post-header">
+                        <div class="post-avatar" style="background:${post.avatarColor || '#6c63ff'};">
+                            ${avatarHtml}
+                        </div>
+                        <div class="post-user">
+                            <div class="name">${post.author || 'Unknown'}</div>
+                            <div class="time"><i class="far fa-clock"></i> ${timeDisplay}</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${post.content || ''}</div>
+                    ${imageHtml}
+                    <div class="post-actions">
+                        <span class="like-btn ${isLiked ? 'liked' : ''}" data-postid="${post.id}">
+                            <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i> <span class="like-count">${likes}</span>
+                        </span>
+                        <span class="comment-toggle" data-postid="${post.id}">
+                            <i class="far fa-comment"></i> ${comments}
+                        </span>
+                        <span><i class="far fa-share-from-square"></i> 0</span>
+                    </div>
+                    <div class="comment-section" id="commentSection-${post.id}" style="display:none; margin-top:10px;">
+                        <div class="comment-list" id="commentList-${post.id}"></div>
+                        <div style="display:flex; gap:8px; margin-top:8px;">
+                            <input type="text" class="comment-input" placeholder="Write a comment..." data-postid="${post.id}" style="flex:1; padding:8px 12px; border:1px solid #e5e7eb; border-radius:20px; font-size:13px; outline:none;" />
+                            <button class="comment-submit" data-postid="${post.id}" style="background:#6c63ff; color:white; border:none; border-radius:20px; padding:8px 16px; cursor:pointer;">Post</button>
+                        </div>
+                    </div>
+                `;
+                feedContainer.appendChild(card);
+
+                // Like
+                card.querySelector('.like-btn').addEventListener('click', async function(e) {
+                    const postId = this.dataset.postid;
+                    try {
+                        const res = await apiFetch(`${API_BASE}/posts/${postId}/like`, { method: 'POST' });
+                        const likeSpan = this.querySelector('.like-count');
+                        const icon = this.querySelector('i');
+                        if (res.liked) {
+                            this.classList.add('liked');
+                            icon.className = 'fas fa-heart';
+                        } else {
+                            this.classList.remove('liked');
+                            icon.className = 'far fa-heart';
+                        }
+                        likeSpan.textContent = res.likes;
+                    } catch (err) {
+                        alert('Failed to toggle like.');
+                    }
+                });
+
+                // Comment toggle
+                card.querySelector('.comment-toggle').addEventListener('click', function() {
+                    const postId = this.dataset.postid;
+                    const section = document.getElementById(`commentSection-${postId}`);
+                    if (section.style.display === 'none') {
+                        section.style.display = 'block';
+                        loadComments(postId);
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+
+                // Comment submit
+                card.querySelector('.comment-submit').addEventListener('click', async function() {
+                    const postId = this.dataset.postid;
+                    const input = document.querySelector(`.comment-input[data-postid="${postId}"]`);
+                    const content = input.value.trim();
+                    if (!content) return;
+                    try {
+                        const res = await apiFetch(`${API_BASE}/posts/${postId}/comment`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ content })
+                        });
+                        input.value = '';
+                        loadComments(postId);
+                        // Update comment count in action
+                        const toggle = document.querySelector(`.comment-toggle[data-postid="${postId}"]`);
+                        const countSpan = toggle.querySelector('i')?.nextSibling;
+                        if (countSpan) {
+                            const current = parseInt(countSpan.textContent) || 0;
+                            countSpan.textContent = current + 1;
+                        }
+                    } catch (err) {
+                        alert('Failed to post comment.');
+                    }
+                });
+            });
+        }
+
+        async function loadComments(postId) {
+            try {
+                const data = await apiFetch(`${API_BASE}/posts/${postId}/comments`);
+                const list = document.getElementById(`commentList-${postId}`);
+                list.innerHTML = '';
+                if (!data.comments || data.comments.length === 0) {
+                    list.innerHTML = '<div style="color:#9ca3af; font-size:13px; padding:4px 0;">No comments yet.</div>';
+                    return;
+                }
+                data.comments.forEach(c => {
+                    const div = document.createElement('div');
+                    div.style.cssText =
+                        'display:flex; gap:8px; padding:6px 0; border-bottom:1px solid #f1f3f5; font-size:13px;';
+                    div.innerHTML = `
+                        <strong style="color:#1a1a2e;">${c.author}</strong>
+                        <span style="color:#374151;">${c.content}</span>
+                        <span style="margin-left:auto; color:#9ca3af; font-size:11px;">${new Date(c.created_at).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})}</span>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (e) {
+                const list = document.getElementById(`commentList-${postId}`);
+                list.innerHTML = '<div style="color:#ef4444; font-size:13px;">Could not load comments.</div>';
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PROFILE PHOTOS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function renderProfilePhotos(photos) {
+            photoGrid.innerHTML = '';
+            if (!photos || photos.length === 0) {
+                photoGrid.innerHTML = '<div class="empty-photos">No photos uploaded yet.</div>';
+                return;
+            }
+            photos.forEach(url => {
+                const item = document.createElement('div');
+                item.className = 'photo-item';
+                item.innerHTML = `<img src="${url}" alt="User photo" />`;
+                photoGrid.appendChild(item);
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  AVATAR UPDATE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function updateAllAvatars() {
+            if (!currentUser) return;
+            const avatar = currentUser.avatar;
+            const initials = currentUser.initials || getInitials(currentUser.name);
+            // Mini
+            miniAvatar.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
+            cuAvatar.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
+            profileAvatarText.innerHTML = avatar ? `<img src="${avatar}" alt="Avatar" />` : initials;
+            // Also update profile avatar background
+            if (!avatar) {
+                profileAvatarText.style.background = '#6c63ff';
+            } else {
+                profileAvatarText.style.background = 'transparent';
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  UPLOAD AVATAR
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const avatarInput = document.createElement('input');
+        avatarInput.type = 'file';
+        avatarInput.accept = 'image/*';
+        avatarInput.style.display = 'none';
+        document.body.appendChild(avatarInput);
+
+        uploadBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            avatarInput.click();
+        });
+
+        avatarInput.addEventListener('change', async function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(ev) {
+                const dataUrl = ev.target.result;
+                try {
+                    const res = await apiFetch(`${API_BASE}/profile/avatar`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ avatar: dataUrl })
+                    });
+                    if (res.success) {
+                        currentUser.avatar = dataUrl;
+                        updateAllAvatars();
+                        // Update posts
+                        posts.forEach(p => {
+                            if (p.user_id === currentUser.id) p.avatar = dataUrl;
+                        });
+                        renderFeed();
+                        renderContacts();
+                        alert('✅ Profile picture updated!');
+                    }
+                } catch (err) {
+                    alert('Failed to update avatar.');
+                }
+                avatarInput.value = '';
+            };
+            reader.readAsDataURL(file);
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  COMMUNITY
+        //  CONTACTS (from allUsers)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         function renderContacts() {
             contactList.innerHTML = '';
-            communityUsers.forEach(user => {
-                const lastMsg = user.messages.length > 0 ? user.messages[user.messages.length - 1] : null;
-                const preview = lastMsg ?
-                    `<span class="sender">${lastMsg.sender === 'You' ? 'You' : lastMsg.sender}:</span> ${lastMsg.text}` :
-                    'No messages yet';
+            const others = allUsers.filter(u => u.id !== currentUser?.id);
+            if (others.length === 0) {
+                contactList.innerHTML =
+                    '<div style="text-align:center;color:#9ca3af;padding:20px 0;">No other users yet.</div>';
+                return;
+            }
+            others.forEach(user => {
                 const div = document.createElement('div');
                 div.className = 'contact-item';
                 div.dataset.userId = user.id;
+                const initials = getInitials(user.name);
                 div.innerHTML = `
-                    <div class="ci-avatar" style="background:${user.color};">
-                        ${user.avatar ? `<img src="${user.avatar}" alt="${user.name}" />` : user.initials}
+                    <div class="ci-avatar" style="background:${user.avatarColor || '#6c63ff'};">
+                        ${user.avatar ? `<img src="${user.avatar}" alt="${user.name}" />` : initials}
                     </div>
                     <div class="ci-info">
                         <div class="ci-name">${user.name}</div>
-                        <div class="ci-preview">${preview}</div>
+                        <div class="ci-preview">Click to chat</div>
                     </div>
-                    <div class="ci-status ${user.status}">${user.status === 'online' ? '● Online' : '○ Offline'}</div>
+                    <div class="ci-status online">● Online</div>
                     <div class="ci-arrow"><i class="fas fa-chevron-right"></i></div>
                 `;
                 div.addEventListener('click', () => openChat(user.id));
@@ -2107,20 +2109,57 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
             });
         }
 
-        function openChat(userId) {
-            const user = communityUsers.find(u => u.id === userId);
-            if (!user) return;
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  CHAT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        let chatMessagesCache = [];
+
+        async function openChat(userId) {
             activeChatUserId = userId;
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
             chatHeaderName.textContent = user.name;
-            chatHeaderAvatar.innerHTML = user.avatar ? `<img src="${user.avatar}" alt="${user.name}" />` : user.initials;
-            chatHeaderAvatar.style.background = user.color;
-            chatHeaderStatus.textContent = user.status === 'online' ? '● Online' : '○ Offline';
-            chatHeaderStatus.className = 'ch-status ' + user.status;
-            renderChatMessages(user);
+            chatHeaderAvatar.innerHTML = user.avatar ? `<img src="${user.avatar}" alt="${user.name}" />` : getInitials(user
+            .name);
+            chatHeaderAvatar.style.background = user.avatarColor || '#6c63ff';
+            chatHeaderStatus.textContent = '● Online';
+            chatHeaderStatus.className = 'ch-status online';
             communityListState.classList.add('hidden');
             communityChatState.classList.add('active');
+            await loadChatMessages(userId);
             setTimeout(() => chatInput.focus(), 100);
         }
+
+        async function loadChatMessages(userId) {
+            try {
+                const data = await apiFetch(`${API_BASE}/messages?userId=${userId}`);
+                chatMessagesCache = data.messages || [];
+                renderChatMessages();
+            } catch (e) {
+                chatMessagesCache = [];
+                chatMessages.innerHTML = '<div class="chat-empty">Could not load messages.</div>';
+            }
+        }
+
+        function renderChatMessages() {
+            chatMessages.innerHTML = '';
+            if (chatMessagesCache.length === 0) {
+                chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Say hello! 👋</div>';
+                return;
+            }
+            chatMessagesCache.forEach(msg => {
+                const isSent = msg.sender_id === currentUser.id;
+                const div = document.createElement('div');
+                div.className = `chat-msg ${isSent ? 'sent' : 'received'}`;
+                const time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString('en-US', { hour: 'numeric',
+                    minute: '2-digit' }) : '';
+                div.innerHTML = `${msg.content}<span class="msg-time">${time}</span>`;
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatBackBtn.addEventListener('click', closeChat);
 
         function closeChat() {
             communityListState.classList.remove('hidden');
@@ -2129,51 +2168,24 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
             renderContacts();
         }
 
-        chatBackBtn.addEventListener('click', closeChat);
-
-        function renderChatMessages(user) {
-            chatMessages.innerHTML = '';
-            if (!user || user.messages.length === 0) {
-                chatMessages.innerHTML = '<div class="chat-empty">No messages yet. Say hello! 👋</div>';
-                return;
-            }
-            user.messages.forEach(msg => {
-                const isSent = msg.sender === 'You';
-                const div = document.createElement('div');
-                div.className = `chat-msg ${isSent ? 'sent' : 'received'}`;
-                div.innerHTML = `${msg.text}<span class="msg-time">${msg.time}</span>`;
-                chatMessages.appendChild(div);
-            });
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function sendChatMessage() {
+        async function sendChatMessage() {
             const text = chatInput.value.trim();
             if (!text || activeChatUserId === null) return;
-            const user = communityUsers.find(u => u.id === activeChatUserId);
-            if (!user) return;
-            const now = new Date();
-            const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-            user.messages.push({ sender: 'You', text: text, time: timeStr });
-            renderChatMessages(user);
-            chatInput.value = '';
-            if (user.messages.length % 3 === 0) {
-                const replies = [
-                    'That\'s great! 👍', 'Interesting! Tell me more.', 'Cool! 😎',
-                    'Got it!', 'Nice!', 'Haha 😄', 'Absolutely!', 'Sure thing!',
-                    'Let me think about that...', 'Awesome!', 'Really? 😮', 'I agree!'
-                ];
-                const reply = replies[Math.floor(Math.random() * replies.length)];
-                setTimeout(() => {
-                    const replyTime = new Date();
-                    const rt = String(replyTime.getHours()).padStart(2, '0') + ':' + String(replyTime.getMinutes())
-                        .padStart(2, '0');
-                    user.messages.push({ sender: user.name, text: reply, time: rt });
-                    renderChatMessages(user);
-                    renderContacts();
-                }, 600 + Math.random() * 1400);
+            try {
+                const res = await apiFetch(`${API_BASE}/messages`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ receiverId: activeChatUserId, content: text })
+                });
+                chatInput.value = '';
+                // Add to local cache and render
+                chatMessagesCache.push(res);
+                renderChatMessages();
+                // Update contact preview
+                renderContacts();
+            } catch (err) {
+                alert('Failed to send message.');
             }
-            renderContacts();
         }
 
         chatSendBtn.addEventListener('click', sendChatMessage);
@@ -2182,7 +2194,6 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  GYM
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         function updateGymUI() {
             if (gymJoined) {
                 gymStatus.textContent = '✅ Joined';
@@ -2200,13 +2211,19 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
                 checkoutBtn.style.opacity = '0.4';
             }
         }
-        updateGymUI();
 
-        joinGymBtn.addEventListener('click', function() {
+        joinGymBtn.addEventListener('click', async function() {
             if (!gymJoined) {
-                gymJoined = true;
-                alert('🏋️ You have joined the gym!');
-                updateGymUI();
+                try {
+                    const res = await apiFetch(`${API_BASE}/gym/join`, { method: 'POST' });
+                    if (res.success) {
+                        gymJoined = true;
+                        alert('🏋️ You have joined the gym!');
+                        updateGymUI();
+                    }
+                } catch (err) {
+                    alert('Failed to join gym.');
+                }
             }
         });
 
@@ -2219,52 +2236,8 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  PROFILE PHOTO UPLOAD (avatar)
+        //  CREATE POST
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        const avatarInput = document.createElement('input');
-        avatarInput.type = 'file';
-        avatarInput.accept = 'image/*';
-        avatarInput.style.display = 'none';
-        document.body.appendChild(avatarInput);
-
-        uploadBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            avatarInput.click();
-        });
-
-        avatarInput.addEventListener('change', function(e) {
-            const file = this.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const dataUrl = ev.target.result;
-                if (currentUser) {
-                    currentUser.avatar = dataUrl;
-                    // Update avatar in all posts by this user
-                    updateUserAvatarInPosts(currentUser.id, dataUrl);
-                    // Update all UI
-                    updateAllAvatars();
-                    renderFeed(); // re-render feed to update avatars in posts
-                    renderContacts(); // update community contacts
-                    // Also update chat header if open
-                    if (activeChatUserId !== null) {
-                        const chatUser = communityUsers.find(u => u.id === activeChatUserId);
-                        if (chatUser) {
-                            chatHeaderAvatar.innerHTML = `<img src="${dataUrl}" alt="${currentUser.name}" />`;
-                        }
-                    }
-                    alert('✅ Profile picture updated!');
-                }
-                avatarInput.value = '';
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  CREATE POST MODAL
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         let selectedPostImage = null;
 
         createPostBtn.addEventListener('click', () => {
@@ -2280,11 +2253,8 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
             createPostModal.classList.remove('active');
         });
 
-        // Close modal on overlay click
         createPostModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
+            if (e.target === this) this.classList.remove('active');
         });
 
         postImageInput.addEventListener('change', function() {
@@ -2298,36 +2268,38 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
             }
         });
 
-        submitPostBtn.addEventListener('click', function() {
+        submitPostBtn.addEventListener('click', async function() {
             const content = postContent.value.trim();
             if (!content && !selectedPostImage) {
                 alert('Please enter some text or attach an image.');
                 return;
             }
-            // Handle image
+            let imageDataUrl = null;
             if (selectedPostImage) {
-                const reader = new FileReader();
-                reader.onload = function(ev) {
-                    const dataUrl = ev.target.result;
-                    addPost(content, dataUrl);
-                    createPostModal.classList.remove('active');
-                    // Navigate to home to see new post
-                    document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
-                    alert('✅ Post created!');
-                };
-                reader.readAsDataURL(selectedPostImage);
-            } else {
-                addPost(content, null);
+                imageDataUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(selectedPostImage);
+                });
+            }
+            try {
+                const res = await apiFetch(`${API_BASE}/posts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, image: imageDataUrl })
+                });
                 createPostModal.classList.remove('active');
+                await loadFeed();
                 document.querySelector('.nav-item[data-tab="tabHome"]')?.click();
                 alert('✅ Post created!');
+            } catch (err) {
+                alert('Failed to create post.');
             }
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  PASSWORD TOGGLE
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
         document.querySelectorAll('.toggle-pw').forEach(btn => {
             btn.addEventListener('click', function() {
                 const targetId = this.dataset.target;
@@ -2345,9 +2317,26 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  KEYBOARD SHORTCUT: Escape
+        //  NAVIGATION
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                navItems.forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                Object.values(tabPages).forEach(p => p.classList.remove('active'));
+                const target = document.getElementById(tabId);
+                if (target) target.classList.add('active');
+                document.getElementById('appContent').scrollTop = 0;
+                if (tabId !== 'tabCommunity') closeChat();
+                if (tabId === 'tabProfile') loadProfilePhotos();
+                if (tabId === 'tabStats') loadStats();
+            });
+        });
 
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  KEYBOARD SHORTCUT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (createPostModal.classList.contains('active')) {
@@ -2363,14 +2352,31 @@ const API_BASE = "https://dilse.sauravjha.workers.dev/api";
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  INIT
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // Auto-login if token exists
+        if (token) {
+            (async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/auth/me`, { headers: getHeaders() });
+                    if (res.ok) {
+                        const data = await res.json();
+                        currentUser = data.user;
+                        enterApp(currentUser);
+                        return;
+                    } else {
+                        localStorage.removeItem('token');
+                        token = null;
+                    }
+                } catch (e) {
+                    localStorage.removeItem('token');
+                    token = null;
+                }
+                setAuthMode(true);
+            })();
+        } else {
+            setAuthMode(true);
+        }
 
-        setAuthMode(true);
-        setTimeout(() => { if (isSignupMode) signupName.focus();
-            else loginName.focus(); }, 300);
-        renderContacts();
-        renderFeed();
-        updateStats();
-        console.log('✅ ConnectHub ready! Post creation from top bar, profile avatar upload works.');
+        console.log('✅ ConnectHub ready with real API!');
     </script>
 
 </body>
