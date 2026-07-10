@@ -2175,7 +2175,7 @@ function updateGymUI() {
 updateGymUI();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// GYM API FUNCTIONS
+// GYM API FUNCTIONS (REAL GPS)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function joinGym(gymId = 1) {
@@ -2228,7 +2228,7 @@ async function checkIn() {
       body: JSON.stringify({ latitude, longitude })
     });
 
-    // Show result
+    // Show result based on backend response
     if (response.insideRadius === true) {
       alert('✅ Checked In');
     } else {
