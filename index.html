@@ -1541,10 +1541,10 @@ async function fetchPosts() {
     posts = data.posts.map(p => ({
       id: p.id,
       userId: p.userId,
-      authorName: p.user?.name || 'Unknown',
-      authorInitials: p.user?.name ? p.user.name.split(' ').map(w => w[0]).join('').toUpperCase() : '??',
+      authorName: p.authorName || 'Unknown',
+      authorInitials: p.authorInitials || '??',
       authorColor: '#6c63ff',
-      authorAvatar: p.user?.avatar || null,
+      authorAvatar: p.authorAvatar || null,
       content: p.content || '',
       image: p.image || null,
       timestamp: p.createdAt ? new Date(p.createdAt).toLocaleString() : 'Just now',
@@ -1616,9 +1616,9 @@ async function fetchMessages(userId) {
   try {
     const data = await authFetch(`/messages/${userId}`);
     return data.messages.map(msg => ({
-      sender: msg.senderId === currentUser.id ? 'You' : (msg.sender?.name || 'Unknown'),
-      text: msg.content,
-      time: msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'
+      sender: msg.sender, // 'You' or null
+      text: msg.text,
+      time: msg.time ? new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'
     }));
   } catch (err) {
     console.error('Failed to fetch messages:', err);
