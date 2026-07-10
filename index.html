@@ -2175,8 +2175,51 @@ function updateGymUI() {
 updateGymUI();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// GYM API FUNCTIONS (REAL GPS)
+// GYM API FUNCTIONS (REAL GPS) - PATCH 1 & 2 APPLIED
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ─── Geolocation with concurrency guard ───
+let locationPromise = null;
+
+function getCurrentLocation() {
+  // If a request is already in progress, return that promise
+  if (locationPromise) {
+    return locationPromise;
+  }
+
+  locationPromise = new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error('Geolocation not supported'));
+      locationPromise = null;
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+        locationPromise = null; // clear after resolve
+      },
+      (error) => {
+        let message = 'Location access denied';
+        if (error.code === error.TIMEOUT) {
+          message = 'Unable to get your current location.';
+        } else if (error.code === error.PERMISSION_DENIED) {
+          message = 'Location permission is required to check in.';
+        } else {
+          message = error.message || 'Location error';
+        }
+        reject(new Error(message));
+        locationPromise = null;
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  });
+
+  return locationPromise;
+}
 
 async function joinGym(gymId = 1) {
   try {
@@ -2190,56 +2233,49 @@ async function joinGym(gymId = 1) {
   }
 }
 
-function getCurrentLocation() {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error('Geolocation not supported'));
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        });
-      },
-      (error) => {
-        reject(new Error(error.message || 'Location access denied'));
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-  });
-}
-
 async function checkIn() {
+  // Prevent multiple simultaneous check-ins
+  if (window._checkingIn) {
+    return;
+  }
+  window._checkingIn = true;
+
   try {
-    // Check if user has joined gym
     if (!gymJoined) {
       alert('⚠️ Please join the gym first before checking in.');
+      window._checkingIn = false;
       return;
     }
 
-    // Get location
+    // Get location (waits for real GPS)
     const { latitude, longitude } = await getCurrentLocation();
 
-    // Call checkin API
+    // Call backend
     const response = await authFetch('/gym/checkin', {
       method: 'POST',
       body: JSON.stringify({ latitude, longitude })
     });
 
-    // Show result based on backend response
+    // Display backend result (only source of truth)
     if (response.insideRadius === true) {
       alert('✅ Checked In');
     } else {
       alert('❌ Outside Gym Radius');
     }
   } catch (err) {
-    if (err.message.includes('Join a gym first')) {
+    // Show meaningful error without false "denied"
+    const msg = err.message || 'Check-in failed';
+    if (msg.includes('Join a gym first')) {
       alert('⚠️ Join a gym first');
+    } else if (msg.includes('denied') || msg.includes('permission')) {
+      alert('Location permission is required to check in.');
+    } else if (msg.includes('timeout') || msg.includes('Unable to get')) {
+      alert('Unable to get your current location.');
     } else {
-      alert('Check-in failed: ' + err.message);
+      alert('Check-in failed: ' + msg);
     }
+  } finally {
+    window._checkingIn = false;
   }
 }
 
